@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -Wall           #-}
+{-# OPTIONS_GHC -Wall            #-}
 
 module Network.Betfair.Requests.StatusMessage
   (StatusMessage(..))
@@ -7,17 +7,17 @@ module Network.Betfair.Requests.StatusMessage
 import qualified Data.ByteString.Lazy as L
 import           Network.HTTP.Conduit
 
+import Network.Betfair.Types.ErrorCode   (ErrorCode)
 import Network.Betfair.Types.RequestStatus (RequestStatus)
-import Network.Betfair.Types.ErrorStatus (ErrorStatus)
 
 data StatusMessage =
   StatusMessage {op               :: String
-         ,id               :: Integer -- Client generated unique id to link request with response (like json rpc)
-         ,errorCode        :: ErrorCode -- The type of error in case of a failure
-         ,connectionId     :: String -- The connection id
-         ,connectionClosed :: Bool -- Is the connection now closed
-         ,statusCode       :: RequestStatus -- The status of the last request
-         }
+                ,id               :: Integer -- Client generated unique id to link request with response (like json rpc)
+                ,errorCode        :: ErrorCode -- The type of error in case of a failure
+                ,connectionId     :: String -- The connection id
+                ,connectionClosed :: Bool -- Is the connection now closed
+                ,statusCode       :: RequestStatus -- The status of the last request
+                }
   deriving (Eq,Show)
 
 -- heartbeatRequest :: Int -> StatusMessage

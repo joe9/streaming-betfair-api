@@ -7,8 +7,6 @@ module Network.Betfair.Requests.ConnectionMessage
 import qualified Data.ByteString.Lazy as L
 import           Network.HTTP.Conduit
 
-import Network.Betfair.Types.OrderFilter (OrderFilter)
-
 data ConnectionMessage =
   ConnectionMessage {op           :: String
                     ,id           :: Integer -- Client generated unique id to link request with response (like json rpc)

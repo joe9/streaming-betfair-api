@@ -8,6 +8,8 @@ import qualified Data.ByteString.Lazy as L
 import           Network.HTTP.Conduit
 
 import Network.Betfair.Types.SegmentType
+import Network.Betfair.Types.ChangeType
+import Network.Betfair.Types.MarketChange
 
 data MarketChangeMessage =
   MarketChangeMessage {op          :: String
