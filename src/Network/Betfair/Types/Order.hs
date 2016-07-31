@@ -9,7 +9,7 @@ module Network.Betfair.Types.Order
 
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
-import Data.Default.TH (deriveDefault)
+-- import Data.Default.TH (deriveDefault)
 
 import Network.Betfair.Types.OrderStatus     (OrderStatus)
 import Network.Betfair.Types.OrderType       (OrderType)
@@ -40,6 +40,6 @@ data Order =
         }
   deriving (Eq,Show)
 
-deriveDefault ''Order
+-- deriveDefault ''Order
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''Order)

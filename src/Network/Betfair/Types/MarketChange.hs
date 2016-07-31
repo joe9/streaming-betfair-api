@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -Wall     #-}
+{-# OPTIONS_GHC -Wall      #-}
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE TemplateHaskell      #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -10,10 +10,8 @@ module Network.Betfair.Types.MarketChange
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 
-import Network.Betfair.Types.MarketBettingType (MarketBettingType)
-import Network.Betfair.Types.MarketStatus      (MarketStatus)
-
-type DateString = String
+import Network.Betfair.Types.MarketDefinition (MarketDefinition)
+import Network.Betfair.Types.RunnerChange     (RunnerChange)
 
 data MarketChange =
   MarketChange {rc               :: Maybe [RunnerChange] -- Runner Changes - a list of changes to runners (or null if un-changed)

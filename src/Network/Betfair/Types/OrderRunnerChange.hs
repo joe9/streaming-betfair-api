@@ -12,8 +12,6 @@ import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
 
 import Network.Betfair.Types.Order (Order)
 
-type DateString = String
-
 data OrderRunnerChange =
   OrderRunnerChange {mb        :: [[Double]] -- Matched Backs - matched amounts by distinct matched price on the Back side for this runner (selection)
                     ,uo        :: [Order] -- Unmatched Orders - orders on this runner (selection) that are not fully matched

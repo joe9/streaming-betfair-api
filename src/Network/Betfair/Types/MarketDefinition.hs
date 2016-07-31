@@ -12,6 +12,7 @@ import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
 
 import Network.Betfair.Types.BettingType  (BettingType)
 import Network.Betfair.Types.MarketStatus (MarketStatus)
+import Network.Betfair.Types.RunnerDefinition (RunnerDefinition)
 
 type DateString = String
 

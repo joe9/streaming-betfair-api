@@ -12,8 +12,6 @@ import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
 
 import Network.Betfair.Types.OrderRunnerChange (OrderRunnerChange)
 
-type DateString = String
-
 data OrderMarketChange =
   OrderMarketChange {accountId :: Integer
                     ,orc       :: [OrderRunnerChange] -- Order Changes - a list of changes to orders on a selection
