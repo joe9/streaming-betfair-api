@@ -1,26 +1,37 @@
-{-# OPTIONS_GHC -Wall #-}
-{-# LANGUAGE DeriveDataTypeable   #-}
-{-# LANGUAGE FlexibleContexts     #-}
-{-# LANGUAGE TemplateHaskell      #-}
+{-# OPTIONS_GHC -Wall  #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
-module Network.Betfair.Requests.HeartbeatMessage (heartbeat) where
+module Network.Betfair.Requests.HeartbeatMessage
+  (heartbeat,HeartbeatMessage(..))
+  where
 
-import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
-                        deriveJSON)
-import Data.Default.TH (deriveDefault)
+import Control.Monad.RWS
+import Network.Connection
+import Data.Aeson.TH
+       (Options(omitNothingFields), defaultOptions, deriveJSON)
+-- import Data.Default.TH (deriveDefault)
+import Data.Default
+import Prelude hiding (id)
 
 import Network.Betfair.API.Request
 
-data HeartbeatMessage = HeartbeatMessage
-   { op :: String
-   , id      :: Integer
-   } deriving (Eq, Show)
+import WriterLog
+
+data HeartbeatMessage =
+  HeartbeatMessage {op :: String
+                   ,id :: Integer}
+  deriving (Eq,Show)
 
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''HeartbeatMessage)
 
-deriveDefault ''HeartbeatMessage
+-- deriveDefault ''HeartbeatMessage
+instance Default HeartbeatMessage where
+  def = HeartbeatMessage "Heartbeat" def
 
-heartbeat :: Integer -> RWST r w s m ()
-heartbeat = request . HeartbeatMessage "Heartbeat"
+heartbeat :: Integer -> RWST Connection Log s IO ()
+heartbeat i = request ( def {id = i})

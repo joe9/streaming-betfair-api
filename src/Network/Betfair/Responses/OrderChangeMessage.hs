@@ -1,11 +1,12 @@
 {-# OPTIONS_GHC -Wall         #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Network.Betfair.Responses.OrderChangeMessage
   (OrderChangeMessage(..))
   where
 
-import qualified Data.ByteString.Lazy as L
-import           Network.HTTP.Conduit
+import Data.Aeson.TH
+       (Options(omitNothingFields), defaultOptions, deriveJSON)
 
 import Network.Betfair.Types.SegmentType
 import Network.Betfair.Types.ChangeType
@@ -26,10 +27,5 @@ data OrderChangeMessage =
                }
   deriving (Eq,Show)
 
--- heartbeatRequest :: Int -> OrderChange
--- heartbeatRequest i = undefined
--- --  parseUrl https://identitysso.betfair.com/api/keepAlive
--- --    >>= (\req -> return $ req {requestHeaders = headers (Just t)})
-
--- heartbeat :: Token -> IO (Response L.ByteString)
--- heartbeat t = undefined -- heartbeatRequest t >>= getResponse
+$(deriveJSON defaultOptions {omitNothingFields = True}
+             ''OrderChangeMessage)

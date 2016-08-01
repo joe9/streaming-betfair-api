@@ -1,11 +1,12 @@
 {-# OPTIONS_GHC -Wall           #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Network.Betfair.Responses.ConnectionMessage
   (ConnectionMessage(..))
   where
 
-import qualified Data.ByteString.Lazy as L
-import           Network.HTTP.Conduit
+import Data.Aeson.TH
+       (Options(omitNothingFields), defaultOptions, deriveJSON)
 
 data ConnectionMessage =
   ConnectionMessage {op           :: String
@@ -14,10 +15,5 @@ data ConnectionMessage =
                     }
   deriving (Eq,Show)
 
--- heartbeatRequest :: Int -> ConnectionMessage
--- heartbeatRequest i = undefined
--- --  parseUrl "https://identitysso.betfair.com/api/keepAlive"
--- --    >>= (\req -> return $ req {requestHeaders = headers (Just t)})
-
--- heartbeat :: Token -> IO (Response L.ByteString)
--- heartbeat t = undefined -- heartbeatRequest t >>= getResponse
+$(deriveJSON defaultOptions {omitNothingFields = True}
+             ''ConnectionMessage)
