@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wall            #-}
 
-module Network.Betfair.Requests.StatusMessage
+module Network.Betfair.Responses.StatusMessage
   (StatusMessage(..))
   where
 

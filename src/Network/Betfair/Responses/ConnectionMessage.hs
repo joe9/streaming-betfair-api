@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wall           #-}
 
-module Network.Betfair.Requests.ConnectionMessage
+module Network.Betfair.Responses.ConnectionMessage
   (ConnectionMessage(..))
   where
 

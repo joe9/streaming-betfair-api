@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wall         #-}
 
-module Network.Betfair.Requests.OrderChangeMessage
+module Network.Betfair.Responses.OrderChangeMessage
   (OrderChangeMessage(..))
   where
 

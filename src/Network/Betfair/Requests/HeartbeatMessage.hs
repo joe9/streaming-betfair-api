@@ -1,19 +1,26 @@
 {-# OPTIONS_GHC -Wall #-}
+{-# LANGUAGE DeriveDataTypeable   #-}
+{-# LANGUAGE FlexibleContexts     #-}
+{-# LANGUAGE TemplateHaskell      #-}
+{-# LANGUAGE UndecidableInstances #-}
 
-module Network.Betfair.Requests.HeartbeatMessage (HeartbeatMessage(..)) where
+module Network.Betfair.Requests.HeartbeatMessage (heartbeat) where
 
-import qualified Data.ByteString.Lazy                    as L
-import           Network.HTTP.Conduit
+import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
+                        deriveJSON)
+import Data.Default.TH (deriveDefault)
+
+import Network.Betfair.API.Request
 
 data HeartbeatMessage = HeartbeatMessage
    { op :: String
-   , id      :: Int
+   , id      :: Integer
    } deriving (Eq, Show)
 
--- heartbeatRequest :: Int -> HeartbeatMessage
--- heartbeatRequest i = undefined
--- --  parseUrl "https://identitysso.betfair.com/api/keepAlive"
--- --    >>= (\req -> return $ req {requestHeaders = headers (Just t)})
+$(deriveJSON defaultOptions {omitNothingFields = True}
+             ''HeartbeatMessage)
 
--- heartbeat :: Token -> IO (Response L.ByteString)
--- heartbeat t = undefined -- heartbeatRequest t >>= getResponse
+deriveDefault ''HeartbeatMessage
+
+heartbeat :: Integer -> RWST r w s m ()
+heartbeat = request . HeartbeatMessage "Heartbeat"
