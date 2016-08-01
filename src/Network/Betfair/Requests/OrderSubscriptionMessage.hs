@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wall         #-}
 
 module Network.Betfair.Requests.OrderSubscriptionMessage
-  (OrderSubscriptionMessage(..))
+  (orderSubscription)
   where
 
 import qualified Data.ByteString.Lazy as L
@@ -21,10 +21,10 @@ data OrderSubscriptionMessage =
                     }
   deriving (Eq,Show)
 
--- heartbeatRequest :: Int -> OrderSubscriptionMessage
--- heartbeatRequest i = undefined
--- --  parseUrl "https://identitysso.betfair.com/api/keepAlive"
--- --    >>= (\req -> return $ req {requestHeaders = headers (Just t)})
+$(deriveJSON defaultOptions {omitNothingFields = True}
+             ''OrderSubscriptionMessage)
 
--- heartbeat :: Token -> IO (Response L.ByteString)
--- heartbeat t = undefined -- heartbeatRequest t >>= getResponse
+deriveDefault ''OrderSubscriptionMessage
+
+orderSubscription :: OrderSubscriptionMessage -> RWST r w s m ()
+orderSubscription = request . OrderSubscriptionMessage "OrderSubscription"
