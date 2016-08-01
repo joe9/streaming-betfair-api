@@ -40,7 +40,7 @@ $(deriveJSON defaultOptions {omitNothingFields = True}
 
 -- deriveDefault ''OrderSubscriptionMessage
 instance Default OrderSubscriptionMessage where
-  def = OrderSubscriptionMessage "OrderSubscription" 0 False def "" 500 "" 500
+  def = OrderSubscriptionMessage "OrderSubscription" 0 True def "" 500 "" 0
 
 orderSubscription
   :: OrderSubscriptionMessage -> RWST Connection Log s IO ()

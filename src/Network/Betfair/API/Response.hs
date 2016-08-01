@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -Wall        #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Network.Betfair.API.Response
   (response)
@@ -12,18 +13,18 @@ import Data.Maybe
 import Network.Connection
 import Safe
 
-import Network.Betfair.Responses.ConnectionMessage
-import Network.Betfair.Responses.MarketChangeMessage
-import Network.Betfair.Responses.OrderChangeMessage
-import Network.Betfair.Responses.StatusMessage
+import qualified Network.Betfair.Responses.ConnectionMessage as C
+import qualified Network.Betfair.Responses.MarketChangeMessage as M
+import qualified Network.Betfair.Responses.OrderChangeMessage as O
+import qualified Network.Betfair.Responses.StatusMessage as S
 
 import WriterLog
 
 data Response
-  = Connection ConnectionMessage
-  | MarketChange MarketChangeMessage
-  | OrderChange OrderChangeMessage
-  | Status StatusMessage
+  = Connection C.ConnectionMessage
+  | MarketChange M.MarketChangeMessage
+  | OrderChange O.OrderChangeMessage
+  | Status S.StatusMessage
 
 response :: RWST Connection Log s IO Response
 response =
@@ -32,20 +33,24 @@ response =
 
 parseResponse :: L.ByteString -> Response
 parseResponse b
-  | isJust (decode b :: Maybe ConnectionMessage) =
+  | isJust (decode b :: Maybe C.ConnectionMessage) && cop == "connection" =
     (Connection .
-     fromJustNote "response: could not parse heartbeat" .
-     (decode :: L.ByteString -> Maybe ConnectionMessage)) b
-  | isJust (decode b :: Maybe MarketChangeMessage) =
+     fromJustNote "response: could not parse connection" .
+     (decode :: L.ByteString -> Maybe C.ConnectionMessage)) b
+  | isJust (decode b :: Maybe M.MarketChangeMessage) && mop == "mcm" =
     (MarketChange .
-     fromJustNote "response: could not parse heartbeat" .
-     (decode :: L.ByteString -> Maybe MarketChangeMessage)) b
-  | isJust (decode b :: Maybe OrderChangeMessage) =
+     fromJustNote "response: could not parse marketchange" .
+     (decode :: L.ByteString -> Maybe M.MarketChangeMessage)) b
+  | isJust (decode b :: Maybe O.OrderChangeMessage) && oop == "ocm" =
     (OrderChange .
-     fromJustNote "response: could not parse heartbeat" .
-     (decode :: L.ByteString -> Maybe OrderChangeMessage)) b
-  | isJust (decode b :: Maybe StatusMessage) =
+     fromJustNote "response: could not parse orderchange" .
+     (decode :: L.ByteString -> Maybe O.OrderChangeMessage)) b
+  | isJust (decode b :: Maybe S.StatusMessage) && sop == "status" =
     (Status .
-     fromJustNote "response: could not parse heartbeat" .
-     (decode :: L.ByteString -> Maybe StatusMessage)) b
+     fromJustNote "response: could not parse status" .
+     (decode :: L.ByteString -> Maybe S.StatusMessage)) b
   | otherwise = error $ "response: could not parse bytestring" ++ show b
+  where cop = (C.op . fromJustNote "") (decode b :: Maybe C.ConnectionMessage)
+        mop = (M.op . fromJustNote "") (decode b :: Maybe M.MarketChangeMessage)
+        oop = (O.op . fromJustNote "") (decode b :: Maybe O.OrderChangeMessage)
+        sop = (S.op . fromJustNote "") (decode b :: Maybe S.StatusMessage)

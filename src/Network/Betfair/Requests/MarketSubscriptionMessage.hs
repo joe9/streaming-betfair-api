@@ -42,7 +42,7 @@ $(deriveJSON defaultOptions {omitNothingFields = True}
 -- deriveDefault ''MarketSubscriptionMessage
 instance Default MarketSubscriptionMessage where
   def =
-    MarketSubscriptionMessage "MarketSubscription" 0 False "" 500 "" def 500 def
+    MarketSubscriptionMessage "MarketSubscription" 0 True "" 500 "" def 0 def
 
 marketSubscription
   :: MarketSubscriptionMessage -> RWST Connection Log s IO ()
