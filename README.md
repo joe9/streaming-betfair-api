@@ -1,1 +1,1 @@
-data structures used by betfair streaming api
+Haskell library to interface with the betfair streaming api
