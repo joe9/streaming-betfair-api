@@ -6,21 +6,15 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Network.Betfair.Requests.OrderSubscriptionMessage
-  (orderSubscription
-  ,OrderSubscriptionMessage(..))
+  (OrderSubscriptionMessage(..))
   where
 
-import Control.Monad.RWS
 import Data.Aeson.TH      (Options (omitNothingFields),
                            defaultOptions, deriveJSON)
-import Network.Connection
 -- import Data.Default.TH (deriveDefault)
 import Data.Default
 import Prelude      hiding (id)
 
-import WriterLog
-
-import Network.Betfair.API.Request
 import Network.Betfair.Types.OrderFilter (OrderFilter)
 
 data OrderSubscriptionMessage =
@@ -41,7 +35,3 @@ $(deriveJSON defaultOptions {omitNothingFields = True}
 -- deriveDefault ''OrderSubscriptionMessage
 instance Default OrderSubscriptionMessage where
   def = OrderSubscriptionMessage "OrderSubscription" 0 True def "" 500 "" 0
-
-orderSubscription
-  :: OrderSubscriptionMessage -> RWST Connection Log s IO ()
-orderSubscription = request

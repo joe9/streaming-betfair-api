@@ -6,21 +6,15 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Network.Betfair.Requests.MarketSubscriptionMessage
-  (marketSubscription
-  ,MarketSubscriptionMessage(..))
+  (MarketSubscriptionMessage(..))
   where
 
-import Control.Monad.RWS
 import Data.Aeson.TH      (Options (omitNothingFields),
                            defaultOptions, deriveJSON)
-import Network.Connection
 -- import Data.Default.TH (deriveDefault)
 import Data.Default
 import Prelude      hiding (id)
 
-import WriterLog
-
-import Network.Betfair.API.Request
 import Network.Betfair.Types.MarketDataFilter
 import Network.Betfair.Types.MarketFilter
 
@@ -43,7 +37,3 @@ $(deriveJSON defaultOptions {omitNothingFields = True}
 instance Default MarketSubscriptionMessage where
   def =
     MarketSubscriptionMessage "MarketSubscription" 0 True "" 500 "" def 0 def
-
-marketSubscription
-  :: MarketSubscriptionMessage -> RWST Connection Log s IO ()
-marketSubscription = request

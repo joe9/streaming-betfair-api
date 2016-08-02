@@ -5,20 +5,14 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
 module Network.Betfair.Requests.AuthenticationMessage
-  (authentication, AuthenticationMessage(..))
+  (AuthenticationMessage(..))
   where
 
-import Control.Monad.RWS
-import Network.Connection
 import Data.Default
 import Prelude hiding (id)
 import Data.Aeson.TH
        (Options(omitNothingFields), defaultOptions, deriveJSON)
-import Data.Default.TH (deriveDefault)
-
-import Network.Betfair.API.Request
-
-import WriterLog
+-- import Data.Default.TH (deriveDefault)
 
 data AuthenticationMessage =
   AuthenticationMessage {op      :: String
@@ -30,9 +24,6 @@ data AuthenticationMessage =
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''AuthenticationMessage)
 
-deriveDefault ''AuthenticationMessage
--- instance Default HeartbeatMessage where
---   def = HeartbeatMessage "Heartbeat" def
-
-authentication :: Integer -> String -> String -> RWST Connection Log s IO ()
-authentication i s = request . AuthenticationMessage "Authentication" i s
+-- deriveDefault ''AuthenticationMessage
+instance Default AuthenticationMessage where
+  def = AuthenticationMessage "Authentication" def undefined undefined
