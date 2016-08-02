@@ -20,7 +20,7 @@ data OrderRunnerChange =
                     ,fullImage :: Maybe Bool
                     ,ml        :: [[Double]] -- Matched Lays - matched amounts by distinct matched price on the Lay side for this runner (selection)
                     }
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 -- deriveDefault ''OrderRunnerChange
 $(deriveJSON defaultOptions {omitNothingFields = True}

@@ -45,7 +45,7 @@ data RunnerChange =
                 -- (Level,Price,Volume)
                 bdatb :: Integer  -- Best Display Available To Back (includes virtual prices)- LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove)
                }
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 -- deriveDefault ''RunnerChange
 $(deriveJSON defaultOptions {omitNothingFields = True}

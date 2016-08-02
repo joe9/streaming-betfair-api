@@ -19,6 +19,7 @@ import qualified Network.Betfair.Responses.OrderChangeMessage  as O
 import qualified Network.Betfair.Responses.StatusMessage       as S
 
 import           Network.Betfair.API.Config
+import           Network.Betfair.API.Response
 import           Network.Betfair.API.StreamingState
 import           Network.Betfair.Types.ChangeType
 import qualified Network.Betfair.Types.MarketChange as MarketChange
@@ -30,7 +31,7 @@ data Response
   = Connection C.ConnectionMessage
   | MarketChange M.MarketChangeMessage
   | OrderChange O.OrderChangeMessage
-  | Status S.StatusMessage
+  | Status (Maybe Request) S.StatusMessage
 
 -- response :: RWST Connection Log s IO Response
 -- response =
@@ -50,21 +51,27 @@ response =
      put updatedState
      return response
 
-processResponse :: StreamingState -> Response -> IO StreamingState
-processResponse s (OrderChange _) = return s -- not implemented
-processResponse s (Connection _) = return s
-processResponse s (Status _) = return s
-processResponse s (MarketChange m)
-  | isNothing (M.ct m) || M.ct m == Just HEARTBEAT = return s
-  | isNothing (M.mc m) || M.mc m == Just [] = return s
+processResponse :: Response -> RWST Config Log StreamingState IO Response
+processResponse r@(OrderChange _) = return r -- not implemented
+processResponse r@(Connection _) = return r
+processResponse r@(Status status) = do
+  s <- get
+  return ( Status (Map.lookup (S.id status) (ssRequests s)) status)
+processResponse r@(MarketChange m)
+  | isNothing (M.ct m) || M.ct m == Just HEARTBEAT = return r
+  | isNothing (M.mc m) || M.mc m == Just [] = return r
   | isJust (M.segmentType m) =
     error $ "segmentType processing not implemented" ++ show m
-  | isNothing (M.segmentType m) =
-    (foldM (updateStreamingState (M.clk m)
-                                 (M.initialClk m)
-                                 (M.pt m))
-           s .
-     fromJustNote "should have markets here" . M.mc) m
+  | isNothing (M.segmentType m) = do
+      s <- get
+      u <- lift (
+            (foldM (updateStreamingState (M.clk m)
+                                        (M.initialClk m)
+                                        (M.pt m))
+                s .
+            fromJustNote "should have markets here" . M.mc) m)
+      put s
+      return r
   | otherwise = error $ "not implemented" ++ show m
 
 parseResponse :: L.ByteString -> Response
@@ -82,7 +89,7 @@ parseResponse b
      fromJustNote "response: could not parse orderchange" .
      (decode :: L.ByteString -> Maybe O.OrderChangeMessage)) b
   | isJust (decode b :: Maybe S.StatusMessage) && sop == "status" =
-    (Status .
+    (Status Nothing .
      fromJustNote "response: could not parse status" .
      (decode :: L.ByteString -> Maybe S.StatusMessage)) b
   | otherwise = error $ "response: could not parse bytestring" ++ show b

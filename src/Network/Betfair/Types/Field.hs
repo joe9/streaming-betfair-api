@@ -21,7 +21,7 @@ data Field
   | EX_MARKET_DEF
   | SP_TRADED
   | SP_PROJECTED
-  deriving (Eq,Show)
+  deriving (Eq,Show,Read)
 
 deriveDefault ''Field
 $(deriveJSON defaultOptions {omitNothingFields = True}

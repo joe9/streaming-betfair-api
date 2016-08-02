@@ -21,7 +21,7 @@ data MarketChange =
                ,marketDefinition :: Maybe MarketDefinition -- Market Definition - the definition of the market (or null if un-changed)
                ,id               :: String -- Market Id - the id of the market
                }
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 -- deriveDefault ''MarketChange
 $(deriveJSON defaultOptions {omitNothingFields = True}

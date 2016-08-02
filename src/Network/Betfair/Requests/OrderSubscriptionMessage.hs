@@ -17,6 +17,8 @@ import Prelude      hiding (id)
 
 import Network.Betfair.Types.OrderFilter (OrderFilter)
 
+import Network.Betfair.API.AddId
+
 data OrderSubscriptionMessage =
   OrderSubscriptionMessage {op                  :: String
                            ,id                  :: Integer -- Client generated unique id to link request with response (like json rpc)
@@ -27,7 +29,7 @@ data OrderSubscriptionMessage =
                            ,initialClk          :: String -- Token value (received in initial MarketChangeMessage) that should be passed to resume a subscription
                            ,conflateMs          :: Integer -- Conflate Milliseconds - the conflation rate (looped back on initial image after validation: bounds are 0 to 120000)
                            }
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''OrderSubscriptionMessage)
@@ -35,3 +37,6 @@ $(deriveJSON defaultOptions {omitNothingFields = True}
 -- deriveDefault ''OrderSubscriptionMessage
 instance Default OrderSubscriptionMessage where
   def = OrderSubscriptionMessage "OrderSubscription" 0 True def "" 500 "" 0
+
+instance AddId OrderSubscriptionMessage where
+  addId o i = o {id = i}

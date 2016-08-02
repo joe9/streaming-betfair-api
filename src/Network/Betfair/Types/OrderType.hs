@@ -16,7 +16,7 @@ data OrderType
   = L
   | LOC
   | MOC
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 deriveDefault ''OrderType
 $(deriveJSON defaultOptions {omitNothingFields = True}

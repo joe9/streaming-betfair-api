@@ -18,7 +18,7 @@ data BettingType
   | ASIAN_HANDICAP_DOUBLE_LINE
   | ASIAN_HANDICAP_SINGLE_LINE
   | FIXED_ODDS
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 deriveDefault ''BettingType
 $(deriveJSON defaultOptions {omitNothingFields = True}

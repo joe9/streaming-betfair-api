@@ -23,7 +23,7 @@ data RunnerDefinition =
                    ,adjustmentFactor :: Maybe Double
                    ,bsp              :: Maybe Double
                    ,status           :: RunnerStatus}
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 deriveDefault ''RunnerDefinition
 $(deriveJSON defaultOptions {omitNothingFields = True}

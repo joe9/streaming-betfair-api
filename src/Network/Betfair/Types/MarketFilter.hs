@@ -24,7 +24,7 @@ data MarketFilter =
                ,eventTypeIds      :: Maybe [String]
                ,eventIds          :: Maybe [String]
                ,bspMarket         :: Maybe Bool}
-  deriving (Eq,Show)
+  deriving (Eq,Show,Read)
 
 -- this is what deriveDefault does anyway
 -- instance Default MarketSort where def = FIRST_TO_START

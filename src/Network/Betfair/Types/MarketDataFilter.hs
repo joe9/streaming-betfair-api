@@ -17,7 +17,7 @@ import Network.Betfair.Types.Field (Field)
 data MarketDataFilter =
   MarketDataFilter {ladderLevels :: Maybe Integer
                    ,fields       :: [Field]}
-  deriving (Eq,Show)
+  deriving (Eq,Show,Read)
 
 -- this is what deriveDefault does anyway
 -- instance Default MarketSort where def = FIRST_TO_START

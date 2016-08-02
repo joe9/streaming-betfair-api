@@ -15,10 +15,12 @@ import Data.Aeson.TH
 import Data.Default
 import Prelude hiding (id)
 
+import Network.Betfair.API.AddId
+
 data HeartbeatMessage =
   HeartbeatMessage {op :: String
                    ,id :: Integer}
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''HeartbeatMessage)
@@ -26,3 +28,6 @@ $(deriveJSON defaultOptions {omitNothingFields = True}
 -- deriveDefault ''HeartbeatMessage
 instance Default HeartbeatMessage where
   def = HeartbeatMessage "Heartbeat" def
+
+instance AddId HeartbeatMessage where
+  addId o i = o {id = i}

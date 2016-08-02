@@ -18,7 +18,7 @@ data OrderMarketChange =
                     ,closed    :: Bool
                     ,id        :: String -- Market Id - the id of the market the order is on
                     }
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 -- deriveDefault ''OrderMarketChange
 $(deriveJSON defaultOptions {omitNothingFields = True}

@@ -46,7 +46,7 @@ data MarketDefinition =
                    ,marketTime            :: DateString
                    ,bspReconciled         :: Bool
                    ,status                :: MarketStatus}
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 -- deriveDefault ''MarketDefinition
 $(deriveJSON defaultOptions {omitNothingFields = True}

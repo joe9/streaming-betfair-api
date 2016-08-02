@@ -18,6 +18,8 @@ import Prelude      hiding (id)
 import Network.Betfair.Types.MarketDataFilter
 import Network.Betfair.Types.MarketFilter
 
+import Network.Betfair.API.AddId
+
 data MarketSubscriptionMessage =
   MarketSubscriptionMessage {op                  :: String
                             ,id                  :: Integer -- Client generated unique id to link request with response (like json rpc)
@@ -28,7 +30,7 @@ data MarketSubscriptionMessage =
                             ,marketFilter        :: MarketFilter
                             ,conflateMs          :: Integer -- Conflate Milliseconds - the conflation rate (looped back on initial image after validation: bounds are 0 to 120000)
                             ,marketDataFilter    :: MarketDataFilter}
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''MarketSubscriptionMessage)
@@ -37,3 +39,6 @@ $(deriveJSON defaultOptions {omitNothingFields = True}
 instance Default MarketSubscriptionMessage where
   def =
     MarketSubscriptionMessage "MarketSubscription" 0 True "" 500 "" def 0 def
+
+instance AddId MarketSubscriptionMessage where
+  addId o i = o {id = i}

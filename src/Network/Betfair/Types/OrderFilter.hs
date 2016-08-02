@@ -14,7 +14,7 @@ import Data.Default.TH (deriveDefault)
 
 data OrderFilter =
   OrderFilter {accountIds :: [Integer]}
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 -- this is what deriveDefault does anyway
 -- instance Default MarketSort where def = FIRST_TO_START

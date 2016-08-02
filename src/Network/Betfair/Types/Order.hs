@@ -38,7 +38,7 @@ data Order =
         ,status :: OrderStatus -- Status - the status of the order (E = EXECUTABLE, EC = EXECUTION_COMPLETE)
         ,sr     :: Maybe Double -- Size Remaining - the amount of the order that is remaining unmatched
         }
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 -- deriveDefault ''Order
 $(deriveJSON defaultOptions {omitNothingFields = True}
