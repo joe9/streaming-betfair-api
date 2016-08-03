@@ -40,6 +40,7 @@ request r =
      let currentId = ssIdCounter s
      put (s {ssIdCounter = succ currentId})
      b <- (groomedLog . L.toStrict . addCRLF . encode) (addId r currentId)
+     (lift . putStr) "<---"
      (lift . B.putStr) b
      connection <- ask
      lift (connectionPut connection b)

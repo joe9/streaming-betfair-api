@@ -48,7 +48,7 @@ application config mids =
                                           (Map.fromList .
                                            map (\mid ->
                                                   (mid,def {msMarketId = mid}))) mids}
-     putStrLn loggedOutput
+--      putStrLn loggedOutput
      -- add the below close to signal handler, to close the connection on
      -- interrupt, etc
      putStrLn "Closing connection"
@@ -58,10 +58,10 @@ applicationLoop
   :: RWST Connection Log StreamingState IO ()
 applicationLoop =
   do
-     response >>= (lift . print)
+     response >>= (\c -> lift (putStr "--->") >> (lift . print) c)
      ss <- get
      checkAuthentication (ssConnectionState ss)
-     response >>= (lift . print)
+     response >>= (\c -> lift (putStr "--->") >> (lift . print) c)
 --      applicationLoop
 
 connectToBetfair :: IO Connection

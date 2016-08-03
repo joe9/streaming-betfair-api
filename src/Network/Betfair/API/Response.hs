@@ -5,25 +5,25 @@ module Network.Betfair.API.Response
   (response)
   where
 
-import Control.Monad.RWS
-import Data.Aeson
+import           Control.Monad.RWS
+import           Data.Aeson
 import qualified Data.ByteString.Lazy as L
-import qualified Data.Map.Strict as Map
-import Data.Maybe
-import Network.Connection
-import Safe
+import qualified Data.Map.Strict      as Map
+import           Data.Maybe
+import           Network.Connection
+import           Safe
 
-import qualified Network.Betfair.Responses.ConnectionMessage as C
+import qualified Network.Betfair.Responses.ConnectionMessage   as C
 import qualified Network.Betfair.Responses.MarketChangeMessage as M
-import qualified Network.Betfair.Responses.OrderChangeMessage as O
-import qualified Network.Betfair.Responses.StatusMessage as S
+import qualified Network.Betfair.Responses.OrderChangeMessage  as O
+import qualified Network.Betfair.Responses.StatusMessage       as S
 
-import Network.Betfair.API.Config
-import Network.Betfair.API.Request
-import Network.Betfair.API.StreamingState
-import Network.Betfair.Types.ChangeType
+import           Network.Betfair.API.Config
+import           Network.Betfair.API.Request
+import           Network.Betfair.API.StreamingState
+import           Network.Betfair.Types.ChangeType
 import qualified Network.Betfair.Types.MarketChange as MarketChange
-import Network.Betfair.Types.MarketStatus
+import           Network.Betfair.Types.MarketStatus
 
 import WriterLog
 
@@ -33,6 +33,7 @@ data Response
   | OrderChange O.OrderChangeMessage
   | Status S.StatusMessage
            (Maybe Request)
+  | EmptyLine
   deriving (Eq,Read,Show)
 
 -- response :: RWST Connection Log s IO Response
@@ -95,7 +96,7 @@ parseResponse b
     (flip Status Nothing .
      fromJustNote "response: could not parse status" .
      (decode :: L.ByteString -> Maybe S.StatusMessage)) b
-  | b == "" = error $ "response: received empty message only: " ++ show b
+  | b == "" = EmptyLine
   | b == "\n" = error $ "response: received newline only: " ++ show b
   | b == "\r" = error $ "response: received carriage return only: " ++ show b
   | b == "\r\n" = error $ "response: received CRLF only: " ++ show b
