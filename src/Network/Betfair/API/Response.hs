@@ -19,13 +19,14 @@ import qualified Network.Betfair.Responses.OrderChangeMessage  as O
 import qualified Network.Betfair.Responses.StatusMessage       as S
 
 import           Network.Betfair.API.Config
+import           Network.Betfair.API.Context
 import           Network.Betfair.API.Request
+import           Network.Betfair.API.Log
 import           Network.Betfair.API.StreamingState
 import           Network.Betfair.Types.ChangeType
 import qualified Network.Betfair.Types.MarketChange as MarketChange
 import           Network.Betfair.Types.MarketStatus
 
-import WriterLog
 
 data Response
   = Connection C.ConnectionMessage
@@ -36,24 +37,24 @@ data Response
   | EmptyLine
   deriving (Eq,Read,Show)
 
--- response :: RWST Connection Log s IO Response
+-- response :: RWST Context l s IO Response
 -- response =
 --   ask >>= lift . connectionGetLine 16384 >>= groomedLog >>=
 --   lift . return . parseResponse . L.fromStrict
 
 response
-  :: RWST Connection Log StreamingState IO Response
+  :: RWST Context () StreamingState IO Response
 response =
   do state <- get
-     connection <- ask
+     connection <- fmap cConnection ask
      raw <- lift (connectionGetLine 16384 connection)
-     _ <- groomedLog raw
+     _ <- groomedLog From raw
      let response = (parseResponse . L.fromStrict) raw
      processedResponse <- processResponse response
-     groomedLog processedResponse
+     groomedLog From processedResponse
 
 processResponse
-  :: Response -> RWST Connection Log StreamingState IO Response
+  :: Response -> RWST Context () StreamingState IO Response
 processResponse r@(OrderChange _) = return r -- not implemented
 processResponse r@(Connection _) = return r
 processResponse r@(Status status _) =

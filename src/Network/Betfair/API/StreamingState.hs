@@ -25,7 +25,7 @@ data StreamingState =
                  ,ssRequests        :: Map.Map Integer Request
                  ,ssIdCounter       :: Integer
                  ,ssSessionToken    :: SessionToken
-                 ,ssConfig          :: Config
+                 ,ssAppKey          :: AppKey
                  ,ssConnectionState :: ConnectionState}
   deriving (Eq,Read,Show)
 

@@ -7,6 +7,9 @@ module Main
   ,application)
   where
 
+import Control.Monad.STM
+import Control.Concurrent
+import Control.Concurrent.STM.TChan
 import           Control.Monad.RWS
 import           Data.Aeson
 import           Data.Default
@@ -15,11 +18,11 @@ import           Network.Connection
 import           Network.Connection
 import           Network.Socket
 
-import WriterLog
-import WriterLog
-
+import Prelude hiding (log)
 import Network.Betfair.API.CommonTypes
+import Network.Betfair.API.Log
 import Network.Betfair.API.Config
+import Network.Betfair.API.Context
 import Network.Betfair.API.Request
 import Network.Betfair.API.RequestProcessing
 import Network.Betfair.API.Response
@@ -28,21 +31,30 @@ import Network.Betfair.Responses.ConnectionMessage
 import Network.Betfair.Responses.MarketChangeMessage
 import Network.Betfair.Responses.OrderChangeMessage
 import Network.Betfair.Responses.StatusMessage
+import Network.Betfair.API.NonBlockingReadFromTChan
 
 main :: IO ()
-main =
-  application (def {appKey = "testappkey"})
-              ["1.125402056"]
+main = do
+  context <- initializeContext "testappkey"
+  logReader <- forkIO ( readerThread (cWriteLogChannel context))
+  application context ["1.125402056"]
 
-application :: Config -> [MarketId] -> IO ()
-application config [] =
+readerThread :: TChan String -> IO ()
+readerThread chan = do
+        newInt <- atomically $ readTChan chan
+        putStrLn $ "read new value: "
+        putStrLn newInt
+        readerThread chan
+
+application :: Context -> [MarketId] -> IO ()
+application context [] =
   putStrLn "No Market Ids provided, hence, not connecting"
-application config mids =
+application context mids =
   do connection <- connectToBetfair
      (token,_,loggedOutput) <-
        runRWST applicationLoop
-               connection
-               (def :: StreamingState) {ssConfig = config
+               context{cConnection = connection}
+               (def :: StreamingState) {ssAppKey = cAppKey context
                                        ,ssConnectionState = NotAuthenticated
                                        ,ssSessionToken = "SESSIONTOKEN"
                                        ,ssMarkets =
@@ -52,16 +64,17 @@ application config mids =
 --      putStrLn loggedOutput
      -- add the below close to signal handler, to close the connection on
      -- interrupt, etc
-     putStrLn "Closing connection"
+     log (cWriteLogChannel context) "Closing connection"
      connectionClose connection
 
 applicationLoop
-  :: RWST Connection Log StreamingState IO ()
+  :: RWST Context () StreamingState IO ()
 applicationLoop =
-  do response >>= (\c -> lift (putStr "--->") >> (lift . print) c)
+  do response
      ss <- get
      checkAuthentication (ssConnectionState ss)
-     response >>= (\c -> lift (putStr "--->") >> (lift . print) c)
+     _ <- response
+     return ()
 --      applicationLoop
 
 connectToBetfair :: IO Connection
@@ -87,7 +100,7 @@ initialStreamState :: StreamingState
 initialStreamState = def
 
 checkAuthentication
-  :: ConnectionState -> RWST Connection Log StreamingState IO ()
+  :: ConnectionState -> RWST Context () StreamingState IO ()
 checkAuthentication NotAuthenticated =
   do authentication
      s <- get

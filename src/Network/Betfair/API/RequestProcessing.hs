@@ -19,48 +19,46 @@ import Data.Default
 import Data.Foldable
 import Network.Connection
 
-import WriterLog
-
 import qualified Network.Betfair.Requests.AuthenticationMessage     as A
 import qualified Network.Betfair.Requests.HeartbeatMessage          as H
 import qualified Network.Betfair.Requests.MarketSubscriptionMessage as M
 import qualified Network.Betfair.Requests.OrderSubscriptionMessage  as O
 
 import Network.Betfair.API.AddId
+import Network.Betfair.API.Log
 import Network.Betfair.API.Config
+import Network.Betfair.API.Context
 import Network.Betfair.API.StreamingState
 
 request
   :: (ToJSON a
      ,AddId a)
-  => a -> RWST Connection Log StreamingState IO ()
+  => a -> RWST Context () StreamingState IO ()
 request r =
   do s <- get
      let currentId = ssIdCounter s
      put (s {ssIdCounter = succ currentId})
-     b <- (groomedLog . L.toStrict . addCRLF . encode) (addId r currentId)
-     (lift . putStr) "<---"
-     (lift . B.putStr) b
-     connection <- ask
+     b <- (groomedLog To . L.toStrict . addCRLF . encode) (addId r currentId)
+     connection <- fmap cConnection ask
      lift (connectionPut connection b)
 
 heartbeat
-  :: RWST Connection Log StreamingState IO ()
+  :: RWST Context () StreamingState IO ()
 heartbeat = request (def :: H.HeartbeatMessage)
 
 authentication
-  :: RWST Connection Log StreamingState IO ()
+  :: RWST Context () StreamingState IO ()
 authentication =
   do s <- get
      request (def {A.session = ssSessionToken s
-                  ,A.appKey = (appKey . ssConfig) s} :: A.AuthenticationMessage)
+                  ,A.appKey = ssAppKey s} :: A.AuthenticationMessage)
 
 marketSubscription
-  :: M.MarketSubscriptionMessage -> RWST Connection Log StreamingState IO ()
+  :: M.MarketSubscriptionMessage -> RWST Context () StreamingState IO ()
 marketSubscription = request
 
 orderSubscription
-  :: O.OrderSubscriptionMessage -> RWST Connection Log StreamingState IO ()
+  :: O.OrderSubscriptionMessage -> RWST Context () StreamingState IO ()
 orderSubscription = request
 
 addCRLF :: L.ByteString -> L.ByteString
