@@ -7,12 +7,11 @@ module Network.Betfair.API.RequestProcessing
   ,authentication
   ,marketSubscription
   ,orderSubscription
-  ,addCRLF
-  )
+  ,addCRLF)
   where
 
+import qualified Data.ByteString      as B
 import qualified Data.ByteString.Lazy as L
-import qualified Data.ByteString as B
 
 import Control.Monad.RWS
 import Data.Aeson

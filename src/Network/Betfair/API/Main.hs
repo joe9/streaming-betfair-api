@@ -31,7 +31,8 @@ import Network.Betfair.Responses.StatusMessage
 
 main :: IO ()
 main =
-  application (def {appKey = "testappkey"}) ["1.125402056"]
+  application (def {appKey = "testappkey"})
+              ["1.125402056"]
 
 application :: Config -> [MarketId] -> IO ()
 application config [] =
@@ -57,8 +58,7 @@ application config mids =
 applicationLoop
   :: RWST Connection Log StreamingState IO ()
 applicationLoop =
-  do
-     response >>= (\c -> lift (putStr "--->") >> (lift . print) c)
+  do response >>= (\c -> lift (putStr "--->") >> (lift . print) c)
      ss <- get
      checkAuthentication (ssConnectionState ss)
      response >>= (\c -> lift (putStr "--->") >> (lift . print) c)
