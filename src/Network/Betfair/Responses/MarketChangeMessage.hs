@@ -24,7 +24,7 @@ data MarketChangeMessage =
                       ,conflateMs  :: Maybe Integer -- Conflate Milliseconds - the conflation rate (may differ from that requested if subscription is delayed),
                       ,segmentType :: Maybe SegmentType -- Segment Type - if the change is split into multiple segments, this denotes the beginning and end of a change, and segments in between. Will be null if data is not segmented,
                       }
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''MarketChangeMessage)

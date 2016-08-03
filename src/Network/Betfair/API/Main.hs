@@ -1,52 +1,68 @@
 {-# OPTIONS_GHC -Wall #-}
-{-# LANGUAGE FlexibleContexts  #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
-module Main ( application ) where
+module Main
+  (main
+  ,application)
+  where
 
-import Network.Connection
-import Control.Monad.RWS
-import Data.Aeson
-import Data.Default
-import Network.Connection
-import Network.Socket
+import           Control.Monad.RWS
+import           Data.Aeson
+import           Data.Default
+import qualified Data.Map.Strict    as Map
+import           Network.Connection
+import           Network.Connection
+import           Network.Socket
 
+import WriterLog
+import WriterLog
+
+import Network.Betfair.API.CommonTypes
+import Network.Betfair.API.Config
 import Network.Betfair.API.Request
+import Network.Betfair.API.RequestProcessing
 import Network.Betfair.API.Response
+import Network.Betfair.API.StreamingState
+import Network.Betfair.Responses.ConnectionMessage
 import Network.Betfair.Responses.MarketChangeMessage
 import Network.Betfair.Responses.OrderChangeMessage
-import Network.Betfair.Responses.ConnectionMessage
 import Network.Betfair.Responses.StatusMessage
 
-type AppKey = String
-type MarketId = String
-
-data Config = Config { username      :: String
-                     , password      :: String
-                     , appKey        :: AppKey
-                     , delayedAppKey :: AppKey
-                     , onMarketChangeMessage :: MarketChangeMessage -> IO [MarketId]
-                     , onOrderChangeMessage :: OrderChangeMessage -> IO [MarketId]
-                     , onConnectionMessage :: ConnectionChangeMessage -> IO ()
-                     , onStatusMessage :: StatusChangeMessage -> IO ()
-                     , logger :: String -> IO ()
-                     }
-
-instance Default Config where
-  def = Config "" "" "" "" print print print print
+main :: IO ()
+main =
+  application (def {appKey = "testappkey"}) ["1.125402056"]
 
 application :: Config -> [MarketId] -> IO ()
-application config [] = print "No Market Ids provided, hence, not connecting"
+application config [] =
+  putStrLn "No Market Ids provided, hence, not connecting"
 application config mids =
-  conn <- connectToBetfair
-  (token,_,loggedOutput) <- runRWST response conn initialStreamState
-  -- add the below close to signal handler, to close the connection on
-         -- interrupt, etc
-  connectionClose conn
+  do connection <- connectToBetfair
+     (token,_,loggedOutput) <-
+       runRWST applicationLoop
+               connection
+               (def :: StreamingState) {ssConfig = config
+                                       ,ssConnectionState = NotAuthenticated
+                                       ,ssSessionToken = "SESSIONTOKEN"
+                                       ,ssMarkets =
+                                          (Map.fromList .
+                                           map (\mid ->
+                                                  (mid,def {msMarketId = mid}))) mids}
+     putStrLn loggedOutput
+     -- add the below close to signal handler, to close the connection on
+     -- interrupt, etc
+     putStrLn "Closing connection"
+     connectionClose connection
 
--- applicationLoop :: RWST Config Log StreamingState IO ()
--- applicationLoop = do
---  applicationLoop
+applicationLoop
+  :: RWST Connection Log StreamingState IO ()
+applicationLoop =
+  do
+     response >>= (lift . print)
+     ss <- get
+     checkAuthentication (ssConnectionState ss)
+     response >>= (lift . print)
+--      applicationLoop
 
 connectToBetfair :: IO Connection
 connectToBetfair =
@@ -61,10 +77,19 @@ host :: String
 -- for pre-production
 host = "stream-api-integration.betfair.com"
 -- for production
--- url = "stream-api.betfair.com"
+-- host = "stream-api.betfair.com"
 
 port :: PortNumber
+
 port = 443
 
 initialStreamState :: StreamingState
-initialStreamState = undefined
+initialStreamState = def
+
+checkAuthentication
+  :: ConnectionState -> RWST Connection Log StreamingState IO ()
+checkAuthentication NotAuthenticated =
+  do authentication
+     s <- get
+     put (s {ssConnectionState = AuthenticateSent})
+checkAuthentication _ = return ()

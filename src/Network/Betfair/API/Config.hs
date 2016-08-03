@@ -7,7 +7,7 @@ module Network.Betfair.API.Config
 
 import Data.Default
 
-type AppKey = String
+import Network.Betfair.API.CommonTypes
 
 data Config =
   Config {username      :: String

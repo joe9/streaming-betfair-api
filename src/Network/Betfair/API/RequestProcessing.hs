@@ -1,18 +1,23 @@
 {-# OPTIONS_GHC -Wall     #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Network.Betfair.API.RequestProcessing
   (request
   ,heartbeat
   ,authentication
   ,marketSubscription
-  ,orderSubscription)
+  ,orderSubscription
+  ,addCRLF
+  )
   where
 
 import qualified Data.ByteString.Lazy as L
+import qualified Data.ByteString as B
 
 import Control.Monad.RWS
 import Data.Aeson
 import Data.Default
+import Data.Foldable
 import Network.Connection
 
 import WriterLog
@@ -34,7 +39,8 @@ request r =
   do s <- get
      let currentId = ssIdCounter s
      put (s {ssIdCounter = succ currentId})
-     b <- (groomedLog . L.toStrict . encode) (addId r currentId)
+     b <- (groomedLog . L.toStrict . addCRLF . encode) (addId r currentId)
+     (lift . B.putStr) b
      connection <- ask
      lift (connectionPut connection b)
 
@@ -47,7 +53,7 @@ authentication
 authentication =
   do s <- get
      request (def {A.session = ssSessionToken s
-                  ,A.appKey = (delayedAppKey . ssConfig) s} :: A.AuthenticationMessage)
+                  ,A.appKey = (appKey . ssConfig) s} :: A.AuthenticationMessage)
 
 marketSubscription
   :: M.MarketSubscriptionMessage -> RWST Connection Log StreamingState IO ()
@@ -56,3 +62,6 @@ marketSubscription = request
 orderSubscription
   :: O.OrderSubscriptionMessage -> RWST Connection Log StreamingState IO ()
 orderSubscription = request
+
+addCRLF :: L.ByteString -> L.ByteString
+addCRLF a = a <> "\r" <> "\n"

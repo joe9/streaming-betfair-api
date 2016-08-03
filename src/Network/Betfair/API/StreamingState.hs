@@ -4,6 +4,8 @@
 module Network.Betfair.API.StreamingState
   (StreamingState(..)
   ,MarketState(..)
+  ,ConnectionState(..)
+  ,MarketConnectionState(..)
   ,MarketId
   ,MarketName
   ,EventName)
@@ -14,13 +16,10 @@ import Data.Default
 import qualified Data.Map.Strict    as Map
 
 import Network.Betfair.API.Request
+import Network.Betfair.API.CommonTypes
 import Network.Betfair.API.Config
 import Network.Betfair.Types.MarketStatus
 
-type MarketId = String
-type MarketName = String
-type EventName = String
-type SessionToken = String
 data StreamingState =
   StreamingState {ssMarkets         :: Map.Map MarketId MarketState
                  ,ssRequests        :: Map.Map Integer Request
@@ -30,10 +29,12 @@ data StreamingState =
                  ,ssConnectionState :: ConnectionState}
   deriving (Eq,Read,Show)
 
+instance Default StreamingState where
+  def = StreamingState Map.empty Map.empty 1 "" def NotConnected
+
 data ConnectionState
   = NotConnected
-  | ConnectSent
-  | Connected
+  | NotAuthenticated
   | AuthenticateSent
   | Authenticated
   | ReceivingData
@@ -59,5 +60,5 @@ data MarketState =
               ,msPublishTime     :: Integer}
   deriving (Eq,Read,Show)
 
-instance Default StreamingState where
-  def = StreamingState Map.empty Map.empty 1 "" def NotConnected
+instance Default MarketState where
+  def = MarketState Nothing "" "" False "" ToSubscribe Nothing Nothing 0

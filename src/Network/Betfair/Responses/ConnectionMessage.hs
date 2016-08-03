@@ -10,10 +10,9 @@ import Data.Aeson.TH
 
 data ConnectionMessage =
   ConnectionMessage {op           :: String
-                    ,id           :: Integer -- Client generated unique id to link request with response (like json rpc)
                     ,connectionId :: String -- The connection id
                     }
-  deriving (Eq,Show)
+  deriving (Eq,Read,Show)
 
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''ConnectionMessage)
