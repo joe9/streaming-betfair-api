@@ -17,10 +17,11 @@ data Context =
           ,cWriteResponsesChannel :: TChan String
           ,cWriteLogChannel       :: TChan String
           ,cWriteStateChannel     :: TChan String
+          ,cSessionToken     :: SessionToken
           ,cConnection :: Connection}
 
-initializeContext :: AppKey -> IO Context
-initializeContext a =
+initializeContext :: AppKey -> SessionToken -> IO Context
+initializeContext a s =
   do readMarketIdsChannel <- atomically $ newTChan
      writeResponsesChannel <- atomically $ newTChan
      writeLogChannel <- atomically $ newTChan
@@ -30,4 +31,5 @@ initializeContext a =
                     ,cWriteResponsesChannel = writeResponsesChannel
                     ,cWriteLogChannel = writeLogChannel
                     ,cWriteStateChannel = writeStateChannel
+                    ,cSessionToken = s
                     ,cConnection = undefined}

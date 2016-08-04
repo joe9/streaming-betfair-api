@@ -36,14 +36,17 @@ import Network.Betfair.Responses.ConnectionMessage
 import Network.Betfair.Responses.MarketChangeMessage
 import Network.Betfair.Responses.OrderChangeMessage
 import Network.Betfair.Responses.StatusMessage
+import Network.Betfair.Types.RequestStatus
 import Prelude                                       hiding (log)
 
+-- app key from betfair subscription
+-- session token from the api
 main :: IO ()
-main = start "appkey"
+main = start "appkey" "sessiontoken"
 
-start :: AppKey -> IO ()
-start appKey =
-  do context <- initializeContext appKey
+start :: AppKey -> SessionToken -> IO ()
+start appKey sessionToken =
+  do context <- initializeContext appKey sessionToken
      logReader <- forkIO (readerThread (cWriteLogChannel context))
      _ <- startStreaming context
          (Just def {ssMarkets =
@@ -63,7 +66,7 @@ startStreaming context =
   streamMarketIds
     context . (\ss -> ss {ssAppKey = cAppKey context
                             ,ssConnectionState = NotAuthenticated
-                            ,ssSessionToken = "SESSIONTOKEN"})
+                            ,ssSessionToken = cSessionToken context})
     . fromMaybe (def :: StreamingState)
 
 streamMarketIds
@@ -169,4 +172,7 @@ checkAuthentication NotAuthenticated =
 checkAuthentication _ = return ()
 
 isHumanHelpNeeded :: Response -> Bool
-isHumanHelpNeeded _ = True
+isHumanHelpNeeded (Status (StatusMessage {statusCode = SUCCESS,connectionClosed=Just False}) _) = False
+isHumanHelpNeeded (Status (StatusMessage {connectionClosed=Just True}) _ ) = True
+isHumanHelpNeeded (Status (StatusMessage {statusCode = FAILURE}) _ ) = True
+isHumanHelpNeeded _ = False
