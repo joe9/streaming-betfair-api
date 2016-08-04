@@ -11,8 +11,9 @@ module Network.Betfair.Types.MarketDataFilter
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
 import Data.Default.TH (deriveDefault)
+import Data.Default
 
-import Network.Betfair.Types.Field (Field)
+import Network.Betfair.Types.Field
 
 data MarketDataFilter =
   MarketDataFilter {ladderLevels :: Maybe Integer
@@ -26,4 +27,7 @@ data MarketDataFilter =
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''MarketDataFilter)
 
-deriveDefault ''MarketDataFilter
+-- deriveDefault ''MarketDataFilter
+instance Default MarketDataFilter where
+  def =
+    MarketDataFilter (Just 3) [EX_BEST_OFFERS_DISP,EX_TRADED]

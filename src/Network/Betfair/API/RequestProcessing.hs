@@ -6,6 +6,7 @@ module Network.Betfair.API.RequestProcessing
   ,heartbeat
   ,authentication
   ,marketSubscription
+  ,marketIdsSubscription
   ,orderSubscription
   ,addCRLF)
   where
@@ -23,11 +24,13 @@ import qualified Network.Betfair.Requests.AuthenticationMessage     as A
 import qualified Network.Betfair.Requests.HeartbeatMessage          as H
 import qualified Network.Betfair.Requests.MarketSubscriptionMessage as M
 import qualified Network.Betfair.Requests.OrderSubscriptionMessage  as O
+import qualified Network.Betfair.Types.MarketFilter                 as MF
+import qualified Network.Betfair.Types.BettingType as BT
 
 import Network.Betfair.API.AddId
-import Network.Betfair.API.Log
 import Network.Betfair.API.Config
 import Network.Betfair.API.Context
+import Network.Betfair.API.Log
 import Network.Betfair.API.StreamingState
 
 request
@@ -42,8 +45,7 @@ request r =
      connection <- fmap cConnection ask
      lift (connectionPut connection b)
 
-heartbeat
-  :: RWST Context () StreamingState IO ()
+heartbeat :: RWST Context () StreamingState IO ()
 heartbeat = request (def :: H.HeartbeatMessage)
 
 authentication
@@ -63,3 +65,14 @@ orderSubscription = request
 
 addCRLF :: L.ByteString -> L.ByteString
 addCRLF a = a <> "\r" <> "\n"
+
+marketIdsSubscription
+  :: [MarketId] -> RWST Context () StreamingState IO ()
+marketIdsSubscription [] = return ()
+marketIdsSubscription mids =
+  marketSubscription
+    ((def :: M.MarketSubscriptionMessage) {M.marketFilter =
+                                             ((def :: MF.MarketFilter) {MF.bettingTypes =
+                                                                          [BT.ODDS]
+                                                                       ,MF.marketIds =
+                                                                          Just mids})})

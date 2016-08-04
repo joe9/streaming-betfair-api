@@ -2,30 +2,31 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Network.Betfair.API.Response
-  (response,Response(..))
+  (response
+  ,Response(..))
   where
 
-import           Control.Monad.RWS
-import           Data.Aeson
+import Control.Monad.RWS
+import Data.Aeson
 import qualified Data.ByteString.Lazy as L
-import qualified Data.Map.Strict      as Map
-import           Data.Maybe
-import           Network.Connection
-import           Safe
+import qualified Data.Map.Strict as Map
+import Data.Maybe
+import Network.Connection
+import Safe
 
-import qualified Network.Betfair.Responses.ConnectionMessage   as C
+import qualified Network.Betfair.Responses.ConnectionMessage as C
 import qualified Network.Betfair.Responses.MarketChangeMessage as M
-import qualified Network.Betfair.Responses.OrderChangeMessage  as O
-import qualified Network.Betfair.Responses.StatusMessage       as S
+import qualified Network.Betfair.Responses.OrderChangeMessage as O
+import qualified Network.Betfair.Responses.StatusMessage as S
 
-import           Network.Betfair.API.Config
-import           Network.Betfair.API.Context
-import           Network.Betfair.API.Request
-import           Network.Betfair.API.Log
-import           Network.Betfair.API.StreamingState
-import           Network.Betfair.Types.ChangeType
+import Network.Betfair.API.Config
+import Network.Betfair.API.Context
+import Network.Betfair.API.Request
+import Network.Betfair.API.Log
+import Network.Betfair.API.StreamingState
+import Network.Betfair.Types.ChangeType
 import qualified Network.Betfair.Types.MarketChange as MarketChange
-import           Network.Betfair.Types.MarketStatus
+import Network.Betfair.Types.MarketStatus
 
 
 data Response

@@ -9,18 +9,18 @@ module Main
   ,streamMarketIds)
   where
 
-import           Control.Concurrent
-import           Control.Concurrent.STM.TChan
-import           Control.Exception
-import           Control.Monad.RWS
-import           Control.Monad.STM
-import           Data.Aeson
-import           Data.Maybe
-import           Data.Default
-import qualified Data.Map.Strict              as Map
-import           Network.Connection
-import           Network.Connection
-import           Network.Socket
+import Control.Concurrent
+import Control.Concurrent.STM.TChan
+import Control.Exception
+import Control.Monad.RWS
+import Control.Monad.STM
+import Data.Aeson
+import Data.Default
+import qualified Data.Map.Strict as Map
+import Data.Maybe
+import Network.Connection
+import Network.Connection
+import Network.Socket
 
 import Network.Betfair.API.CommonTypes
 import Network.Betfair.API.Config
@@ -37,7 +37,7 @@ import Network.Betfair.Responses.MarketChangeMessage
 import Network.Betfair.Responses.OrderChangeMessage
 import Network.Betfair.Responses.StatusMessage
 import Network.Betfair.Types.RequestStatus
-import Prelude                                       hiding (log)
+import Prelude hiding (log)
 
 -- app key from betfair subscription
 -- session token from the api
@@ -47,39 +47,48 @@ main = start "appkey" "sessiontoken"
 start :: AppKey -> SessionToken -> IO ()
 start appKey sessionToken =
   do context <- initializeContext appKey sessionToken
-     logReader <- forkIO (readerThread (cWriteLogChannel context))
-     _ <- startStreaming context
+     logReader <- forkIO (readChannels context)
+     _ <-
+       startStreaming
+         context
          (Just def {ssMarkets =
-                    (Map.fromList . map (\mid -> (mid,def {msMarketId = mid}))) ["1.125402056"]})
+                      (Map.fromList .
+                       map (\mid -> (mid,def {msMarketId = mid}))) ["1.125615282"]})
      return ()
 
-readerThread :: TChan String -> IO ()
-readerThread chan =
-  do newInt <- atomically $ readTChan chan
-     putStrLn $ "read new value: "
-     putStrLn newInt
-     readerThread chan
+readChannel :: TChan String -> IO ()
+readChannel chan =
+  do msg <- atomically $ readTChan chan
+     putStrLn msg
+
+readChannels :: Context -> IO ()
+readChannels context =
+  do readChannel (cWriteLogChannel context)
+     readChannel (cWriteResponsesChannel context)
+     readChannels context
 
 -- if you do not have old state, call this function
-startStreaming :: Context -> Maybe StreamingState -> IO StreamingState
+startStreaming
+  :: Context -> Maybe StreamingState -> IO StreamingState
 startStreaming context =
-  streamMarketIds
-    context . (\ss -> ss {ssAppKey = cAppKey context
-                            ,ssConnectionState = NotAuthenticated
-                            ,ssSessionToken = cSessionToken context})
-    . fromMaybe (def :: StreamingState)
+  streamMarketIds context .
+  (\ss ->
+     ss {ssAppKey = cAppKey context
+        ,ssConnectionState = NotAuthenticated
+        ,ssSessionToken = cSessionToken context}) .
+  fromMaybe (def :: StreamingState)
 
 streamMarketIds
   :: Context -> StreamingState -> IO StreamingState
 --  if there are no market ids to process, get out
 streamMarketIds context ss
   | null (ssMarkets ss) =
-   do
-     -- blocking read for MarketId's, waiting for marketIds as there
-     -- are none to stream
-     mids <- readMarketIdsFromTChan (cReadMarketIdsChannel context)
-     -- start processing those marketids and market ids from streaming state
-     streamMarketIds
+    do
+       -- blocking read for MarketId's, waiting for marketIds as there
+       -- are none to stream
+       mids <- readMarketIdsFromTChan (cReadMarketIdsChannel context)
+       -- start processing those marketids and market ids from streaming state
+       streamMarketIds
          context
          (ss {ssMarkets =
                 (Map.fromList . map (\mid -> (mid,def {msMarketId = mid}))) mids})
@@ -108,11 +117,13 @@ streamMarketIds context ss
 authenticateAndReadDataLoop
   :: RWST Context () StreamingState IO ()
 authenticateAndReadDataLoop =
-  do response
+  do response -- TODO check this response
      ss <- get
      checkAuthentication (ssConnectionState ss)
      -- check status and ensure that the authentication was successful
-     r <- response
+     r <- response -- TODO check this response
+     marketIdsSubscription ((Map.keys . ssMarkets) ss)
+     r <- response -- TODO check this response
      ssa <- get
      let ssb = ssa {ssNeedHumanHelp = isHumanHelpNeeded r}
      put ssb
@@ -127,11 +138,11 @@ readDataLoop =
         then return ()
         else do mids <- nonBlockingReadMarketIds
                 -- write state if changed
-                -- send subscribe requests if needed
-                put
-                  (ss {ssMarkets =
-                         (Map.fromList .
-                          map (\mid -> (mid,def {msMarketId = mid}))) mids})
+                -- send subscribe requests to new markets only, if needed
+--                 put
+--                   (ss {ssMarkets =
+--                          (Map.fromList .
+--                           map (\mid -> (mid,def {msMarketId = mid}))) mids})
                 r <- response
                 context <- ask
                 lift (atomically
@@ -172,7 +183,9 @@ checkAuthentication NotAuthenticated =
 checkAuthentication _ = return ()
 
 isHumanHelpNeeded :: Response -> Bool
-isHumanHelpNeeded (Status (StatusMessage {statusCode = SUCCESS,connectionClosed=Just False}) _) = False
-isHumanHelpNeeded (Status (StatusMessage {connectionClosed=Just True}) _ ) = True
-isHumanHelpNeeded (Status (StatusMessage {statusCode = FAILURE}) _ ) = True
+isHumanHelpNeeded (Status (StatusMessage{statusCode = SUCCESS,connectionClosed = Just False}) _) =
+  False
+isHumanHelpNeeded (Status (StatusMessage{connectionClosed = Just True}) _) =
+  True
+isHumanHelpNeeded (Status (StatusMessage{statusCode = FAILURE}) _) = True
 isHumanHelpNeeded _ = False
