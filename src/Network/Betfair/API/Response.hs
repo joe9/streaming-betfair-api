@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Network.Betfair.API.Response
-  (response)
+  (response,Response(..))
   where
 
 import           Control.Monad.RWS

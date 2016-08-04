@@ -13,11 +13,10 @@ module Network.Betfair.API.StreamingState
 
 import Data.Default
 -- import Data.Maybe
-import qualified Data.Map.Strict    as Map
+import qualified Data.Map.Strict as Map
 
-import Network.Betfair.API.Request
 import Network.Betfair.API.CommonTypes
-import Network.Betfair.API.Config
+import Network.Betfair.API.Request
 import Network.Betfair.Types.MarketStatus
 
 data StreamingState =
@@ -26,11 +25,12 @@ data StreamingState =
                  ,ssIdCounter       :: Integer
                  ,ssSessionToken    :: SessionToken
                  ,ssAppKey          :: AppKey
-                 ,ssConnectionState :: ConnectionState}
+                 ,ssConnectionState :: ConnectionState
+                 ,ssNeedHumanHelp   :: Bool}
   deriving (Eq,Read,Show)
 
 instance Default StreamingState where
-  def = StreamingState Map.empty Map.empty 1 "" def NotConnected
+  def = StreamingState Map.empty Map.empty 1 "" def NotConnected False
 
 data ConnectionState
   = NotConnected
