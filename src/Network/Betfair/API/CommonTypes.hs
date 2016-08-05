@@ -4,8 +4,8 @@
 module Network.Betfair.API.CommonTypes
   where
 
-type MarketId = String
-type MarketName = String
-type EventName = String
-type SessionToken = String
-type AppKey = String
+type MarketId = Text
+type MarketName = Text
+type EventName = Text
+type SessionToken = Text
+type AppKey = Text

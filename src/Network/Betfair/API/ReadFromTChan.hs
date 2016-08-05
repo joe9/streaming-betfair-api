@@ -26,14 +26,14 @@ nonBlockingReadFromTChan chan =
 
 -- blocking read
 readMarketIdsFromTChan
-  :: TChan String -> IO [MarketId]
+  :: TChan Text -> IO [MarketId]
 readMarketIdsFromTChan chan =
   do mktIds <- atomically $ readTChan chan
      putStrLn $ "Read value: " ++ show mktIds
      return (words mktIds)
 
 nonBlockingReadMarketIdsFromTChan
-  :: TChan String -> IO ([MarketId])
+  :: TChan Text -> IO ([MarketId])
 nonBlockingReadMarketIdsFromTChan chan =
   nonBlockingReadFromTChan chan >>= return . maybe [] words
 

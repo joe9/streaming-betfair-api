@@ -13,10 +13,10 @@ import Network.Betfair.API.CommonTypes
 
 data Context =
   Context {cAppKey                :: AppKey
-          ,cReadMarketIdsChannel  :: TChan String
-          ,cWriteResponsesChannel :: TChan String
-          ,cWriteLogChannel       :: TChan String
-          ,cWriteStateChannel     :: TChan String
+          ,cReadMarketIdsChannel  :: TChan Text
+          ,cWriteResponsesChannel :: TChan Text
+          ,cWriteLogChannel       :: TChan Text
+          ,cWriteStateChannel     :: TChan Text
           ,cSessionToken          :: SessionToken
           ,cConnection            :: Connection}
 

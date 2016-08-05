@@ -36,8 +36,8 @@ data Response
   | Status S.StatusMessage
            (Maybe Request)
   | EmptyLine
-  | NotImplemented String
-  | JSONParseError String
+  | NotImplemented Text
+  | JSONParseError Text
   deriving (Eq,Read,Show)
 
 -- response :: RWST Context l s IO Response
@@ -84,8 +84,8 @@ processResponse r = return r
 -- processResponse r@(NotImplemented _) = return r
 -- processResponse r@(JSONParseError _) = return r
 
-updateStreamingState :: Maybe String
-                     -> Maybe String
+updateStreamingState :: Maybe Text
+                     -> Maybe Text
                      -> Integer
                      -> StreamingState
                      -> MarketChange.MarketChange
@@ -100,8 +100,8 @@ updateStreamingState c i p s mc =
                               u .
                    ssMarkets) s})
 
-updateMarket :: Maybe String
-             -> Maybe String
+updateMarket :: Maybe Text
+             -> Maybe Text
              -> Integer
              -> MarketState
              -> MarketChange.MarketChange
@@ -114,11 +114,11 @@ processUpdatedMarket
   :: MarketState -> IO MarketState
 processUpdatedMarket = pure
 
-opIs :: Object -> Either String String
+opIs :: Object -> Either Text Text
 opIs = parseEither (flip (.:) "op")
 
 responseIs
-  :: ByteString -> String -> Either String Response
+  :: ByteString -> Text -> Either Text Response
 responseIs b op
   | op == "mcm" = eitherDecodeStrict b >>= (\r -> Right (MarketChange r))
   | op == "ocm" = eitherDecodeStrict b >>= (\r -> Right (OrderChange r))

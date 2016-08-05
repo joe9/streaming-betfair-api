@@ -13,7 +13,7 @@ import Data.Default.TH (deriveDefault)
 
 import Network.Betfair.Types.RunnerStatus (RunnerStatus)
 
-type DateString = String
+type DateString = Text
 
 data RunnerDefinition =
   RunnerDefinition {sortPriority     :: Integer

@@ -19,7 +19,7 @@ data MarketChange =
                ,tv               :: Maybe Double -- The total amount matched across the market. This value is truncated at 2dp (or null if un-changed)
                ,con              :: Maybe Bool -- Conflated - have more than a single change been combined (or null if not conflated)
                ,marketDefinition :: Maybe MarketDefinition -- Market Definition - the definition of the market (or null if un-changed)
-               ,id               :: String -- Market Id - the id of the market
+               ,id               :: Text -- Market Id - the id of the market
                }
   deriving (Eq,Read,Show)
 

@@ -55,8 +55,8 @@ data MarketState =
               ,msStateChanged    :: Bool
               ,msMarketId        :: MarketId
               ,msConnectionState :: MarketConnectionState
-              ,msInitialClk      :: Maybe String
-              ,msClk             :: Maybe String
+              ,msInitialClk      :: Maybe Text
+              ,msClk             :: Maybe Text
               ,msPublishTime     :: Integer}
   deriving (Eq,Read,Show)
 

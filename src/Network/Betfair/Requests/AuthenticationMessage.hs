@@ -17,10 +17,10 @@ import Data.Aeson.TH
 import Network.Betfair.API.AddId
 
 data AuthenticationMessage =
-  AuthenticationMessage {op      :: String
+  AuthenticationMessage {op      :: Text
                         ,id      :: Integer -- Client generated unique id to link request with response (like json rpc)
-                        ,appKey  :: String
-                        ,session :: String}
+                        ,appKey  :: Text
+                        ,session :: Text}
   deriving (Eq,Read,Show)
 
 $(deriveJSON defaultOptions {omitNothingFields = True}

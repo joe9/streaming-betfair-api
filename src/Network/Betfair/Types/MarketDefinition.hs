@@ -14,24 +14,24 @@ import Network.Betfair.Types.BettingType  (BettingType)
 import Network.Betfair.Types.MarketStatus (MarketStatus)
 import Network.Betfair.Types.RunnerDefinition (RunnerDefinition)
 
-type DateString = String
+type DateString = Text
 
 data MarketDefinition =
-  MarketDefinition {venue                 :: Maybe String
+  MarketDefinition {venue                 :: Maybe Text
                    ,settledTime           :: Maybe DateString
-                   ,timezone              :: Maybe String
+                   ,timezone              :: Maybe Text
                    ,eachWayDivisor        :: Maybe Double
                    ,regulators            :: [String] -- The market regulators
-                   ,marketType            :: String
+                   ,marketType            :: Text
                    ,marketBaseRate        :: Maybe Double
                    ,numberOfWinners       :: Integer
-                   ,countryCode           :: Maybe String
+                   ,countryCode           :: Maybe Text
                    ,inPlay                :: Bool
                    ,betDelay              :: Integer
                    ,bspMarket             :: Bool
                    ,bettingTypes          :: [BettingType]
                    ,numberOfActiveRunners :: Integer
-                   ,eventId               :: String
+                   ,eventId               :: Text
                    ,crossMatching         :: Bool
                    ,runnersVoidable       :: Bool
                    ,turnInPlayEnabled     :: Bool
@@ -40,7 +40,7 @@ data MarketDefinition =
                    ,persistenceEnabled    :: Bool
                    ,runners               :: [RunnerDefinition]
                    ,version               :: Integer
-                   ,eventTypeId           :: String -- The Event Type the market is contained within
+                   ,eventTypeId           :: Text -- The Event Type the market is contained within
                    ,complete              :: Bool
                    ,openDate              :: DateString
                    ,marketTime            :: DateString

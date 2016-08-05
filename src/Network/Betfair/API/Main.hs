@@ -53,7 +53,7 @@ start appkey sessionToken =
      threadDelay (30 * 1000 * 1000)
      return ()
 
-readChannel :: TChan String -> IO ()
+readChannel :: TChan Text -> IO ()
 readChannel chan =
   do msg <- atomically $ readTChan chan
      putStrLn msg
@@ -163,7 +163,7 @@ connectToBetfair =
                          (Just def)
                          Nothing)
 
-host :: String
+host :: Text
 -- for pre-production
 host = "stream-api-integration.betfair.com"
 -- for production

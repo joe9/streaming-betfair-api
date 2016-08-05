@@ -18,7 +18,7 @@ import Prelude hiding (id)
 import Network.Betfair.API.AddId
 
 data HeartbeatMessage =
-  HeartbeatMessage {op :: String
+  HeartbeatMessage {op :: Text
                    ,id :: Integer}
   deriving (Eq,Read,Show)
 

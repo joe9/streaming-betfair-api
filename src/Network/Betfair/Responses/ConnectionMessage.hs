@@ -9,8 +9,8 @@ import Data.Aeson.TH
        (Options(omitNothingFields), defaultOptions, deriveJSON)
 
 data ConnectionMessage =
-  ConnectionMessage {op           :: String
-                    ,connectionId :: String -- The connection id
+  ConnectionMessage {op           :: Text
+                    ,connectionId :: Text -- The connection id
                     }
   deriving (Eq,Read,Show)
 

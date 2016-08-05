@@ -12,11 +12,11 @@ import Network.Betfair.Types.ErrorCode     (ErrorCode)
 import Network.Betfair.Types.RequestStatus (RequestStatus)
 
 data StatusMessage =
-  StatusMessage {op               :: String
+  StatusMessage {op               :: Text
                 ,id               :: Maybe Integer -- Client generated unique id to link request with response (like json rpc)
-                ,errorMessage     :: Maybe String -- The type of error in case of a failure
+                ,errorMessage     :: Maybe Text -- The type of error in case of a failure
                 ,errorCode        :: Maybe ErrorCode -- The type of error in case of a failure
-                ,connectionId     :: Maybe String -- The connection id
+                ,connectionId     :: Maybe Text -- The connection id
                 ,connectionClosed :: Maybe Bool -- Is the connection now closed
                 ,statusCode       :: RequestStatus -- The status of the last request
                 }

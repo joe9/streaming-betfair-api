@@ -16,7 +16,7 @@ data OrderMarketChange =
   OrderMarketChange {accountId :: Integer
                     ,orc       :: [OrderRunnerChange] -- Order Changes - a list of changes to orders on a selection
                     ,closed    :: Bool
-                    ,id        :: String -- Market Id - the id of the market the order is on
+                    ,id        :: Text -- Market Id - the id of the market the order is on
                     }
   deriving (Eq,Read,Show)
 

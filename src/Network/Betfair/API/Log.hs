@@ -26,15 +26,15 @@ data Direction
   | None
 
 logD
-  :: TChan String -> Direction -> String -> IO ()
+  :: TChan Text -> Direction -> Text -> IO ()
 logD channel d s = (atomically . writeTChan channel) (show d ++ s ++ "\n")
 
 log
-  :: TChan String -> String -> IO ()
+  :: TChan Text -> Text -> IO ()
 log channel s = (atomically . writeTChan channel) (s ++ "\n")
 
 logT
-  :: Direction -> String -> RWST Context () s IO ()
+  :: Direction -> Text -> RWST Context () s IO ()
 logT d s =
   do chan <- fmap cWriteLogChannel ask
      lift (logD chan d s)
@@ -45,7 +45,7 @@ groomedLog
 groomedLog d s = (logT d . groom $ s) >> return s
 
 stdOutAndLog
-  :: Direction -> String -> RWST Context () s IO ()
+  :: Direction -> Text -> RWST Context () s IO ()
 stdOutAndLog d s = logT d s >> lift ((putStr . show) d >> putStrLn s)
 
 instance Show Direction where
