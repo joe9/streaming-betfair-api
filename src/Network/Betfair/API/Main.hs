@@ -15,9 +15,9 @@ import           Control.Monad.STM
 import           Data.Default
 import qualified Data.Map.Strict                 as Map
 import           Data.Maybe
-import           Data.Text hiding (null)
-import           Data.Text.IO
 import           Data.String.Conversions
+import           Data.Text                       hiding (null)
+import           Data.Text.IO
 import           Network.Betfair.API.CommonTypes
 import           Network.Connection
 import           Network.Socket
@@ -35,7 +35,7 @@ import Network.Betfair.API.StreamingState
 -- import Network.Betfair.Responses.OrderChangeMessage
 import Network.Betfair.Responses.StatusMessage
 import Network.Betfair.Types.RequestStatus
-import Prelude                                 hiding (log,putStrLn)
+import Prelude                                 hiding (log, putStrLn)
 
 -- app key from betfair subscription
 -- session token from the api

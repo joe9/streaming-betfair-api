@@ -27,7 +27,8 @@ data Direction
   | None
 
 logD :: TChan Text -> Direction -> Text -> IO ()
-logD channel d s = (atomically . writeTChan channel . concat) [(pack . show) d , s , singleton '\n']
+logD channel d s =
+  (atomically . writeTChan channel . concat) [(pack . show) d,s,singleton '\n']
 
 log :: TChan Text -> Text -> IO ()
 log channel = atomically . writeTChan channel . flip append (singleton '\n')
