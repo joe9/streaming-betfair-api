@@ -1,5 +1,5 @@
-{-# OPTIONS_GHC -Wall         #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 
 module Network.Betfair.Responses.OrderChangeMessage
   (OrderChangeMessage(..))

@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -Wall        #-}
+{-# LANGUAGE OverloadedStrings    #-}
 {-# LANGUAGE DeriveDataTypeable   #-}
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE TemplateHaskell      #-}

@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -Wall  #-}
+{-# LANGUAGE OverloadedStrings    #-}
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE TemplateHaskell      #-}
 {-# LANGUAGE UndecidableInstances #-}

@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -Wall       #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Network.Betfair.API.StreamingState

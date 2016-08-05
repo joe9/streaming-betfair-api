@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -Wall           #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Network.Betfair.API.ReadFromTChan

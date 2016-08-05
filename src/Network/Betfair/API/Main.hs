@@ -1,5 +1,5 @@
-{-# OPTIONS_GHC -Wall #-}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleContexts  #-}
 
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Main

@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -Wall    #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Network.Betfair.API.AddId
   (AddId
