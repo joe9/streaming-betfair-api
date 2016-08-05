@@ -6,7 +6,6 @@ module Network.Betfair.API.AddId
   where
 
 import Data.Aeson
-import Data.Text
 
 class ToJSON a =>
       AddId a  where

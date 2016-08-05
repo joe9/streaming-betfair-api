@@ -9,7 +9,6 @@ module Network.Betfair.Types.ErrorCode
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
 import Data.Default.TH (deriveDefault)
-import Data.Text
 
 -- The type of error in case of a failure
 data ErrorCode

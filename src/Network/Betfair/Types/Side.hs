@@ -10,7 +10,6 @@ module Network.Betfair.Types.Side
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
 import Data.Default.TH (deriveDefault)
-import Data.Text
 
 -- Side - the side of the order B - Back, L - Lay
 data Side

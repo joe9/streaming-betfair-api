@@ -9,7 +9,6 @@ module Network.Betfair.Types.ChangeType
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
 import Data.Default.TH (deriveDefault)
-import Data.Text
 
 -- Change Type - set to indicate the type of change - if null this is a delta)
 data ChangeType

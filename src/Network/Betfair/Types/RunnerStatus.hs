@@ -9,7 +9,6 @@ module Network.Betfair.Types.RunnerStatus
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
 import Data.Default.TH (deriveDefault)
-import Data.Text
 
 data RunnerStatus
   = ACTIVE
