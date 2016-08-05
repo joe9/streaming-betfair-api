@@ -1,4 +1,4 @@
--# LANGUAGE FlexibleContexts     #-}
+{-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE OverloadedStrings    #-}
 {-# LANGUAGE TemplateHaskell      #-}
 {-# LANGUAGE UndecidableInstances #-}
