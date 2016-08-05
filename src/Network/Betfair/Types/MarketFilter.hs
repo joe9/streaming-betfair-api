@@ -14,14 +14,14 @@ import Data.Default.TH                   (deriveDefault)
 import Network.Betfair.Types.BettingType (BettingType)
 
 data MarketFilter =
-  MarketFilter {countryCodes      :: Maybe [String]
+  MarketFilter {countryCodes      :: Maybe [Text]
                ,bettingTypes      :: [BettingType]
                ,turnInPlayEnabled :: Maybe Bool
-               ,marketTypes       :: Maybe [String]
-               ,venues            :: Maybe [String]
-               ,marketIds         :: Maybe [String]
-               ,eventTypeIds      :: Maybe [String]
-               ,eventIds          :: Maybe [String]
+               ,marketTypes       :: Maybe [Text]
+               ,venues            :: Maybe [Text]
+               ,marketIds         :: Maybe [Text]
+               ,eventTypeIds      :: Maybe [Text]
+               ,eventIds          :: Maybe [Text]
                ,bspMarket         :: Maybe Bool}
   deriving (Eq,Show,Read)
 

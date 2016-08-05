@@ -21,7 +21,7 @@ data MarketDefinition =
                    ,settledTime           :: Maybe DateString
                    ,timezone              :: Maybe Text
                    ,eachWayDivisor        :: Maybe Double
-                   ,regulators            :: [String] -- The market regulators
+                   ,regulators            :: [Text] -- The market regulators
                    ,marketType            :: Text
                    ,marketBaseRate        :: Maybe Double
                    ,numberOfWinners       :: Integer
