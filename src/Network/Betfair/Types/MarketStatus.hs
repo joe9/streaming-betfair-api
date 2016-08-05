@@ -10,7 +10,6 @@ module Network.Betfair.Types.MarketStatus
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
 import Data.Default.TH (deriveDefault)
-import Data.Text
 
 data MarketStatus
   = INACTIVE
