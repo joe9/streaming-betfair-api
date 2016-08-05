@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Network.Betfair.API.ReadFromTChan
   (nonBlockingReadMarketIds
@@ -13,6 +14,8 @@ import Control.Monad.RWS
 import Control.Monad.STM                  (atomically)
 import Data.Maybe                         (isJust)
 import Data.Text
+import Prelude hiding (words)
+
 import Network.Betfair.API.CommonTypes
 import Network.Betfair.API.Context
 import Network.Betfair.API.StreamingState

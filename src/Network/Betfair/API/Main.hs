@@ -15,7 +15,9 @@ import           Control.Monad.STM
 import           Data.Default
 import qualified Data.Map.Strict                 as Map
 import           Data.Maybe
-import           Data.Text
+import           Data.Text hiding (null)
+import           Data.Text.IO
+import           Data.String.Conversions
 import           Network.Betfair.API.CommonTypes
 import           Network.Connection
 import           Network.Socket
@@ -33,7 +35,7 @@ import Network.Betfair.API.StreamingState
 -- import Network.Betfair.Responses.OrderChangeMessage
 import Network.Betfair.Responses.StatusMessage
 import Network.Betfair.Types.RequestStatus
-import Prelude                                 hiding (log)
+import Prelude                                 hiding (log,putStrLn)
 
 -- app key from betfair subscription
 -- session token from the api
@@ -49,7 +51,7 @@ start appkey sessionToken =
          context
          (Just def {ssMarkets =
                       (Map.fromList .
-                       map (\mid -> (mid,def {msMarketId = mid}))) ["1.125615282"]})
+                       fmap (\mid -> (mid,def {msMarketId = mid}))) ["1.125615282"]})
      threadDelay (30 * 1000 * 1000)
      return ()
 
@@ -88,7 +90,7 @@ streamMarketIds context ss
        streamMarketIds
          context
          (ss {ssMarkets =
-                (Map.fromList . map (\mid -> (mid,def {msMarketId = mid}))) mids})
+                (Map.fromList . fmap (\mid -> (mid,def {msMarketId = mid}))) mids})
   |
    -- start processing if there are any marketid's in streaming state
    -- https://haskell-lang.org/tutorial/exception-safety
@@ -98,7 +100,7 @@ streamMarketIds context ss
        case result of
          Left err ->
            log (cWriteLogChannel context)
-               ("streamMarketIds: Caught exception: " ++ show err) >>
+               (append "streamMarketIds: Caught exception: " ((pack . show) err)) >>
            threadDelay (60 * 1000 * 1000) >>
            streamMarketIds context ss
          Right connection ->
@@ -146,7 +148,7 @@ readDataLoop =
                 context <- ask
                 lift (atomically
                         (writeTChan (cWriteResponsesChannel context)
-                                    (show r)))
+                                    ((pack . show) r)))
                 ssa <- get
                 let ssb = ssa {ssNeedHumanHelp = isHumanHelpNeeded r}
                 put ssb
@@ -158,7 +160,7 @@ connectToBetfair :: IO Connection
 connectToBetfair =
   initConnectionContext >>=
   flip connectTo
-       (ConnectionParams host
+       (ConnectionParams (cs host)
                          port
                          (Just def)
                          Nothing)

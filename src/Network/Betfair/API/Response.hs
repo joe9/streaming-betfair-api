@@ -8,10 +8,11 @@ module Network.Betfair.API.Response
 import           Control.Monad.RWS
 import           Data.Aeson
 import           Data.Aeson.Types
-import           Data.ByteString
+import           Data.ByteString hiding (append)
 import qualified Data.Map.Strict                               as Map
 import           Data.Maybe
 import           Data.Text
+import           Data.String.Conversions
 import           Network.Betfair.API.Context
 import           Network.Betfair.API.Log
 import           Network.Betfair.API.Request
@@ -64,7 +65,7 @@ processResponse r@(MarketChange m)
   | isNothing (M.ct m) || M.ct m == Just HEARTBEAT = return r
   | isNothing (M.mc m) || M.mc m == Just [] = return r
   | isJust (M.segmentType m) =
-    return (NotImplemented ("segmentType processing not implemented" ++ show m))
+    return (NotImplemented (append "segmentType processing not implemented" (Data.Text.pack ( show m))))
   | isNothing (M.segmentType m) =
     do s <- get
        u <-
@@ -75,7 +76,7 @@ processResponse r@(MarketChange m)
                 fromJustNote "should have markets here" . M.mc) m)
        put u
        return r
-  | otherwise = return (NotImplemented ("processResponse: " ++ show m))
+  | otherwise = return (NotImplemented (append "processResponse: " (Data.Text.pack (show m))))
 processResponse r = return r
 
 -- processResponse r@(EmptyLine) = return r
@@ -112,26 +113,29 @@ processUpdatedMarket
 processUpdatedMarket = pure
 
 opIs :: Object -> Either Text Text
-opIs = parseEither (flip (.:) "op")
+opIs = either (Left . cs) Right . parseEither (flip (.:) "op")
 
 responseIs
   :: ByteString -> Text -> Either Text Response
 responseIs b op
-  | op == "mcm" = eitherDecodeStrict b >>= (\r -> Right (MarketChange r))
-  | op == "ocm" = eitherDecodeStrict b >>= (\r -> Right (OrderChange r))
-  | op == "connection" = eitherDecodeStrict b >>= (\r -> Right (Connection r))
-  | op == "status" = eitherDecodeStrict b >>= (\r -> Right (Status r Nothing))
+  | op == "mcm" = eitherDecodeStrictText b >>= (\r -> Right (MarketChange r))
+  | op == "ocm" = eitherDecodeStrictText b >>= (\r -> Right (OrderChange r))
+  | op == "connection" = eitherDecodeStrictText b >>= (\r -> Right (Connection r))
+  | op == "status" = eitherDecodeStrictText b >>= (\r -> Right (Status r Nothing))
   | b == "" = Right EmptyLine
   | b == "\n" =
-    Right (NotImplemented ("response: received newline only: " ++ show b))
+    Right (NotImplemented (append "response: received newline only: " (cs b)))
   | b == "\r" =
     Right (NotImplemented
-             ("response: received carriage return only: " ++ show b))
+             (append "response: received carriage return only: " (cs b)))
   | b == "\r\n" =
-    Right (NotImplemented ("response: received CRLF only: " ++ show b))
+    Right (NotImplemented (append "response: received CRLF only: " (cs b)))
   | otherwise =
-    Right (NotImplemented ("response: could not parse bytestring: " ++ show b))
+    Right (NotImplemented (append "response: could not parse bytestring: " (cs b)))
 
 parseResponse :: ByteString -> Response
 parseResponse b =
-  either JSONParseError id (eitherDecodeStrict b >>= opIs >>= responseIs b)
+  either JSONParseError id (eitherDecodeStrictText b >>= opIs >>= responseIs b)
+
+eitherDecodeStrictText :: FromJSON a => ByteString -> Either Text a
+eitherDecodeStrictText = either (Left . cs) Right . eitherDecodeStrict

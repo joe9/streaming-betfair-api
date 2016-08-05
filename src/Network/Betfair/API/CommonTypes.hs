@@ -3,6 +3,8 @@
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Network.Betfair.API.CommonTypes where
 
+import Data.Text
+
 type MarketId = Text
 
 type MarketName = Text

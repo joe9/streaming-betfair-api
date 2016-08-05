@@ -14,8 +14,9 @@ import Control.Concurrent.STM.TChan
 import Control.Monad.RWS
 import Control.Monad.STM            (atomically)
 import Data.Text
+import Data.Text.IO                 hiding (putStr)
 import Network.Betfair.API.Context
-import Prelude                      hiding (log)
+import Prelude                      hiding (concat, log, putStrLn)
 import Text.Groom                   (groom)
 
 type Log = ()
@@ -26,10 +27,10 @@ data Direction
   | None
 
 logD :: TChan Text -> Direction -> Text -> IO ()
-logD channel d s = (atomically . writeTChan channel) (show d ++ s ++ "\n")
+logD channel d s = (atomically . writeTChan channel . concat) [(pack . show) d , s , singleton '\n']
 
 log :: TChan Text -> Text -> IO ()
-log channel s = (atomically . writeTChan channel) (s ++ "\n")
+log channel = atomically . writeTChan channel . flip append (singleton '\n')
 
 logT
   :: Direction -> Text -> RWST Context () s IO ()
@@ -40,7 +41,7 @@ logT d s =
 groomedLog
   :: Show a
   => Direction -> a -> RWST Context () s IO a
-groomedLog d s = (logT d . groom $ s) >> return s
+groomedLog d s = (logT d . pack . groom $ s) >> return s
 
 stdOutAndLog
   :: Direction -> Text -> RWST Context () s IO ()

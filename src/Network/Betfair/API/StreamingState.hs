@@ -30,7 +30,7 @@ data StreamingState =
   deriving (Eq,Read,Show)
 
 instance Default StreamingState where
-  def = StreamingState Map.empty Map.empty 1 "" def NotConnected False
+  def = StreamingState Map.empty Map.empty 1 "" "" NotConnected False
 
 data ConnectionState
   = NotConnected
