@@ -11,7 +11,7 @@ module Main
 
 import Control.Concurrent
 import Control.Concurrent.STM.TChan
-import Control.Exception
+import Control.Exception.Safe
 import Control.Monad.RWS
 import Control.Monad.STM
 import Data.Aeson
@@ -54,6 +54,7 @@ start appKey sessionToken =
          (Just def {ssMarkets =
                       (Map.fromList .
                        map (\mid -> (mid,def {msMarketId = mid}))) ["1.125615282"]})
+     threadDelay (30 * 1000 * 1000)
      return ()
 
 readChannel :: TChan String -> IO ()
@@ -94,12 +95,14 @@ streamMarketIds context ss
                 (Map.fromList . map (\mid -> (mid,def {msMarketId = mid}))) mids})
   |
    -- start processing if there are any marketid's in streaming state
+   -- https://haskell-lang.org/tutorial/exception-safety
+   -- https://haskell-lang.org/library/safe-exceptions
    otherwise =
-    do result <- try connectToBetfair :: IO (Either SomeException Connection)
+    do result <- tryAny connectToBetfair
        case result of
-         Left ex ->
+         Left error ->
            log (cWriteLogChannel context)
-               ("streamMarketIds: Caught exception: " ++ show ex) >>
+               ("streamMarketIds: Caught exception: " ++ show error) >>
            threadDelay (60 * 1000 * 1000) >>
            streamMarketIds context ss
          Right connection ->
@@ -188,4 +191,6 @@ isHumanHelpNeeded (Status (StatusMessage{statusCode = SUCCESS,connectionClosed =
 isHumanHelpNeeded (Status (StatusMessage{connectionClosed = Just True}) _) =
   True
 isHumanHelpNeeded (Status (StatusMessage{statusCode = FAILURE}) _) = True
+isHumanHelpNeeded (NotImplemented _) = True
+isHumanHelpNeeded (JSONParseError _) = True
 isHumanHelpNeeded _ = False
