@@ -17,7 +17,7 @@ data MarketChangeMessage =
                       ,id          :: Integer -- Client generated unique id to link request with response (like json rpc)
                       ,ct          :: Maybe ChangeType -- Change Type - set to indicate the type of change - if null this is a delta),
                       ,clk         :: Maybe String -- Token value (non-null) should be stored and passed in a MarketSubscriptionMessage to resume subscription (in case of disconnect)
-                      ,heartbeatMs :: Integer -- Heartbeat Milliseconds - the heartbeat rate (may differ from requested: bounds are 500 to 30000),
+                      ,heartbeatMs :: Maybe Integer -- Heartbeat Milliseconds - the heartbeat rate (may differ from requested: bounds are 500 to 30000),
                       ,pt          :: Integer -- Publish Time (in millis since epoch) that the changes were generated,
                       ,initialClk  :: Maybe String -- Token value (non-null) should be stored and passed in a MarketSubscriptionMessage to resume subscription (in case of disconnect)
                       ,mc          :: Maybe [MarketChange] -- MarketChanges - the modifications to markets (will be null on a heartbeat,
