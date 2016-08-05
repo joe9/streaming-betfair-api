@@ -11,8 +11,8 @@ module Network.Betfair.API.StreamingState
   ,EventName)
   where
 
-import Data.Text
 import Data.Default
+import Data.Text
 -- import Data.Maybe
 import qualified Data.Map.Strict                    as Map
 import           Network.Betfair.API.CommonTypes

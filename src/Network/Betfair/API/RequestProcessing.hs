@@ -10,13 +10,13 @@ module Network.Betfair.API.RequestProcessing
   ,addCRLF)
   where
 
-import Data.Text
 import           Control.Monad.RWS
 import           Data.Aeson
 import qualified Data.ByteString                                    as B
 import qualified Data.ByteString.Lazy                               as L
 import           Data.Default
 import           Data.Foldable
+import           Data.Text
 import           Network.Betfair.API.AddId
 import           Network.Betfair.API.Config
 import           Network.Betfair.API.Context

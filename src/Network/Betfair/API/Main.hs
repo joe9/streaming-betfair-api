@@ -7,7 +7,6 @@ module Main
   ,start)
   where
 
-import Data.Text
 import           Control.Concurrent
 import           Control.Concurrent.STM.TChan
 import           Control.Exception.Safe
@@ -16,6 +15,7 @@ import           Control.Monad.STM
 import           Data.Default
 import qualified Data.Map.Strict                 as Map
 import           Data.Maybe
+import           Data.Text
 import           Network.Betfair.API.CommonTypes
 import           Network.Connection
 import           Network.Socket

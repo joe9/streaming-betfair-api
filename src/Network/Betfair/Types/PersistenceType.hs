@@ -6,10 +6,10 @@ module Network.Betfair.Types.PersistenceType
   (PersistenceType(..))
   where
 
-import Data.Text
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
 import Data.Default.TH (deriveDefault)
+import Data.Text
 
 -- Persistence Type - whether the order will persist at in play or not (L = LAPSE, P = PERSIST, MOC = Market On Close)
 data PersistenceType

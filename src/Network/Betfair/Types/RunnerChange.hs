@@ -7,9 +7,9 @@ module Network.Betfair.Types.RunnerChange
   (RunnerChange(..))
   where
 
-import Data.Text
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
+import Data.Text
 
 data RunnerChange =
   RunnerChange {tv    :: Maybe Double -- The total amount matched. This value is truncated at 2dp.

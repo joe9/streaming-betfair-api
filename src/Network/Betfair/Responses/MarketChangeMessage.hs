@@ -5,9 +5,9 @@ module Network.Betfair.Responses.MarketChangeMessage
   (MarketChangeMessage(..))
   where
 
-import Data.Text
 import Data.Aeson.TH                      (Options (omitNothingFields),
                                            defaultOptions, deriveJSON)
+import Data.Text
 import Network.Betfair.Types.ChangeType
 import Network.Betfair.Types.MarketChange
 import Network.Betfair.Types.SegmentType

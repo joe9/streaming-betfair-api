@@ -5,10 +5,10 @@ module Network.Betfair.Responses.OrderChangeMessage
   (OrderChangeMessage(..))
   where
 
-import Data.Text
 import Data.Aeson.TH                           (Options (omitNothingFields),
                                                 defaultOptions,
                                                 deriveJSON)
+import Data.Text
 import Network.Betfair.Types.ChangeType
 import Network.Betfair.Types.OrderMarketChange
 import Network.Betfair.Types.SegmentType

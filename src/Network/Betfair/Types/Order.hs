@@ -7,9 +7,9 @@ module Network.Betfair.Types.Order
   (Order(..))
   where
 
-import Data.Text
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
+import Data.Text
 -- import Data.Default.TH (deriveDefault)
 import Network.Betfair.Types.OrderStatus     (OrderStatus)
 import Network.Betfair.Types.OrderType       (OrderType)

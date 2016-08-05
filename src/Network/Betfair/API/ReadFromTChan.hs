@@ -7,12 +7,12 @@ module Network.Betfair.API.ReadFromTChan
   ,nonBlockingReadMarketIdsFromTChan)
   where
 
-import Data.Text
 import Control.Concurrent.STM.TChan       (TChan, readTChan,
                                            tryReadTChan)
 import Control.Monad.RWS
 import Control.Monad.STM                  (atomically)
 import Data.Maybe                         (isJust)
+import Data.Text
 import Network.Betfair.API.CommonTypes
 import Network.Betfair.API.Context
 import Network.Betfair.API.StreamingState

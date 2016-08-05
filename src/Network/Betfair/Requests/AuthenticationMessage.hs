@@ -8,10 +8,10 @@ module Network.Betfair.Requests.AuthenticationMessage
   (AuthenticationMessage(..))
   where
 
-import Data.Text
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Data.Default
+import Data.Text
 import Prelude       hiding (id)
 -- import Data.Default.TH (deriveDefault)
 import Network.Betfair.API.AddId

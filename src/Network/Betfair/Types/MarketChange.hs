@@ -7,10 +7,10 @@ module Network.Betfair.Types.MarketChange
   (MarketChange(..))
   where
 
-import Data.Text
 import Data.Aeson.TH                          (Options (omitNothingFields),
                                                defaultOptions,
                                                deriveJSON)
+import Data.Text
 import Network.Betfair.Types.MarketDefinition (MarketDefinition)
 import Network.Betfair.Types.RunnerChange     (RunnerChange)
 

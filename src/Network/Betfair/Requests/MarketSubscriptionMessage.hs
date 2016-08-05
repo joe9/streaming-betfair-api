@@ -9,9 +9,9 @@ module Network.Betfair.Requests.MarketSubscriptionMessage
   (MarketSubscriptionMessage(..))
   where
 
-import Data.Text
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
+import Data.Text
 -- import Data.Default.TH (deriveDefault)
 import Data.Default
 import Network.Betfair.API.AddId

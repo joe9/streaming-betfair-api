@@ -6,10 +6,10 @@ module Network.Betfair.Types.OrderStatus
   (OrderStatus(..))
   where
 
-import Data.Text
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
 import Data.Default.TH (deriveDefault)
+import Data.Text
 
 -- Status - the status of the order (E = EXECUTABLE, EC = EXECUTION_COMPLETE)
 data OrderStatus

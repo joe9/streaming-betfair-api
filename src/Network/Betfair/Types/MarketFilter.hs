@@ -8,10 +8,10 @@ module Network.Betfair.Types.MarketFilter
   (MarketFilter(..))
   where
 
-import Data.Text
 import Data.Aeson.TH                     (Options (omitNothingFields),
                                           defaultOptions, deriveJSON)
 import Data.Default.TH                   (deriveDefault)
+import Data.Text
 import Network.Betfair.Types.BettingType (BettingType)
 
 data MarketFilter =

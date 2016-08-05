@@ -5,10 +5,10 @@ module Network.Betfair.Responses.StatusMessage
   (StatusMessage(..))
   where
 
-import Data.Text
 import Data.Aeson.TH                       (Options (omitNothingFields),
                                             defaultOptions,
                                             deriveJSON)
+import Data.Text
 import Network.Betfair.Types.ErrorCode     (ErrorCode)
 import Network.Betfair.Types.RequestStatus (RequestStatus)
 
