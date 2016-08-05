@@ -9,15 +9,13 @@ module Network.Betfair.Requests.OrderSubscriptionMessage
   (OrderSubscriptionMessage(..))
   where
 
-import Data.Aeson.TH      (Options (omitNothingFields),
-                           defaultOptions, deriveJSON)
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 -- import Data.Default.TH (deriveDefault)
 import Data.Default
-import Prelude      hiding (id)
-
-import Network.Betfair.Types.OrderFilter (OrderFilter)
-
 import Network.Betfair.API.AddId
+import Network.Betfair.Types.OrderFilter (OrderFilter)
+import Prelude                           hiding (id)
 
 data OrderSubscriptionMessage =
   OrderSubscriptionMessage {op                  :: Text

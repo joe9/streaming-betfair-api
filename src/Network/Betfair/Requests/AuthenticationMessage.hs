@@ -1,19 +1,18 @@
 {-# OPTIONS_GHC -Wall       #-}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleContexts     #-}
+{-# LANGUAGE NoImplicitPrelude    #-}
+{-# LANGUAGE TemplateHaskell      #-}
 {-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 
 module Network.Betfair.Requests.AuthenticationMessage
   (AuthenticationMessage(..))
   where
 
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 import Data.Default
-import Prelude hiding (id)
-import Data.Aeson.TH
-       (Options(omitNothingFields), defaultOptions, deriveJSON)
+import Prelude       hiding (id)
 -- import Data.Default.TH (deriveDefault)
-
 import Network.Betfair.API.AddId
 
 data AuthenticationMessage =

@@ -24,5 +24,6 @@ data Field
   deriving (Eq,Show,Read)
 
 deriveDefault ''Field
+
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''Field)

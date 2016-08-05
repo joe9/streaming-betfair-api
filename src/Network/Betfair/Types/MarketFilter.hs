@@ -8,10 +8,9 @@ module Network.Betfair.Types.MarketFilter
   (MarketFilter(..))
   where
 
-import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
-                        deriveJSON)
-import Data.Default.TH (deriveDefault)
-
+import Data.Aeson.TH                     (Options (omitNothingFields),
+                                          defaultOptions, deriveJSON)
+import Data.Default.TH                   (deriveDefault)
 import Network.Betfair.Types.BettingType (BettingType)
 
 data MarketFilter =
@@ -28,7 +27,6 @@ data MarketFilter =
 
 -- this is what deriveDefault does anyway
 -- instance Default MarketSort where def = FIRST_TO_START
-
 -- $(deriveJSON id ''Record)
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''MarketFilter)

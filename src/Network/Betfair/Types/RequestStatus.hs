@@ -16,5 +16,6 @@ data RequestStatus
   deriving (Eq,Show,Read)
 
 deriveDefault ''RequestStatus
+
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''RequestStatus)

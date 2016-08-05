@@ -13,10 +13,9 @@ module Network.Betfair.API.Log
 import Control.Concurrent.STM.TChan
 import Control.Monad.RWS
 import Control.Monad.STM            (atomically)
+import Network.Betfair.API.Context
 import Prelude                      hiding (log)
 import Text.Groom                   (groom)
-
-import Network.Betfair.API.Context
 
 type Log = ()
 
@@ -25,12 +24,10 @@ data Direction
   | To
   | None
 
-logD
-  :: TChan Text -> Direction -> Text -> IO ()
+logD :: TChan Text -> Direction -> Text -> IO ()
 logD channel d s = (atomically . writeTChan channel) (show d ++ s ++ "\n")
 
-log
-  :: TChan Text -> Text -> IO ()
+log :: TChan Text -> Text -> IO ()
 log channel s = (atomically . writeTChan channel) (s ++ "\n")
 
 logT

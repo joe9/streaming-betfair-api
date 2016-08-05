@@ -13,11 +13,10 @@ module Network.Betfair.API.StreamingState
 
 import Data.Default
 -- import Data.Maybe
-import qualified Data.Map.Strict as Map
-
-import Network.Betfair.API.CommonTypes
-import Network.Betfair.API.Request
-import Network.Betfair.Types.MarketStatus
+import qualified Data.Map.Strict                    as Map
+import           Network.Betfair.API.CommonTypes
+import           Network.Betfair.API.Request
+import           Network.Betfair.Types.MarketStatus
 
 data StreamingState =
   StreamingState {ssMarkets         :: Map.Map MarketId MarketState

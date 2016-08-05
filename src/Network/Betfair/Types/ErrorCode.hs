@@ -28,5 +28,6 @@ data ErrorCode
   deriving (Eq,Show,Read)
 
 deriveDefault ''ErrorCode
+
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''ErrorCode)

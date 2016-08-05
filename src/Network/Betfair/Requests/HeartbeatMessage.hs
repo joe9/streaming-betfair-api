@@ -1,21 +1,20 @@
 {-# OPTIONS_GHC -Wall  #-}
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE DeriveDataTypeable   #-}
+{-# LANGUAGE FlexibleContexts     #-}
+{-# LANGUAGE NoImplicitPrelude    #-}
+{-# LANGUAGE TemplateHaskell      #-}
 {-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 
 module Network.Betfair.Requests.HeartbeatMessage
   (HeartbeatMessage(..))
   where
 
-import Data.Aeson.TH
-       (Options(omitNothingFields), defaultOptions, deriveJSON)
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 -- import Data.Default.TH (deriveDefault)
 import Data.Default
-import Prelude hiding (id)
-
 import Network.Betfair.API.AddId
+import Prelude                   hiding (id)
 
 data HeartbeatMessage =
   HeartbeatMessage {op :: Text

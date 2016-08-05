@@ -7,9 +7,8 @@ module Network.Betfair.API.Context
 
 import Control.Concurrent.STM.TChan
 import Control.Monad.STM
-import Network.Connection
-
 import Network.Betfair.API.CommonTypes
+import Network.Connection
 
 data Context =
   Context {cAppKey                :: AppKey

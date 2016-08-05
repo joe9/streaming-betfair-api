@@ -21,5 +21,6 @@ data BettingType
   deriving (Eq,Read,Show)
 
 deriveDefault ''BettingType
+
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''BettingType)

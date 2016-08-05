@@ -18,7 +18,6 @@ data OrderFilter =
 
 -- this is what deriveDefault does anyway
 -- instance Default MarketSort where def = FIRST_TO_START
-
 -- $(deriveJSON id ''Record)
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''OrderFilter)

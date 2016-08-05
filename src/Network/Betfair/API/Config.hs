@@ -6,7 +6,6 @@ module Network.Betfair.API.Config
   where
 
 import Data.Default
-
 import Network.Betfair.API.CommonTypes
 
 data Config =

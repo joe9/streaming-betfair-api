@@ -7,11 +7,11 @@ module Network.Betfair.Types.MarketDefinition
   (MarketDefinition(..))
   where
 
-import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
-                      deriveJSON)
-
-import Network.Betfair.Types.BettingType  (BettingType)
-import Network.Betfair.Types.MarketStatus (MarketStatus)
+import Data.Aeson.TH                          (Options (omitNothingFields),
+                                               defaultOptions,
+                                               deriveJSON)
+import Network.Betfair.Types.BettingType      (BettingType)
+import Network.Betfair.Types.MarketStatus     (MarketStatus)
 import Network.Betfair.Types.RunnerDefinition (RunnerDefinition)
 
 type DateString = Text

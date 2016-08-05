@@ -7,9 +7,9 @@ module Network.Betfair.Types.OrderMarketChange
   (OrderMarketChange(..))
   where
 
-import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
-                      deriveJSON)
-
+import Data.Aeson.TH                           (Options (omitNothingFields),
+                                                defaultOptions,
+                                                deriveJSON)
 import Network.Betfair.Types.OrderRunnerChange (OrderRunnerChange)
 
 data OrderMarketChange =

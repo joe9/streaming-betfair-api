@@ -19,5 +19,6 @@ data MarketStatus
   deriving (Eq,Show,Read)
 
 deriveDefault ''MarketStatus
+
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''MarketStatus)

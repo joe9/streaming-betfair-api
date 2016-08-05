@@ -8,27 +8,25 @@ module Network.Betfair.API.Response
 
 import           Control.Monad.RWS
 import           Data.Aeson
-import           Data.Text
 import           Data.Aeson.Types
 import           Data.ByteString
-import qualified Data.Map.Strict        as Map
+import qualified Data.Map.Strict                               as Map
 import           Data.Maybe
-import           Network.Connection
-import           Safe
-
-import qualified Network.Betfair.Responses.ConnectionMessage   as C
-import qualified Network.Betfair.Responses.MarketChangeMessage as M
-import qualified Network.Betfair.Responses.OrderChangeMessage  as O
-import qualified Network.Betfair.Responses.StatusMessage       as S
-
+import           Data.Text
 import           Network.Betfair.API.Context
 import           Network.Betfair.API.Log
 import           Network.Betfair.API.Request
 import           Network.Betfair.API.StreamingState
+import qualified Network.Betfair.Responses.ConnectionMessage   as C
+import qualified Network.Betfair.Responses.MarketChangeMessage as M
+import qualified Network.Betfair.Responses.OrderChangeMessage  as O
+import qualified Network.Betfair.Responses.StatusMessage       as S
 import           Network.Betfair.Types.ChangeType
-import qualified Network.Betfair.Types.MarketChange as MarketChange
--- import           Network.Betfair.Types.MarketStatus
+import qualified Network.Betfair.Types.MarketChange            as MarketChange
+import           Network.Connection
+import           Safe
 
+-- import           Network.Betfair.Types.MarketStatus
 data Response
   = Connection C.ConnectionMessage
   | MarketChange M.MarketChangeMessage
@@ -44,11 +42,11 @@ data Response
 -- response =
 --   ask >>= lift . connectionGetLine 16384 >>= groomedLog >>=
 --   lift . return . parseResponse . L.fromStrict
-
 response
   :: RWST Context () StreamingState IO Response
 response =
-  do -- state <- get
+  do
+     -- state <- get
      connection <- fmap cConnection ask
      raw <- lift (connectionGetLine 16384 connection)
      _ <- groomedLog From raw
@@ -58,7 +56,7 @@ processResponse
   :: Response -> RWST Context () StreamingState IO Response
 processResponse r@(OrderChange _) = return r -- not implemented
 processResponse r@(Connection _) = return r
-processResponse   (Status status _) =
+processResponse (Status status _) =
   do s <- get
      return (Status status
                     (Map.lookup (fromMaybe 0 (S.id status))
@@ -80,10 +78,10 @@ processResponse r@(MarketChange m)
        return r
   | otherwise = return (NotImplemented ("processResponse: " ++ show m))
 processResponse r = return r
+
 -- processResponse r@(EmptyLine) = return r
 -- processResponse r@(NotImplemented _) = return r
 -- processResponse r@(JSONParseError _) = return r
-
 updateStreamingState :: Maybe Text
                      -> Maybe Text
                      -> Integer

@@ -20,5 +20,6 @@ data RunnerStatus
   deriving (Eq,Show,Read)
 
 deriveDefault ''RunnerStatus
+
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''RunnerStatus)

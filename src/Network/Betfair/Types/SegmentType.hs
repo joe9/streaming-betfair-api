@@ -17,5 +17,6 @@ data SegmentType
   deriving (Eq,Show,Read)
 
 deriveDefault ''SegmentType
+
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''SegmentType)

@@ -1,6 +1,9 @@
 {-# OPTIONS_GHC -Wall    #-}
 
-module Network.Betfair.API.AddId (AddId, addId) where
+module Network.Betfair.API.AddId
+  (AddId
+  ,addId)
+  where
 
 import Data.Aeson
 

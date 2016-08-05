@@ -9,16 +9,14 @@ module Network.Betfair.Requests.MarketSubscriptionMessage
   (MarketSubscriptionMessage(..))
   where
 
-import Data.Aeson.TH      (Options (omitNothingFields),
-                           defaultOptions, deriveJSON)
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 -- import Data.Default.TH (deriveDefault)
 import Data.Default
-import Prelude      hiding (id)
-
+import Network.Betfair.API.AddId
 import Network.Betfair.Types.MarketDataFilter
 import Network.Betfair.Types.MarketFilter
-
-import Network.Betfair.API.AddId
+import Prelude                                hiding (id)
 
 data MarketSubscriptionMessage =
   MarketSubscriptionMessage {op                  :: Text

@@ -5,8 +5,8 @@ module Network.Betfair.Responses.ConnectionMessage
   (ConnectionMessage(..))
   where
 
-import Data.Aeson.TH
-       (Options(omitNothingFields), defaultOptions, deriveJSON)
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 
 data ConnectionMessage =
   ConnectionMessage {op           :: Text

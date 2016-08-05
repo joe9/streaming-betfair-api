@@ -7,18 +7,17 @@ module Main
   ,start)
   where
 
-import Control.Concurrent
-import Control.Concurrent.STM.TChan
-import Control.Exception.Safe
-import Control.Monad.RWS
-import Control.Monad.STM
-import Data.Default
-import qualified Data.Map.Strict as Map
-import Data.Maybe
-import Network.Connection
-import Network.Socket
-
-import Network.Betfair.API.CommonTypes
+import           Control.Concurrent
+import           Control.Concurrent.STM.TChan
+import           Control.Exception.Safe
+import           Control.Monad.RWS
+import           Control.Monad.STM
+import           Data.Default
+import qualified Data.Map.Strict                 as Map
+import           Data.Maybe
+import           Network.Betfair.API.CommonTypes
+import           Network.Connection
+import           Network.Socket
 -- import Network.Betfair.API.Config
 import Network.Betfair.API.Context
 import Network.Betfair.API.Log
@@ -33,7 +32,7 @@ import Network.Betfair.API.StreamingState
 -- import Network.Betfair.Responses.OrderChangeMessage
 import Network.Betfair.Responses.StatusMessage
 import Network.Betfair.Types.RequestStatus
-import Prelude hiding (log)
+import Prelude                                 hiding (log)
 
 -- app key from betfair subscription
 -- session token from the api
@@ -138,10 +137,10 @@ readDataLoop =
         else do mids <- nonBlockingReadMarketIds
                 -- write state if changed
                 -- send subscribe requests to new markets only, if needed
---                 put
---                   (ss {ssMarkets =
---                          (Map.fromList .
---                           map (\mid -> (mid,def {msMarketId = mid}))) mids})
+                --                 put
+                --                   (ss {ssMarkets =
+                --                          (Map.fromList .
+                --                           map (\mid -> (mid,def {msMarketId = mid}))) mids})
                 r <- response
                 context <- ask
                 lift (atomically
@@ -166,11 +165,10 @@ connectToBetfair =
 host :: Text
 -- for pre-production
 host = "stream-api-integration.betfair.com"
+
 -- for production
 -- host = "stream-api.betfair.com"
-
 port :: PortNumber
-
 port = 443
 
 checkAuthentication

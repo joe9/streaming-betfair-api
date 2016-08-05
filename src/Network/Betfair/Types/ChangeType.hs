@@ -18,5 +18,6 @@ data ChangeType
   deriving (Eq,Show,Read)
 
 deriveDefault ''ChangeType
+
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''ChangeType)

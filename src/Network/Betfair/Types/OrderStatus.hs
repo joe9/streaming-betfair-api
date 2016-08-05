@@ -17,5 +17,6 @@ data OrderStatus
   deriving (Eq,Show,Read)
 
 deriveDefault ''OrderStatus
+
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''OrderStatus)

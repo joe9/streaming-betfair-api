@@ -19,5 +19,6 @@ data OrderType
   deriving (Eq,Read,Show)
 
 deriveDefault ''OrderType
+
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''OrderType)

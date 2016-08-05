@@ -11,27 +11,24 @@ module Network.Betfair.API.RequestProcessing
   ,addCRLF)
   where
 
-import qualified Data.ByteString      as B
-import qualified Data.ByteString.Lazy as L
-
-import Control.Monad.RWS
-import Data.Aeson
-import Data.Default
-import Data.Foldable
-import Network.Connection
-
+import           Control.Monad.RWS
+import           Data.Aeson
+import qualified Data.ByteString                                    as B
+import qualified Data.ByteString.Lazy                               as L
+import           Data.Default
+import           Data.Foldable
+import           Network.Betfair.API.AddId
+import           Network.Betfair.API.Config
+import           Network.Betfair.API.Context
+import           Network.Betfair.API.Log
+import           Network.Betfair.API.StreamingState
 import qualified Network.Betfair.Requests.AuthenticationMessage     as A
 import qualified Network.Betfair.Requests.HeartbeatMessage          as H
 import qualified Network.Betfair.Requests.MarketSubscriptionMessage as M
 import qualified Network.Betfair.Requests.OrderSubscriptionMessage  as O
+import qualified Network.Betfair.Types.BettingType                  as BT
 import qualified Network.Betfair.Types.MarketFilter                 as MF
-import qualified Network.Betfair.Types.BettingType as BT
-
-import Network.Betfair.API.AddId
-import Network.Betfair.API.Config
-import Network.Betfair.API.Context
-import Network.Betfair.API.Log
-import Network.Betfair.API.StreamingState
+import           Network.Connection
 
 request
   :: (ToJSON a

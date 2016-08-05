@@ -18,5 +18,6 @@ data Side
   deriving (Eq,Read,Show)
 
 deriveDefault ''Side
+
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''Side)

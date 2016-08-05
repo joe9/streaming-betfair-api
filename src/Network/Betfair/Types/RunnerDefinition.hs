@@ -7,10 +7,9 @@ module Network.Betfair.Types.RunnerDefinition
   (RunnerDefinition(..))
   where
 
-import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
-                        deriveJSON)
-import Data.Default.TH (deriveDefault)
-
+import Data.Aeson.TH                      (Options (omitNothingFields),
+                                           defaultOptions, deriveJSON)
+import Data.Default.TH                    (deriveDefault)
 import Network.Betfair.Types.RunnerStatus (RunnerStatus)
 
 type DateString = Text
@@ -26,5 +25,6 @@ data RunnerDefinition =
   deriving (Eq,Read,Show)
 
 deriveDefault ''RunnerDefinition
+
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''RunnerDefinition)
