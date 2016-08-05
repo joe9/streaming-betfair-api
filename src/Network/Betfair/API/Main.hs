@@ -4,9 +4,7 @@
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Main
   (main
-  ,start
-  ,startStreaming
-  ,streamMarketIds)
+  ,start)
   where
 
 import Control.Concurrent
@@ -14,27 +12,25 @@ import Control.Concurrent.STM.TChan
 import Control.Exception.Safe
 import Control.Monad.RWS
 import Control.Monad.STM
-import Data.Aeson
 import Data.Default
 import qualified Data.Map.Strict as Map
 import Data.Maybe
 import Network.Connection
-import Network.Connection
 import Network.Socket
 
 import Network.Betfair.API.CommonTypes
-import Network.Betfair.API.Config
+-- import Network.Betfair.API.Config
 import Network.Betfair.API.Context
 import Network.Betfair.API.Log
 import Network.Betfair.API.ReadFromTChan
-import Network.Betfair.API.Request
+-- import Network.Betfair.API.Request
 import Network.Betfair.API.RequestProcessing
-import Network.Betfair.API.Response
+-- import Network.Betfair.API.Response
 import Network.Betfair.API.Response
 import Network.Betfair.API.StreamingState
-import Network.Betfair.Responses.ConnectionMessage
-import Network.Betfair.Responses.MarketChangeMessage
-import Network.Betfair.Responses.OrderChangeMessage
+-- import Network.Betfair.Responses.ConnectionMessage
+-- import Network.Betfair.Responses.MarketChangeMessage
+-- import Network.Betfair.Responses.OrderChangeMessage
 import Network.Betfair.Responses.StatusMessage
 import Network.Betfair.Types.RequestStatus
 import Prelude hiding (log)
@@ -45,8 +41,8 @@ main :: IO ()
 main = start "appkey" "sessiontoken"
 
 start :: AppKey -> SessionToken -> IO ()
-start appKey sessionToken =
-  do context <- initializeContext appKey sessionToken
+start appkey sessionToken =
+  do context <- initializeContext appkey sessionToken
      logReader <- forkIO (readChannels context)
      _ <-
        startStreaming
@@ -100,9 +96,9 @@ streamMarketIds context ss
    otherwise =
     do result <- tryAny connectToBetfair
        case result of
-         Left error ->
+         Left err ->
            log (cWriteLogChannel context)
-               ("streamMarketIds: Caught exception: " ++ show error) >>
+               ("streamMarketIds: Caught exception: " ++ show err) >>
            threadDelay (60 * 1000 * 1000) >>
            streamMarketIds context ss
          Right connection ->
@@ -120,11 +116,11 @@ streamMarketIds context ss
 authenticateAndReadDataLoop
   :: RWST Context () StreamingState IO ()
 authenticateAndReadDataLoop =
-  do response -- TODO check this response
+  do _ <- response -- TODO check this response
      ss <- get
      checkAuthentication (ssConnectionState ss)
      -- check status and ensure that the authentication was successful
-     r <- response -- TODO check this response
+     _ <- response -- TODO check this response
      marketIdsSubscription ((Map.keys . ssMarkets) ss)
      r <- response -- TODO check this response
      ssa <- get

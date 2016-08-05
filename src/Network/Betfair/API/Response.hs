@@ -6,16 +6,13 @@ module Network.Betfair.API.Response
   ,Response(..))
   where
 
-import           Control.Exception.Safe
 import           Control.Monad.RWS
 import           Data.Aeson
+import           Data.Text
 import           Data.Aeson.Types
 import           Data.ByteString
-import qualified Data.ByteString.Lazy   as L
-import qualified Data.HashMap.Strict    as HashMap
 import qualified Data.Map.Strict        as Map
 import           Data.Maybe
-import           Data.Typeable
 import           Network.Connection
 import           Safe
 
@@ -24,14 +21,13 @@ import qualified Network.Betfair.Responses.MarketChangeMessage as M
 import qualified Network.Betfair.Responses.OrderChangeMessage  as O
 import qualified Network.Betfair.Responses.StatusMessage       as S
 
-import           Network.Betfair.API.Config
 import           Network.Betfair.API.Context
 import           Network.Betfair.API.Log
 import           Network.Betfair.API.Request
 import           Network.Betfair.API.StreamingState
 import           Network.Betfair.Types.ChangeType
 import qualified Network.Betfair.Types.MarketChange as MarketChange
-import           Network.Betfair.Types.MarketStatus
+-- import           Network.Betfair.Types.MarketStatus
 
 data Response
   = Connection C.ConnectionMessage
@@ -52,7 +48,7 @@ data Response
 response
   :: RWST Context () StreamingState IO Response
 response =
-  do state <- get
+  do -- state <- get
      connection <- fmap cConnection ask
      raw <- lift (connectionGetLine 16384 connection)
      _ <- groomedLog From raw
@@ -62,7 +58,7 @@ processResponse
   :: Response -> RWST Context () StreamingState IO Response
 processResponse r@(OrderChange _) = return r -- not implemented
 processResponse r@(Connection _) = return r
-processResponse r@(Status status _) =
+processResponse   (Status status _) =
   do s <- get
      return (Status status
                     (Map.lookup (fromMaybe 0 (S.id status))
@@ -80,9 +76,13 @@ processResponse r@(MarketChange m)
                                             (M.pt m))
                       s .
                 fromJustNote "should have markets here" . M.mc) m)
-       put s
+       put u
        return r
   | otherwise = return (NotImplemented ("processResponse: " ++ show m))
+processResponse r = return r
+-- processResponse r@(EmptyLine) = return r
+-- processResponse r@(NotImplemented _) = return r
+-- processResponse r@(JSONParseError _) = return r
 
 updateStreamingState :: Maybe String
                      -> Maybe String
@@ -106,7 +106,7 @@ updateMarket :: Maybe String
              -> MarketState
              -> MarketChange.MarketChange
              -> IO MarketState
-updateMarket c i pt m mc = processUpdatedMarket (s {msPublishTime = pt})
+updateMarket c i pt m _ = processUpdatedMarket (s {msPublishTime = pt})
   where f = maybe m (\x -> m {msClk = Just x}) c
         s = maybe f (\x -> f {msInitialClk = Just x}) i
 
@@ -114,7 +114,7 @@ processUpdatedMarket
   :: MarketState -> IO MarketState
 processUpdatedMarket = pure
 
-opIs :: Value -> Either String String
+opIs :: Object -> Either String String
 opIs = parseEither (flip (.:) "op")
 
 responseIs
