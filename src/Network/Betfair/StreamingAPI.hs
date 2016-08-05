@@ -92,9 +92,18 @@ streamMarketIds context ss
          (ss {ssMarkets =
                 (Map.fromList . fmap (\mid -> (mid,def {msMarketId = mid}))) mids})
   |
-   -- start processing if there are any marketid's in streaming state
-   -- https://haskell-lang.org/tutorial/exception-safety
-   -- https://haskell-lang.org/library/safe-exceptions
+    -- start processing if there are any marketid's in streaming state
+    -- https://haskell-lang.org/tutorial/exception-safety
+    -- https://haskell-lang.org/library/safe-exceptions
+    -- http://neilmitchell.blogspot.com/2015/05/handling-control-c-in-haskell.html
+    -- the below exception handling mechanism is perfect. "tryAny"
+    -- handles any synchronous exceptions and recovers from
+    -- them. Synchronous exceptions are exceptions directly related to
+    -- the executed code such as "no network connection", "no host",
+    -- etc. Whereas, "finally" is for cleanup. "finally" handles both
+    -- synchronous and asynchronous exceptions. If a user presses
+    -- Ctrl-C (asynchronous exception), "finally" cleans up the open
+    -- connection thus preventing a leak.
    otherwise =
     do result <- tryAny connectToBetfair
        case result of
