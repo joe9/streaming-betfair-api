@@ -18,36 +18,48 @@ source-repository head
     location:        https://github.com/joe9/streaming-betfair-api.git
 
 library
-  exposed-modules: Network.Betfair.Requests.MarketChangeMessage
-                 , Network.Betfair.Requests.Authentication
-                 , Network.Betfair.Requests.OrderChangeMessage
-                 , Network.Betfair.Requests.ConnectionMessage
-                 , Network.Betfair.Requests.OrderSubscriptionMessage
-                 , Network.Betfair.Requests.StatusMessage
-                 , Network.Betfair.Requests.MarketSubscriptionMessage
-                 , Network.Betfair.Requests.HeartbeatMessage
-                 , Network.Betfair.Types.PersistenceType
-                 , Network.Betfair.Types.Order
-                 , Network.Betfair.Types.OrderMarketChange
-                 , Network.Betfair.Types.ChangeType
-                 , Network.Betfair.Types.MarketFilter
-                 , Network.Betfair.Types.MarketChange
-                 , Network.Betfair.Types.OrderRunnerChange
-                 , Network.Betfair.Types.Field
-                 , Network.Betfair.Types.MarketDefinition
-                 , Network.Betfair.Types.OrderFilter
-                 , Network.Betfair.Types.Side
-                 , Network.Betfair.Types.RequestStatus
-                 , Network.Betfair.Types.RunnerChange
-                 , Network.Betfair.Types.OrderType
-                 , Network.Betfair.Types.ErrorCode
-                 , Network.Betfair.Types.BettingType
-                 , Network.Betfair.Types.RunnerDefinition
-                 , Network.Betfair.Types.OrderStatus
-                 , Network.Betfair.Types.SegmentType
-                 , Network.Betfair.Types.MarketStatus
-                 , Network.Betfair.Types.MarketDataFilter
-                 , Network.Betfair.Types.RunnerStatus
+  exposed-modules:
+                 Network.Betfair.StreamingAPI
+                 Network.Betfair.Responses.MarketChangeMessage
+                 Network.Betfair.Responses.OrderChangeMessage
+                 Network.Betfair.Responses.ConnectionMessage
+                 Network.Betfair.Responses.StatusMessage
+                 Network.Betfair.Requests.AuthenticationMessage
+                 Network.Betfair.Requests.OrderSubscriptionMessage
+                 Network.Betfair.Requests.MarketSubscriptionMessage
+                 Network.Betfair.Requests.HeartbeatMessage
+                 Network.Betfair.API.Log
+                 Network.Betfair.API.RequestProcessing
+                 Network.Betfair.API.Config
+                 Network.Betfair.API.AddId
+                 Network.Betfair.API.CommonTypes
+                 Network.Betfair.API.Request
+                 Network.Betfair.API.ReadFromTChan
+                 Network.Betfair.API.StreamingState
+                 Network.Betfair.API.Response
+                 Network.Betfair.API.Context
+                 Network.Betfair.Types.PersistenceType
+                 Network.Betfair.Types.Order
+                 Network.Betfair.Types.OrderMarketChange
+                 Network.Betfair.Types.ChangeType
+                 Network.Betfair.Types.MarketFilter
+                 Network.Betfair.Types.MarketChange
+                 Network.Betfair.Types.OrderRunnerChange
+                 Network.Betfair.Types.Field
+                 Network.Betfair.Types.MarketDefinition
+                 Network.Betfair.Types.OrderFilter
+                 Network.Betfair.Types.Side
+                 Network.Betfair.Types.RequestStatus
+                 Network.Betfair.Types.RunnerChange
+                 Network.Betfair.Types.OrderType
+                 Network.Betfair.Types.ErrorCode
+                 Network.Betfair.Types.BettingType
+                 Network.Betfair.Types.RunnerDefinition
+                 Network.Betfair.Types.OrderStatus
+                 Network.Betfair.Types.SegmentType
+                 Network.Betfair.Types.MarketStatus
+                 Network.Betfair.Types.MarketDataFilter
+                 Network.Betfair.Types.RunnerStatus
 
 
   other-extensions:    DeriveDataTypeable
