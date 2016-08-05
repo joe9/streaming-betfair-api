@@ -7,6 +7,7 @@ module Network.Betfair.Types.RunnerChange
   (RunnerChange(..))
   where
 
+import Data.Text
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 

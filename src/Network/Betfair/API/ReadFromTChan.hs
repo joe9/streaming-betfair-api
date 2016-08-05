@@ -7,6 +7,7 @@ module Network.Betfair.API.ReadFromTChan
   ,nonBlockingReadMarketIdsFromTChan)
   where
 
+import Data.Text
 import Control.Concurrent.STM.TChan       (TChan, readTChan,
                                            tryReadTChan)
 import Control.Monad.RWS

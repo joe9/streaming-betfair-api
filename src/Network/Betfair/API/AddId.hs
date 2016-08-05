@@ -5,6 +5,7 @@ module Network.Betfair.API.AddId
   ,addId)
   where
 
+import Data.Text
 import Data.Aeson
 
 class ToJSON a =>

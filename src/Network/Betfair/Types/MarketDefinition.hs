@@ -7,6 +7,7 @@ module Network.Betfair.Types.MarketDefinition
   (MarketDefinition(..))
   where
 
+import Data.Text
 import Data.Aeson.TH                          (Options (omitNothingFields),
                                                defaultOptions,
                                                deriveJSON)

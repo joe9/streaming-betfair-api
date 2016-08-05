@@ -7,6 +7,7 @@ module Main
   ,start)
   where
 
+import Data.Text
 import           Control.Concurrent
 import           Control.Concurrent.STM.TChan
 import           Control.Exception.Safe

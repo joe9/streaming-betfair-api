@@ -6,6 +6,7 @@ module Network.Betfair.Types.ChangeType
   (ChangeType(..))
   where
 
+import Data.Text
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
 import Data.Default.TH (deriveDefault)

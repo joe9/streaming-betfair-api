@@ -10,6 +10,7 @@ module Network.Betfair.API.Log
   ,stdOutAndLog)
   where
 
+import Data.Text
 import Control.Concurrent.STM.TChan
 import Control.Monad.RWS
 import Control.Monad.STM            (atomically)

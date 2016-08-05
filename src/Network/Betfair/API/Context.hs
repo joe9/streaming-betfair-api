@@ -5,6 +5,7 @@ module Network.Betfair.API.Context
   ,initializeContext)
   where
 
+import Data.Text
 import Control.Concurrent.STM.TChan
 import Control.Monad.STM
 import Network.Betfair.API.CommonTypes

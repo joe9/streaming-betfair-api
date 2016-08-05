@@ -4,6 +4,7 @@ module Network.Betfair.API.Request
   (Request(..))
   where
 
+import Data.Text
 import qualified Network.Betfair.Requests.AuthenticationMessage     as A
 import qualified Network.Betfair.Requests.HeartbeatMessage          as H
 import qualified Network.Betfair.Requests.MarketSubscriptionMessage as M

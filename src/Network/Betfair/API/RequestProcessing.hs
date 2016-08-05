@@ -10,6 +10,7 @@ module Network.Betfair.API.RequestProcessing
   ,addCRLF)
   where
 
+import Data.Text
 import           Control.Monad.RWS
 import           Data.Aeson
 import qualified Data.ByteString                                    as B

@@ -5,6 +5,7 @@ module Network.Betfair.Responses.OrderChangeMessage
   (OrderChangeMessage(..))
   where
 
+import Data.Text
 import Data.Aeson.TH                           (Options (omitNothingFields),
                                                 defaultOptions,
                                                 deriveJSON)

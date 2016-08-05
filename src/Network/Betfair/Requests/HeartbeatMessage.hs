@@ -9,6 +9,7 @@ module Network.Betfair.Requests.HeartbeatMessage
   (HeartbeatMessage(..))
   where
 
+import Data.Text
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 -- import Data.Default.TH (deriveDefault)

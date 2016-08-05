@@ -5,6 +5,7 @@ module Network.Betfair.API.Config
   ,AppKey)
   where
 
+import Data.Text
 import Data.Default
 import Network.Betfair.API.CommonTypes
 
