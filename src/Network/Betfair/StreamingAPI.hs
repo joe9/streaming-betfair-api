@@ -93,6 +93,7 @@ streamMarketIds context ss
                 (Map.fromList . fmap (\mid -> (mid,def {msMarketId = mid}))) mids})
   |
     -- start processing if there are any marketid's in streaming state
+    -- http://learnyouahaskell.com/input-and-output#exceptions
     -- https://haskell-lang.org/tutorial/exception-safety
     -- https://haskell-lang.org/library/safe-exceptions
     -- http://neilmitchell.blogspot.com/2015/05/handling-control-c-in-haskell.html
