@@ -1,5 +1,5 @@
-{-# LANGUAGE NoImplicitPrelude    #-}
-{-# LANGUAGE OverloadedStrings    #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Betfair.StreamingAPI.API.ResponseException
   (ResponseException(..))
@@ -11,5 +11,6 @@ import Betfair.StreamingAPI.API.Response
 data ResponseException
   = ParserError Text
   | EmptyLine Text
-  | NotImplemented Response (Maybe Text)
+  | NotImplemented Response
+                   (Maybe Text)
   deriving (Eq,Show)

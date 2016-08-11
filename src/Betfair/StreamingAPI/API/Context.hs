@@ -30,8 +30,8 @@ data Context =
 initializeContext :: AppKey
                   -> SessionToken
                   -> Maybe StreamingState
-                  -> Maybe ( IO [MarketId])
-                  -> Maybe ( IO [MarketId])
+                  -> Maybe (IO [MarketId])
+                  -> Maybe (IO [MarketId])
                   -> Maybe (Text -> IO ())
                   -> Maybe (Either ResponseException Response -> IO ())
                   -> Maybe (StreamingState -> IO ())

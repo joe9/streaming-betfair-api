@@ -9,9 +9,8 @@ module Betfair.StreamingAPI.Types.MarketChange
   where
 
 import BasicPrelude
-import Data.Aeson.TH                               (Options (omitNothingFields),
-                                                    defaultOptions,
-                                                    deriveJSON)
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 --
 import Betfair.StreamingAPI.Types.MarketDefinition (MarketDefinition)
 import Betfair.StreamingAPI.Types.RunnerChange     (RunnerChange)

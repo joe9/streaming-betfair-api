@@ -7,9 +7,8 @@ module Betfair.StreamingAPI.Responses.StatusMessage
   where
 
 import BasicPrelude
-import Data.Aeson.TH                            (Options (omitNothingFields),
-                                                 defaultOptions,
-                                                 deriveJSON)
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 --
 import Betfair.StreamingAPI.Types.ErrorCode     (ErrorCode)
 import Betfair.StreamingAPI.Types.RequestStatus (RequestStatus)

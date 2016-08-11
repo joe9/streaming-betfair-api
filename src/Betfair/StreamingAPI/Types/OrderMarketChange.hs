@@ -1,15 +1,14 @@
-{-# LANGUAGE NoImplicitPrelude    #-}
-{-# LANGUAGE OverloadedStrings    #-}
-{-# LANGUAGE TemplateHaskell      #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 
 module Betfair.StreamingAPI.Types.OrderMarketChange
   (OrderMarketChange(..))
   where
 
 import BasicPrelude
-import Data.Aeson.TH                                (Options (omitNothingFields),
-                                                     defaultOptions,
-                                                     deriveJSON)
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 --
 import Betfair.StreamingAPI.Types.OrderRunnerChange (OrderRunnerChange)
 

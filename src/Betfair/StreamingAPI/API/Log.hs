@@ -10,10 +10,10 @@ module Betfair.StreamingAPI.API.Log
   ,stdOutAndLog)
   where
 
-import BasicPrelude hiding (show)
-import GHC.Show
-import Text.Groom                       (groom)
+import BasicPrelude            hiding (show)
 import Data.String.Conversions
+import GHC.Show
+import Text.Groom              (groom)
 --
 import Betfair.StreamingAPI.API.Context
 
@@ -30,9 +30,8 @@ logD c d s = toLog c (((cs . show) d) <> s)
 toLog :: Context -> Text -> IO ()
 toLog c = cLogger c
 
-groomedLog
-  :: Show a
-  => Context -> Direction -> a -> IO a
+groomedLog :: Show a
+           => Context -> Direction -> a -> IO a
 groomedLog c d s = (logD c d . cs . groom) s >> return s
 
 stdOutAndLog

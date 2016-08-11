@@ -9,9 +9,8 @@ module Betfair.StreamingAPI.Types.MarketDefinition
   where
 
 import BasicPrelude
-import Data.Aeson.TH                               (Options (omitNothingFields),
-                                                    defaultOptions,
-                                                    deriveJSON)
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 --
 import Betfair.StreamingAPI.Types.BettingType      (BettingType)
 import Betfair.StreamingAPI.Types.MarketStatus     (MarketStatus)

@@ -7,9 +7,8 @@ module Betfair.StreamingAPI.Responses.MarketChangeMessage
   where
 
 import BasicPrelude
-import Data.Aeson.TH                           (Options (omitNothingFields),
-                                                defaultOptions,
-                                                deriveJSON)
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 --
 import Betfair.StreamingAPI.Types.ChangeType
 import Betfair.StreamingAPI.Types.MarketChange
