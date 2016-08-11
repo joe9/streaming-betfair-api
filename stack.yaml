@@ -1,0 +1,8 @@
+flags: {}
+extra-package-dbs: []
+packages:
+- '.'
+extra-deps:
+- safe-exceptions-0.1.4.0
+- template-default-0.1.2
+resolver: lts-6.11

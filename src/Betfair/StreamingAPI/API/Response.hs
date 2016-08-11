@@ -7,16 +7,6 @@ module Betfair.StreamingAPI.API.Response
   where
 
 import           BasicPrelude
-import           Betfair.StreamingAPI.API.Context
-import           Betfair.StreamingAPI.API.Log
-import           Betfair.StreamingAPI.API.Request
-import           Betfair.StreamingAPI.API.StreamingState
-import qualified Betfair.StreamingAPI.Responses.ConnectionMessage   as C
-import qualified Betfair.StreamingAPI.Responses.MarketChangeMessage as M
-import qualified Betfair.StreamingAPI.Responses.OrderChangeMessage  as O
-import qualified Betfair.StreamingAPI.Responses.StatusMessage       as S
-import           Betfair.StreamingAPI.Types.ChangeType
-import qualified Betfair.StreamingAPI.Types.MarketChange            as MarketChange
 import           Control.Monad.RWS
 import           Data.Aeson
 import           Data.Aeson.Types
@@ -28,17 +18,26 @@ import           Data.String.Conversions
 import           Data.Text
 import           Network.Connection
 import           Safe
-
+--
+import           Betfair.StreamingAPI.API.Context
+import           Betfair.StreamingAPI.API.Log
+import           Betfair.StreamingAPI.API.Request
+import           Betfair.StreamingAPI.API.ResponseException
+import           Betfair.StreamingAPI.API.StreamingState
+import qualified Betfair.StreamingAPI.Responses.ConnectionMessage   as C
+import qualified Betfair.StreamingAPI.Responses.MarketChangeMessage as M
+import qualified Betfair.StreamingAPI.Responses.OrderChangeMessage  as O
+import qualified Betfair.StreamingAPI.Responses.StatusMessage       as S
+import           Betfair.StreamingAPI.Types.ChangeType
+import qualified Betfair.StreamingAPI.Types.MarketChange            as MarketChange
 -- import           Betfair.StreamingAPI.Types.MarketStatus
+
 data Response
   = Connection C.ConnectionMessage
   | MarketChange M.MarketChangeMessage
   | OrderChange O.OrderChangeMessage
   | Status S.StatusMessage
            (Maybe Request)
-  | EmptyLine
-  | NotImplemented Text
-  | JSONParseError Text
   deriving (Eq,Read,Show)
 
 -- response :: RWST Context l s IO Response
@@ -46,25 +45,23 @@ data Response
 --   ask >>= lift . connectionGetLine 16384 >>= groomedLog >>=
 --   lift . return . parseResponse . L.fromStrict
 response
-  :: RWST Context () StreamingState IO Response
+  :: Context -> IO (Either ResponseException Response)
 response =
   do
-     -- state <- get
-     connection <- fmap cConnection ask
-     raw <- lift (connectionGetLine 16384 connection)
+     raw <- lift (connectionGetLine 16384 (cConnection c))
      _ <- groomedLog From raw
      (\r -> groomedLog From =<< processResponse r) (parseResponse raw)
 
 processResponse
-  :: Response -> RWST Context () StreamingState IO Response
-processResponse r@(OrderChange _) = return r -- not implemented
-processResponse r@(Connection _) = return r
-processResponse (Status status _) =
+  :: Context -> Response -> IO (Either ResponseException Response)
+processResponse c r@(OrderChange _) = return r -- not implemented
+processResponse c r@(Connection _) = return r
+processResponse c (Status status _) =
   do s <- get
      return (Status status
                     (Map.lookup (fromMaybe 0 (S.id status))
                                 (ssRequests s)))
-processResponse r@(MarketChange m)
+processResponse c r@(MarketChange m)
   | isNothing (M.ct m) || M.ct m == Just HEARTBEAT = return r
   | isNothing (M.mc m) || M.mc m == Just [] = return r
   | isJust (M.segmentType m) =
@@ -82,7 +79,7 @@ processResponse r@(MarketChange m)
        return r
   | otherwise =
     return (NotImplemented (append "processResponse: " (Data.Text.pack (show m))))
-processResponse r = return r
+processResponse c r = return r
 
 -- processResponse r@(EmptyLine) = return r
 -- processResponse r@(NotImplemented _) = return r

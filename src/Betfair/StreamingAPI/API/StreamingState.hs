@@ -12,14 +12,15 @@ module Betfair.StreamingAPI.API.StreamingState
   ,EventName)
   where
 
-import BasicPrelude
-import Data.Default
-import Data.Text
+import           BasicPrelude
+import           Data.Default
+import qualified Data.Map.Strict as Map
+import           Data.Text
 -- import Data.Maybe
-import           Betfair.StreamingAPI.API.CommonTypes
-import           Betfair.StreamingAPI.API.Request
-import           Betfair.StreamingAPI.Types.MarketStatus
-import qualified Data.Map.Strict                         as Map
+--
+import Betfair.StreamingAPI.API.CommonTypes
+import Betfair.StreamingAPI.API.Request
+import Betfair.StreamingAPI.Types.MarketStatus
 
 data StreamingState =
   StreamingState {ssMarkets         :: Map.Map MarketId MarketState

@@ -12,11 +12,10 @@ module Betfair.StreamingAPI.Requests.OrderSubscriptionMessage
 import BasicPrelude  hiding (id)
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
-import Data.Text
--- import Data.Default.TH (deriveDefault)
+import Data.Default
+--
 import Betfair.StreamingAPI.API.AddId
 import Betfair.StreamingAPI.Types.OrderFilter (OrderFilter)
-import Data.Default
 
 data OrderSubscriptionMessage =
   OrderSubscriptionMessage {op                  :: Text

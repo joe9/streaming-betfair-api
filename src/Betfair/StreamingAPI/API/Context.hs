@@ -19,9 +19,11 @@ data Context =
           ,cSessionToken  :: SessionToken
           ,
            --           ,cWriteResponses :: Either ResponseException Response -> IO ()
-           cWriteLog      :: Text -> IO ()
+           cLogger      :: Text -> IO ()
           ,cWriteState    :: StreamingState -> IO ()
-          ,cConnection    :: Connection}
+          ,cConnection    :: Connection
+          ,cState    :: StreamingState
+          }
 
 initializeContext :: AppKey
                   -> SessionToken
@@ -33,6 +35,7 @@ initializeContext a s m l st =
   Context {cAppKey = a
           ,cReadMarketIds = m
           ,cSessionToken = s
-          ,cWriteLog = l
+          ,cLogger = l
           ,cWriteState = st
-          ,cConnection = undefined}-- ,cWriteResponses :: Either ResponseException Response -> IO ()
+          ,cConnection = undefined
+          ,cState = def}-- ,cWriteResponses :: Either ResponseException Response -> IO ()

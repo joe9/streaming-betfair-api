@@ -31,41 +31,38 @@ import           Network.Connection
 request
   :: (ToJSON a
      ,AddId a)
-  => a -> RWST Context () StreamingState IO ()
-request r =
-  do s <- get
-     let currentId = ssIdCounter s
-     put (s {ssIdCounter = succ currentId})
-     b <- (groomedLog To . L.toStrict . addCRLF . encode) (addId r currentId)
-     connection <- fmap cConnection ask
-     lift (connectionPut connection b)
+  => Context -> a -> IO Context
+request c r = do
+     currentId <- fmap ssIdCounter (cState c)
+     connectionPut (cConnection connection) =<<
+      (groomedLog c To . L.toStrict . addCRLF . encode) (addId r currentId)
+     return c (cState = (cState c) {ssIdCounter = succ currentId})
 
-heartbeat :: RWST Context () StreamingState IO ()
-heartbeat = request (def :: H.HeartbeatMessage)
+heartbeat :: Context -> IO Context
+heartbeat c = request c (def :: H.HeartbeatMessage)
 
 authentication
-  :: RWST Context () StreamingState IO ()
+  :: Context -> IO Context
 authentication =
-  do s <- get
-     request (def {A.session = ssSessionToken s
-                  ,A.appKey = ssAppKey s} :: A.AuthenticationMessage)
+     request (def {A.session = cSessionToken c
+                  ,A.appKey = cAppKey c} :: A.AuthenticationMessage)
 
 marketSubscription
-  :: M.MarketSubscriptionMessage -> RWST Context () StreamingState IO ()
-marketSubscription = request
+  :: Context -> M.MarketSubscriptionMessage -> IO Context
+marketSubscription c = request c
 
 orderSubscription
-  :: O.OrderSubscriptionMessage -> RWST Context () StreamingState IO ()
-orderSubscription = request
+  :: Context -> O.OrderSubscriptionMessage -> IO Context
+orderSubscription c = request c
 
 addCRLF :: L.ByteString -> L.ByteString
 addCRLF a = a <> "\r" <> "\n"
 
 marketIdsSubscription
-  :: [MarketId] -> RWST Context () StreamingState IO ()
-marketIdsSubscription [] = return ()
-marketIdsSubscription mids =
-  marketSubscription
+  :: Context -> [MarketId] -> IO Context
+marketIdsSubscription c [] = return c
+marketIdsSubscription c mids =
+  marketSubscription c
     ((def :: M.MarketSubscriptionMessage) {M.marketFilter =
                                              ((def :: MF.MarketFilter) {MF.bettingTypes =
                                                                           [BT.ODDS]

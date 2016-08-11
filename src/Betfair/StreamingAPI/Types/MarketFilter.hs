@@ -10,12 +10,12 @@ module Betfair.StreamingAPI.Types.MarketFilter
   where
 
 import BasicPrelude
-import Betfair.StreamingAPI.Types.BettingType (BettingType)
 import Data.Aeson.TH                          (Options (omitNothingFields),
                                                defaultOptions,
                                                deriveJSON)
 import Data.Default.TH                        (deriveDefault)
-import Data.Text
+--
+import Betfair.StreamingAPI.Types.BettingType (BettingType)
 
 data MarketFilter =
   MarketFilter {countryCodes      :: Maybe [Text]

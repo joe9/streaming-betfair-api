@@ -1,3 +1,4 @@
 dist/*
 imports/*
 misc/generator
+.stack-work/*
