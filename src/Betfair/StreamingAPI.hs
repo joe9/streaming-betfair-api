@@ -6,8 +6,8 @@
 module Betfair.StreamingAPI
   (
    -- from this file
-       startStreaming
-   --   , start
+       streamMarketIds
+     , start
   ,
    -- Common Types
    MarketId
@@ -100,8 +100,9 @@ import           Network.Socket
 
 -- app key from betfair subscription
 -- session token from the api
--- main :: IO ()
--- main = start "appkey" "sessiontoken"
+start :: IO ()
+start = streamMarketIds "appkey" "sessiontoken" [""]
+
 -- start :: AppKey -> SessionToken -> IO ()
 -- start appkey sessionToken =
 --   do context <- initializeContext appkey sessionToken
@@ -137,7 +138,7 @@ streamMarketIds :: AppKey
                   -> Maybe (StreamingState -> IO ())
                   -> IO StreamingState
 streamMarketIds a stoken mids mss m mn l r st =
-  fmap cState (startStreaming (context {cState = addMarketIds (cState context) mids}))
+  ( fmap cState . startStreaming) (context {cState = addMarketIds (cState context) mids})
   where context = initializeContext a stoken mss m mn l r st
 
 startStreaming :: Context -> IO Context
