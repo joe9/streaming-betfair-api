@@ -3,11 +3,13 @@
 
 module Betfair.StreamingAPI.API.ResponseProcessing
   (response
+  ,responseT
   ,Response(..))
   where
 
 import           BasicPrelude
 import           Data.Aeson
+import           Control.Monad.Trans.Except
 import           Data.Aeson.Types
 import qualified Data.Map.Strict                                    as Map
 import           Data.String.Conversions
@@ -24,6 +26,10 @@ import qualified Betfair.StreamingAPI.Responses.StatusMessage       as S
 import           Betfair.StreamingAPI.Types.ChangeType
 import qualified Betfair.StreamingAPI.Types.MarketChange            as MarketChange
 -- import           Betfair.StreamingAPI.Types.MarketStatus
+
+responseT
+  :: Context -> ExceptT ResponseException IO (Context,Response)
+responseT = ExceptT . response
 
 response
   :: Context -> IO ( Either ResponseException (Context,Response))

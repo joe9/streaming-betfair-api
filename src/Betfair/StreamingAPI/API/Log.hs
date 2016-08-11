@@ -4,7 +4,7 @@
 module Betfair.StreamingAPI.API.Log
   (Log
   ,Direction(..)
-  ,log
+  ,toLog
   ,logD
   ,groomedLog
   ,stdOutAndLog)

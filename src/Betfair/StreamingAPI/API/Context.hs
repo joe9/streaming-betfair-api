@@ -19,7 +19,8 @@ import Betfair.StreamingAPI.API.ResponseException
 import Betfair.StreamingAPI.API.StreamingState
 
 data Context =
-  Context {cReadMarketIds :: IO [MarketId]
+  Context {cBlockingReadMarketIds :: IO [MarketId]
+          ,cNonBlockingReadMarketIds :: IO [MarketId]
           ,cLogger :: Text -> IO ()
           ,cWriteResponses :: Either ResponseException Response -> IO ()
           ,cWriteState :: StreamingState -> IO ()
@@ -29,12 +30,14 @@ data Context =
 initializeContext :: AppKey
                   -> SessionToken
                   -> IO [MarketId]
+                  -> IO [MarketId]
                   -> (Text -> IO ())
                   -> (Either ResponseException Response -> IO ())
                   -> (StreamingState -> IO ())
                   -> Context
-initializeContext a s m l r st =
-  Context {cReadMarketIds = m
+initializeContext a s mb mn l r st =
+  Context {cBlockingReadMarketIds = mb
+          ,cNonBlockingReadMarketIds = mn
           ,cLogger = l
           ,cWriteResponses = r
           ,cWriteState = st

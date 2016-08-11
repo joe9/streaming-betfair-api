@@ -5,11 +5,12 @@
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Betfair.StreamingAPI
   (
-    -- from this file
-    main
-  , start
+   -- from this file
+   --     main
+   --   , start
+   --   ,
    -- Common Types
-  , MarketId
+   MarketId
   ,MarketName
   ,EventName
   ,SessionToken
@@ -40,17 +41,19 @@ module Betfair.StreamingAPI
   ,RunnerStatus)
   where
 
-import BasicPrelude
+import BasicPrelude hiding (finally)
 --
 import Betfair.StreamingAPI.API.AddId
 import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Config
 import Betfair.StreamingAPI.API.Context
 import Betfair.StreamingAPI.API.Log
-import Betfair.StreamingAPI.API.ReadFromTChan
+-- import Betfair.StreamingAPI.API.ReadFromTChan
 import Betfair.StreamingAPI.API.Request
 import Betfair.StreamingAPI.API.RequestProcessing
 import Betfair.StreamingAPI.API.Response
+import Betfair.StreamingAPI.API.ResponseException
+import Betfair.StreamingAPI.API.ResponseProcessing
 import Betfair.StreamingAPI.API.StreamingState
 import Betfair.StreamingAPI.Requests.AuthenticationMessage
 import Betfair.StreamingAPI.Requests.HeartbeatMessage
@@ -84,163 +87,127 @@ import Betfair.StreamingAPI.Types.SegmentType
 import Betfair.StreamingAPI.Types.Side
 --
 import           Control.Concurrent
-import           Control.Concurrent.STM.TChan
 import           Control.Exception.Safe
-import           Control.Monad.RWS
-import           Control.Monad.STM
+import           Control.Monad.Trans.Except
 import           Data.Default
-import qualified Data.Map.Strict                 as Map
+import qualified Data.Map.Strict            as Map
 import           Data.Maybe
 import           Data.String.Conversions
-import           Data.Text                       hiding (null)
+import           Data.Text                  hiding (null,map)
 import           Data.Text.IO
-import           Network.Betfair.API.CommonTypes
 import           Network.Connection
 import           Network.Socket
--- import Network.Betfair.API.Config
-import Network.Betfair.API.Context
-import Network.Betfair.API.Log
-import Network.Betfair.API.ReadFromTChan
--- import Network.Betfair.API.Request
-import Network.Betfair.API.RequestProcessing
--- import Network.Betfair.API.Response
-import Network.Betfair.API.Response
-import Network.Betfair.API.StreamingState
--- import Network.Betfair.Responses.ConnectionMessage
--- import Network.Betfair.Responses.MarketChangeMessage
--- import Network.Betfair.Responses.OrderChangeMessage
-import Network.Betfair.Responses.StatusMessage
-import Network.Betfair.Types.RequestStatus
-import Prelude                                 hiding (log, putStrLn)
 
 -- app key from betfair subscription
 -- session token from the api
-main :: IO ()
-main = start "appkey" "sessiontoken"
-
-start :: AppKey -> SessionToken -> IO ()
-start appkey sessionToken =
-  do context <- initializeContext appkey sessionToken
-     logReader <- forkIO (readChannels context)
-     _ <-
-       startStreaming
-         context
-         (Just def {ssMarkets =
-                      (Map.fromList .
-                       fmap (\mid -> (mid,def {msMarketId = mid}))) ["1.125615282"]})
-     threadDelay (30 * 1000 * 1000)
-     return ()
-
-readChannel :: TChan Text -> IO ()
-readChannel chan =
-  do msg <- atomically $ readTChan chan
-     putStrLn msg
-
-readChannels :: Context -> IO ()
-readChannels context =
-  do readChannel (cWriteLogChannel context)
-     readChannel (cWriteResponsesChannel context)
-     readChannels context
-
+-- main :: IO ()
+-- main = start "appkey" "sessiontoken"
+-- start :: AppKey -> SessionToken -> IO ()
+-- start appkey sessionToken =
+--   do context <- initializeContext appkey sessionToken
+--      logReader <- forkIO (readChannels context)
+--      _ <-
+--        startStreaming
+--          context
+--          (Just def {ssMarkets =
+--                       (Map.fromList .
+--                        fmap (\mid -> (mid,def {msMarketId = mid}))) ["1.125615282"]})
+--      threadDelay (30 * 1000 * 1000)
+--      return ()
+-- readChannel :: TChan Text -> IO ()
+-- readChannel chan =
+--   do msg <- atomically $ readTChan chan
+--      putStrLn msg
+-- readChannels :: Context -> IO ()
+-- readChannels context =
+--   do readChannel (cWriteLogChannel context)
+--      readChannel (cWriteResponsesChannel context)
+--      readChannels context
 -- if you do not have old state, call this function
-startStreaming
-  :: Context -> Maybe StreamingState -> IO StreamingState
-startStreaming context =
-  streamMarketIds context .
-  (\ss ->
-     ss {ssAppKey = cAppKey context
-        ,ssConnectionState = NotAuthenticated
-        ,ssSessionToken = cSessionToken context}) .
-  fromMaybe (def :: StreamingState)
+-- startStreaming
+--   :: Context -> Maybe StreamingState -> IO StreamingState
+-- startStreaming context =
+--   streamMarketIds context .
+--   (\ss ->
+--      ss {ssAppKey = cAppKey context
+--         ,ssConnectionState = NotAuthenticated
+--         ,ssSessionToken = cSessionToken context}) .
+--   fromMaybe (def :: StreamingState)
 
-streamMarketIds
-  :: Context -> StreamingState -> IO StreamingState
---  if there are no market ids to process, get out
-streamMarketIds context ss
-  | null (ssMarkets ss) =
+streamMarketIds :: Context -> IO Context
+streamMarketIds context
+  | null (ssMarkets (cState context)) =
     do
        -- blocking read for MarketId's, waiting for marketIds as there
        -- are none to stream
-       mids <- readMarketIdsFromTChan (cReadMarketIdsChannel context)
+       mids <- cBlockingReadMarketIds context
        -- start processing those marketids and market ids from streaming state
        streamMarketIds
-         context
-         (ss {ssMarkets =
-                (Map.fromList . fmap (\mid -> (mid,def {msMarketId = mid}))) mids})
+         context {cState =
+                    (cState context) {ssMarkets =
+                                        (Map.fromList .
+                                         fmap (\mid ->
+                                                 (mid,def {msMarketId = mid}))) mids}}
   |
-    -- start processing if there are any marketid's in streaming state
-    -- http://learnyouahaskell.com/input-and-output#exceptions
-    -- https://haskell-lang.org/tutorial/exception-safety
-    -- https://haskell-lang.org/library/safe-exceptions
-    -- http://neilmitchell.blogspot.com/2015/05/handling-control-c-in-haskell.html
-    -- the below exception handling mechanism is perfect. "tryAny"
-    -- handles any synchronous exceptions and recovers from
-    -- them. Synchronous exceptions are exceptions directly related to
-    -- the executed code such as "no network connection", "no host",
-    -- etc. Whereas, "finally" is for cleanup. "finally" handles both
-    -- synchronous and asynchronous exceptions. If a user presses
-    -- Ctrl-C (asynchronous exception), "finally" cleans up the open
-    -- connection thus preventing a leak.
+   -- start processing if there are any marketid's in streaming state
+   -- http://learnyouahaskell.com/input-and-output#exceptions
+   -- https://haskell-lang.org/tutorial/exception-safety
+   -- https://haskell-lang.org/library/safe-exceptions
+   -- http://neilmitchell.blogspot.com/2015/05/handling-control-c-in-haskell.html
+   -- the below exception handling mechanism is perfect. "tryAny"
+   -- handles any synchronous exceptions and recovers from
+   -- them. Synchronous exceptions are exceptions directly related to
+   -- the executed code such as "no network connection", "no host",
+   -- etc. Whereas, "finally" is for cleanup. "finally" handles both
+   -- synchronous and asynchronous exceptions. If a user presses
+   -- Ctrl-C (asynchronous exception), "finally" cleans up the open
+   -- connection thus preventing a leak.
    otherwise =
     do result <- tryAny connectToBetfair
        case result of
          Left err ->
-           log (cWriteLogChannel context)
-               (append "streamMarketIds: Caught exception: " ((pack . show) err)) >>
+           toLog context ("streamMarketIds: Caught exception: " <> show err) >>
            threadDelay (60 * 1000 * 1000) >>
-           streamMarketIds context ss
+           streamMarketIds context
          Right connection ->
-           do newState <-
-                finally (fmap (\(_,s,_) -> s)
-                              (runRWST authenticateAndReadDataLoop
-                                       context {cConnection = connection}
-                                       ss))
-                        (log (cWriteLogChannel context) "Closing connection" >>
+           do eitherContext <-
+                finally (runExceptT
+                           (authenticateAndReadDataLoop
+                              context {cConnection = connection}))
+                        (toLog context "Closing connection" >>
                          connectionClose connection)
-              if (ssNeedHumanHelp newState)
-                 then return newState
-                 else streamMarketIds context newState
+              case eitherContext of
+                Left e ->
+                  stdOutAndLog context
+                               None
+                               (show e) >>
+                  return context
+                Right r -> streamMarketIds r
 
 authenticateAndReadDataLoop
-  :: RWST Context () StreamingState IO ()
-authenticateAndReadDataLoop =
-  do _ <- response -- TODO check this response
-     ss <- get
-     checkAuthentication (ssConnectionState ss)
-     -- check status and ensure that the authentication was successful
-     _ <- response -- TODO check this response
-     marketIdsSubscription ((Map.keys . ssMarkets) ss)
-     r <- response -- TODO check this response
-     ssa <- get
-     let ssb = ssa {ssNeedHumanHelp = isHumanHelpNeeded r}
-     put ssb
-     when (not (isHumanHelpNeeded r)) readDataLoop
+  :: Context -> ExceptT ResponseException IO Context
+authenticateAndReadDataLoop c =
+  responseT c >>= lift . authentication . fst >>= responseT >>=
+  (\(cu,_) ->
+     (lift . marketIdsSubscription cu) ((Map.keys . ssMarkets . cState) cu)) >>=
+  readDataLoop
 
 readDataLoop
-  :: RWST Context () StreamingState IO ()
-readDataLoop =
-  do ss <- get
-     -- TODO if all markets are closed, get out
-     if (null (ssMarkets ss))
-        then return ()
-        else do mids <- nonBlockingReadMarketIds
-                -- write state if changed
-                -- send subscribe requests to new markets only, if needed
-                --                 put
-                --                   (ss {ssMarkets =
-                --                          (Map.fromList .
-                --                           map (\mid -> (mid,def {msMarketId = mid}))) mids})
-                r <- response
-                context <- ask
-                lift (atomically
-                        (writeTChan (cWriteResponsesChannel context)
-                                    ((pack . show) r)))
-                ssa <- get
-                let ssb = ssa {ssNeedHumanHelp = isHumanHelpNeeded r}
-                put ssb
-                if (ssNeedHumanHelp ssb)
-                   then return ()
-                   else readDataLoop
+  :: Context -> ExceptT ResponseException IO Context
+-- readDataLoop c = undefined
+readDataLoop c
+  -- TODO if all markets are closed, get out
+  | (null . ssMarkets . cState) c = return c
+  | otherwise =
+        do mids <- lift (cNonBlockingReadMarketIds c)
+           -- write state if changed
+           -- send subscribe requests to new markets only, if needed
+           let cu = c {cState = (cState c) {
+                          ssMarkets =
+                            (Map.fromList .
+                              map (\mid -> (mid,def {msMarketId = mid}))) mids}
+                       }
+           responseT cu >>= readDataLoop . fst
 
 connectToBetfair :: IO Connection
 connectToBetfair =
@@ -259,21 +226,3 @@ host = "stream-api-integration.betfair.com"
 -- host = "stream-api.betfair.com"
 port :: PortNumber
 port = 443
-
-checkAuthentication
-  :: ConnectionState -> RWST Context () StreamingState IO ()
-checkAuthentication NotAuthenticated =
-  do authentication
-     s <- get
-     put (s {ssConnectionState = AuthenticateSent})
-checkAuthentication _ = return ()
-
-isHumanHelpNeeded :: Response -> Bool
-isHumanHelpNeeded (Status (StatusMessage{statusCode = SUCCESS,connectionClosed = Just False}) _) =
-  False
-isHumanHelpNeeded (Status (StatusMessage{connectionClosed = Just True}) _) =
-  True
-isHumanHelpNeeded (Status (StatusMessage{statusCode = FAILURE}) _) = True
-isHumanHelpNeeded (NotImplemented _) = True
-isHumanHelpNeeded (JSONParseError _) = True
-isHumanHelpNeeded _ = False
