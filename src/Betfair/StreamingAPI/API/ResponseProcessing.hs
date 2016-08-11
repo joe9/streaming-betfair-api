@@ -7,111 +7,85 @@ module Betfair.StreamingAPI.API.ResponseProcessing
   where
 
 import           BasicPrelude
-import           Control.Monad.RWS
 import           Data.Aeson
 import           Data.Aeson.Types
-import           Data.ByteString                                    hiding
-                                                                     (append)
 import qualified Data.Map.Strict                                    as Map
-import           Data.Maybe
 import           Data.String.Conversions
-import           Data.Text
 import           Network.Connection
 import           Safe
 --
 import           Betfair.StreamingAPI.API.Context
 import           Betfair.StreamingAPI.API.Log
-import           Betfair.StreamingAPI.API.Request
 import           Betfair.StreamingAPI.API.Response
 import           Betfair.StreamingAPI.API.ResponseException
 import           Betfair.StreamingAPI.API.StreamingState
-import qualified Betfair.StreamingAPI.Responses.ConnectionMessage   as C
 import qualified Betfair.StreamingAPI.Responses.MarketChangeMessage as M
-import qualified Betfair.StreamingAPI.Responses.OrderChangeMessage  as O
 import qualified Betfair.StreamingAPI.Responses.StatusMessage       as S
 import           Betfair.StreamingAPI.Types.ChangeType
 import qualified Betfair.StreamingAPI.Types.MarketChange            as MarketChange
 -- import           Betfair.StreamingAPI.Types.MarketStatus
 
--- response :: RWST Context l s IO Response
--- response =
---   ask >>= lift . connectionGetLine 16384 >>= groomedLog >>=
---   lift . return . parseResponse . L.fromStrict
 response
-  :: Context -> IO (Either ResponseException Response)
+  :: Context -> IO ( Either ResponseException (Context,Response))
 response c =
   do
      raw <- connectionGetLine 16384 (cConnection c)
-     _ <- groomedLog From raw
-     (\r -> groomedLog From =<< processResponse r) (parseResponse raw)
+     _ <- groomedLog c From raw
+     groomedLog c From (parseResponse raw >>= processResponse c)
+--      (return . Right) (c,undefined)
 
-processResponse
-  :: Context -> Response -> IO (Either ResponseException Response)
-processResponse c r@(OrderChange _) = return r -- not implemented
-processResponse c r@(Connection _) = return r
-processResponse c (Status status _) =
-  do s <- get
-     return (Status status
-                    (Map.lookup (fromMaybe 0 (S.id status))
-                                (ssRequests s)))
+processResponse :: Context -> Response -> Either ResponseException (Context,Response)
 processResponse c r@(MarketChange m)
-  | isNothing (M.ct m) || M.ct m == Just HEARTBEAT = return r
-  | isNothing (M.mc m) || M.mc m == Just [] = return r
+  | isNothing (M.ct m) || M.ct m == Just HEARTBEAT = Right (c,r)
+  | isNothing (M.mc m) || M.mc m == Just [] = Right (c,r)
   | isJust (M.segmentType m) =
-    return (NotImplemented
-              (append "segmentType processing not implemented" (Data.Text.pack (show m))))
+     notImplementedText r ("segmentType processing not implemented" <> (cs . show) m)
   | isNothing (M.segmentType m) =
-    do s <- get
-       u <-
-         lift ((foldM (updateStreamingState (M.clk m)
+       Right (c{cState = ((foldl (updateStreamingState (M.clk m)
                                             (M.initialClk m)
                                             (M.pt m))
-                      s .
-                fromJustNote "should have markets here" . M.mc) m)
-       put u
-       return r
+                            (cState c) .
+                            fromJustNote "should have markets here" . M.mc) m)}, r)
   | otherwise =
-    return (NotImplemented (append "processResponse: " (Data.Text.pack (show m))))
-processResponse c r = return r
+     notImplementedText r ("processResponse: " <> (cs . show) m)
+processResponse c (Status status _) =
+     Right (c,Status status
+                    (Map.lookup (fromMaybe 0 (S.id status))
+                                (ssRequests (cState c))))
+processResponse c r@(Connection _) = Right (c,r)
+processResponse _ r@(OrderChange _) = notImplemented r
+-- processResponse c r = Right (c,r)
 
--- processResponse r@(EmptyLine) = return r
--- processResponse r@(NotImplemented _) = return r
--- processResponse r@(JSONParseError _) = return r
 updateStreamingState :: Maybe Text
                      -> Maybe Text
                      -> Integer
                      -> StreamingState
                      -> MarketChange.MarketChange
-                     -> IO StreamingState
+                     -> StreamingState
 updateStreamingState c i p s mc =
-  do let m =
-           (fromJustNote "updateMarket: " .
-            Map.lookup (MarketChange.id mc) . ssMarkets) s
-     u <- updateMarket c i p m mc
-     return (s {ssMarkets =
+     (s {ssMarkets =
                   (Map.insert (MarketChange.id mc)
                               u .
                    ssMarkets) s})
+     where m = (fromJustNote "updateMarket: " .
+                  Map.lookup (MarketChange.id mc) . ssMarkets) s
+           u = updateMarket c i p m mc
 
 updateMarket :: Maybe Text
              -> Maybe Text
              -> Integer
              -> MarketState
              -> MarketChange.MarketChange
-             -> IO MarketState
-updateMarket c i pt m _ = processUpdatedMarket (s {msPublishTime = pt})
+             -> MarketState
+updateMarket c i pt m _ = (s {msPublishTime = pt})
   where f = maybe m (\x -> m {msClk = Just x}) c
         s = maybe f (\x -> f {msInitialClk = Just x}) i
 
-processUpdatedMarket
-  :: MarketState -> IO MarketState
-processUpdatedMarket = pure
-
-opIs :: Object -> Either Text Text
-opIs = either (Left . cs) Right . parseEither (flip (.:) "op")
+opIs :: Object -> Either ResponseException Text
+opIs = either (Left . ParserError . cs) Right . parseEither (flip (.:) "op")
 
 responseIs
-  :: ByteString -> Text -> Either Text Response
+  :: ByteString -> Text -> Either ResponseException Response
 responseIs b op
   | op == "mcm" = eitherDecodeStrictResponseException b >>= (\r -> Right (MarketChange r))
   | op == "ocm" = eitherDecodeStrictResponseException b >>= (\r -> Right (OrderChange r))
@@ -119,21 +93,34 @@ responseIs b op
     eitherDecodeStrictResponseException b >>= (\r -> Right (Connection r))
   | op == "status" =
     eitherDecodeStrictResponseException b >>= (\r -> Right (Status r Nothing))
-  | b == "" = Right EmptyLine
-  | b == "\n" =
-    Right (NotImplemented (append "response: received newline only: " (cs b)))
-  | b == "\r" =
-    Right (NotImplemented (append "response: received carriage return only: " (cs b)))
-  | b == "\r\n" =
-    Right (NotImplemented (append "response: received CRLF only: " (cs b)))
   | otherwise =
-    Right (NotImplemented (append "response: could not parse bytestring: " (cs b)))
+    parserError ("response: could not parse bytestring: " <> (cs b))
 
 parseResponse :: ByteString -> Either ResponseException Response
-parseResponse b =
-  either JSONParseError id (eitherDecodeStrictResponseException b >>= opIs >>= responseIs b)
+parseResponse b
+  | b == "" = (Left . EmptyLine . cs) b
+  | b == "\n" =
+    parserError ("response: received newline only: " <> (cs b))
+  | b == "\r" =
+    parserError ("response: received carriage return only: " <> (cs b))
+  | b == "\r\n" =
+    parserError ("response: received CRLF only: " <> (cs b))
+  | otherwise =
+    eitherDecodeStrictResponseException b >>= opIs >>= responseIs b
 
 eitherDecodeStrictResponseException
   :: FromJSON a
   => ByteString -> Either ResponseException a
-eitherDecodeStrictResponseException = either (ParserError . cs) eitherDecodeStrict
+eitherDecodeStrictResponseException b =
+  case eitherDecodeStrict b of
+     Left e -> ( Left . ParserError . cs) e
+     Right a -> Right a
+
+notImplemented :: Response -> Either ResponseException b
+notImplemented r = Left ( NotImplemented r Nothing)
+
+notImplementedText :: Response -> Text -> Either ResponseException b
+notImplementedText r t = Left ( NotImplemented r (Just t))
+
+parserError :: Text -> Either ResponseException b
+parserError = Left . ParserError

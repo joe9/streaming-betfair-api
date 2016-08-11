@@ -6,9 +6,10 @@ module Betfair.StreamingAPI.API.ResponseException
   where
 
 import BasicPrelude
+import Betfair.StreamingAPI.API.Response
 
 data ResponseException
   = ParserError Text
   | EmptyLine Text
-  | NotImplemented Text
+  | NotImplemented Response (Maybe Text)
   deriving (Eq,Show)
