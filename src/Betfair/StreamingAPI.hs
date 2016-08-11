@@ -6,8 +6,8 @@
 module Betfair.StreamingAPI
   (
    -- from this file
-       streamMarketIds
-     , start
+   streamMarketIds
+  ,sampleStart
   ,
    -- Common Types
    MarketId
@@ -93,52 +93,34 @@ import           Data.Default
 import qualified Data.Map.Strict            as Map
 import           Data.Maybe
 import           Data.String.Conversions
-import           Data.Text                  hiding (null,map)
+import           Data.Text                  hiding (map, null)
 import           Data.Text.IO
 import           Network.Connection
 import           Network.Socket
 
 -- app key from betfair subscription
 -- session token from the api
-start :: IO ()
-start = streamMarketIds "appkey" "sessiontoken" [""]
+sampleStart
+  :: AppKey -> SessionToken -> [MarketId] -> IO ()
+sampleStart a stoken mids =
+  streamMarketIds a stoken mids Nothing Nothing Nothing Nothing Nothing Nothing >>
+  return ()
 
--- start :: AppKey -> SessionToken -> IO ()
--- start appkey sessionToken =
---   do context <- initializeContext appkey sessionToken
---      logReader <- forkIO (readChannels context)
---      _ <-
---        startStreaming
---          context
---          (Just def {ssMarkets =
---                       (Map.fromList .
---                        fmap (\mid -> (mid,def {msMarketId = mid}))) ["1.125615282"]})
---      threadDelay (30 * 1000 * 1000)
---      return ()
-
--- readChannel :: TChan Text -> IO ()
--- readChannel chan =
---   do msg <- atomically $ readTChan chan
---      putStrLn msg
--- readChannels :: Context -> IO ()
--- readChannels context =
---   do readChannel (cWriteLogChannel context)
---      readChannel (cWriteResponsesChannel context)
---      readChannels context
-
--- if you do not have old state, call this function
 streamMarketIds :: AppKey
-                  -> SessionToken
-                  -> [MarketId]
-                  -> Maybe StreamingState
-                  -> Maybe ( IO [MarketId])
-                  -> Maybe ( IO [MarketId])
-                  -> Maybe (Text -> IO ())
-                  -> Maybe (Either ResponseException Response -> IO ())
-                  -> Maybe (StreamingState -> IO ())
-                  -> IO StreamingState
+                -> SessionToken
+                -> [MarketId]
+                -> Maybe StreamingState
+                -> Maybe (IO [MarketId])
+                -> Maybe (IO [MarketId])
+                -> Maybe (Text -> IO ())
+                -> Maybe (Either ResponseException Response -> IO ())
+                -> Maybe (StreamingState -> IO ())
+                -> IO StreamingState
 streamMarketIds a stoken mids mss m mn l r st =
-  ( fmap cState . startStreaming) (context {cState = addMarketIds (cState context) mids})
+  (fmap cState . startStreaming)
+    (context {cState =
+                addMarketIds (cState context)
+                             mids})
   where context = initializeContext a stoken mss m mn l r st
 
 startStreaming :: Context -> IO Context
@@ -149,7 +131,10 @@ startStreaming context
        -- are none to stream
        mids <- cBlockingReadMarketIds context
        -- start processing those marketids and market ids from streaming state
-       startStreaming ( context {cState = addMarketIds (cState context) mids})
+       startStreaming
+         (context {cState =
+                     addMarketIds (cState context)
+                                  mids})
   |
    -- start processing if there are any marketid's in streaming state
    -- http://learnyouahaskell.com/input-and-output#exceptions
@@ -198,14 +183,17 @@ readDataLoop
   :: Context -> ExceptT ResponseException IO Context
 -- readDataLoop c = undefined
 readDataLoop c
-  -- TODO if all markets are closed, get out
+-- TODO if all markets are closed, get out
   | (null . ssMarkets . cState) c = return c
   | otherwise =
-        do mids <- lift (cNonBlockingReadMarketIds c)
-           -- write state if changed
-           -- send subscribe requests to new markets only, if needed
-           let cu = c {cState = addMarketIds (cState c) mids}
-           responseT cu >>= readDataLoop . fst
+    do mids <- lift (cNonBlockingReadMarketIds c)
+       -- write state if changed
+       -- send subscribe requests to new markets only, if needed
+       let cu =
+             c {cState =
+                  addMarketIds (cState c)
+                               mids}
+       responseT cu >>= readDataLoop . fst
 
 connectToBetfair :: IO Connection
 connectToBetfair =

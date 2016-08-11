@@ -67,9 +67,9 @@ data MarketState =
 instance Default MarketState where
   def = MarketState Nothing "" "" False "" ToSubscribe Nothing Nothing 0
 
-addMarketIds :: StreamingState -> [ MarketId] -> StreamingState
+addMarketIds
+  :: StreamingState -> [MarketId] -> StreamingState
 addMarketIds ss mids =
-         ss {ssMarkets =
-                    Map.union (ssMarkets ss)
-                              ((Map.fromList . fmap (\mid -> (mid,def {msMarketId = mid}))) mids)
-                   }
+  ss {ssMarkets =
+        Map.union (ssMarkets ss)
+                  ((Map.fromList . fmap (\mid -> (mid,def {msMarketId = mid}))) mids)}
