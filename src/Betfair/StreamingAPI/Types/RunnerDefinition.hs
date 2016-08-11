@@ -9,12 +9,12 @@ module Betfair.StreamingAPI.Types.RunnerDefinition
   where
 
 import BasicPrelude
-import Betfair.StreamingAPI.Types.RunnerStatus (RunnerStatus)
 import Data.Aeson.TH                           (Options (omitNothingFields),
                                                 defaultOptions,
                                                 deriveJSON)
 import Data.Default.TH                         (deriveDefault)
-import Data.Text
+--
+import Betfair.StreamingAPI.Types.RunnerStatus (RunnerStatus)
 
 type DateString = Text
 

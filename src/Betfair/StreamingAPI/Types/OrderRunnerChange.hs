@@ -1,17 +1,16 @@
-{-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE NoImplicitPrelude    #-}
 {-# LANGUAGE OverloadedStrings    #-}
 {-# LANGUAGE TemplateHaskell      #-}
-{-# LANGUAGE UndecidableInstances #-}
 
 module Betfair.StreamingAPI.Types.OrderRunnerChange
   (OrderRunnerChange(..))
   where
 
 import BasicPrelude
-import Betfair.StreamingAPI.Types.Order (Order)
 import Data.Aeson.TH                    (Options (omitNothingFields),
                                          defaultOptions, deriveJSON)
+--
+import Betfair.StreamingAPI.Types.Order (Order)
 
 data OrderRunnerChange =
   OrderRunnerChange {mb        :: [[Double]] -- Matched Backs - matched amounts by distinct matched price on the Back side for this runner (selection)

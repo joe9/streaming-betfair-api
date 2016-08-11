@@ -7,12 +7,12 @@ module Betfair.StreamingAPI.Responses.StatusMessage
   where
 
 import BasicPrelude
-import Betfair.StreamingAPI.Types.ErrorCode     (ErrorCode)
-import Betfair.StreamingAPI.Types.RequestStatus (RequestStatus)
 import Data.Aeson.TH                            (Options (omitNothingFields),
                                                  defaultOptions,
                                                  deriveJSON)
-import Data.Text
+--
+import Betfair.StreamingAPI.Types.ErrorCode     (ErrorCode)
+import Betfair.StreamingAPI.Types.RequestStatus (RequestStatus)
 
 data StatusMessage =
   StatusMessage {op               :: Text

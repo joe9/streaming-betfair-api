@@ -1,19 +1,17 @@
-{-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE NoImplicitPrelude    #-}
 {-# LANGUAGE OverloadedStrings    #-}
 {-# LANGUAGE TemplateHaskell      #-}
-{-# LANGUAGE UndecidableInstances #-}
 
 module Betfair.StreamingAPI.Types.OrderMarketChange
   (OrderMarketChange(..))
   where
 
 import BasicPrelude
-import Betfair.StreamingAPI.Types.OrderRunnerChange (OrderRunnerChange)
 import Data.Aeson.TH                                (Options (omitNothingFields),
                                                      defaultOptions,
                                                      deriveJSON)
-import Data.Text
+--
+import Betfair.StreamingAPI.Types.OrderRunnerChange (OrderRunnerChange)
 
 data OrderMarketChange =
   OrderMarketChange {accountId :: Integer

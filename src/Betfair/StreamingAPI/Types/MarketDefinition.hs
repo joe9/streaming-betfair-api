@@ -9,13 +9,13 @@ module Betfair.StreamingAPI.Types.MarketDefinition
   where
 
 import BasicPrelude
-import Betfair.StreamingAPI.Types.BettingType      (BettingType)
-import Betfair.StreamingAPI.Types.MarketStatus     (MarketStatus)
-import Betfair.StreamingAPI.Types.RunnerDefinition (RunnerDefinition)
 import Data.Aeson.TH                               (Options (omitNothingFields),
                                                     defaultOptions,
                                                     deriveJSON)
-import Data.Text
+--
+import Betfair.StreamingAPI.Types.BettingType      (BettingType)
+import Betfair.StreamingAPI.Types.MarketStatus     (MarketStatus)
+import Betfair.StreamingAPI.Types.RunnerDefinition (RunnerDefinition)
 
 type DateString = Text
 

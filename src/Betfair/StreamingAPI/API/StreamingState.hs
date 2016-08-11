@@ -15,7 +15,7 @@ module Betfair.StreamingAPI.API.StreamingState
 import           BasicPrelude
 import           Data.Default
 import qualified Data.Map.Strict as Map
-import           Data.Text
+-- import           Data.Text
 -- import Data.Maybe
 --
 import Betfair.StreamingAPI.API.CommonTypes

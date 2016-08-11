@@ -9,12 +9,12 @@ module Betfair.StreamingAPI.Types.MarketChange
   where
 
 import BasicPrelude
-import Betfair.StreamingAPI.Types.MarketDefinition (MarketDefinition)
-import Betfair.StreamingAPI.Types.RunnerChange     (RunnerChange)
 import Data.Aeson.TH                               (Options (omitNothingFields),
                                                     defaultOptions,
                                                     deriveJSON)
-import Data.Text
+--
+import Betfair.StreamingAPI.Types.MarketDefinition (MarketDefinition)
+import Betfair.StreamingAPI.Types.RunnerChange     (RunnerChange)
 
 data MarketChange =
   MarketChange {rc               :: Maybe [RunnerChange] -- Runner Changes - a list of changes to runners (or null if un-changed)
