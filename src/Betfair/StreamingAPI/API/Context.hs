@@ -29,22 +29,23 @@ data Context =
 
 initializeContext :: AppKey
                   -> SessionToken
-                  -> IO [MarketId]
-                  -> IO [MarketId]
-                  -> (Text -> IO ())
-                  -> (Either ResponseException Response -> IO ())
-                  -> (StreamingState -> IO ())
+                  -> Maybe StreamingState
+                  -> Maybe ( IO [MarketId])
+                  -> Maybe ( IO [MarketId])
+                  -> Maybe (Text -> IO ())
+                  -> Maybe (Either ResponseException Response -> IO ())
+                  -> Maybe (StreamingState -> IO ())
                   -> Context
-initializeContext a s mb mn l r st =
-  Context {cBlockingReadMarketIds = mb
-          ,cNonBlockingReadMarketIds = mn
-          ,cLogger = l
-          ,cWriteResponses = r
-          ,cWriteState = st
+initializeContext a s mss mb mn l r st =
+  Context {cBlockingReadMarketIds = fromMaybe (return []) mb
+          ,cNonBlockingReadMarketIds = fromMaybe (return []) mn
+          ,cLogger = fromMaybe putStrLn l
+          ,cWriteResponses = fromMaybe print r
+          ,cWriteState = fromMaybe print st
           ,cConnection = undefined
           ,cState =
-             def {ssAppKey = a
-                 ,ssSessionToken = s}}
+             (fromMaybe def mss) {ssAppKey = a
+                                 ,ssSessionToken = s}}
 
 instance Show Context where
   show = cs . showContext

@@ -6,9 +6,9 @@
 module Betfair.StreamingAPI
   (
    -- from this file
-   --     main
+       startStreaming
    --   , start
-   --   ,
+  ,
    -- Common Types
    MarketId
   ,MarketName
@@ -114,6 +114,7 @@ import           Network.Socket
 --                        fmap (\mid -> (mid,def {msMarketId = mid}))) ["1.125615282"]})
 --      threadDelay (30 * 1000 * 1000)
 --      return ()
+
 -- readChannel :: TChan Text -> IO ()
 -- readChannel chan =
 --   do msg <- atomically $ readTChan chan
@@ -123,31 +124,31 @@ import           Network.Socket
 --   do readChannel (cWriteLogChannel context)
 --      readChannel (cWriteResponsesChannel context)
 --      readChannels context
--- if you do not have old state, call this function
--- startStreaming
---   :: Context -> Maybe StreamingState -> IO StreamingState
--- startStreaming context =
---   streamMarketIds context .
---   (\ss ->
---      ss {ssAppKey = cAppKey context
---         ,ssConnectionState = NotAuthenticated
---         ,ssSessionToken = cSessionToken context}) .
---   fromMaybe (def :: StreamingState)
 
-streamMarketIds :: Context -> IO Context
-streamMarketIds context
+-- if you do not have old state, call this function
+streamMarketIds :: AppKey
+                  -> SessionToken
+                  -> [MarketId]
+                  -> Maybe StreamingState
+                  -> Maybe ( IO [MarketId])
+                  -> Maybe ( IO [MarketId])
+                  -> Maybe (Text -> IO ())
+                  -> Maybe (Either ResponseException Response -> IO ())
+                  -> Maybe (StreamingState -> IO ())
+                  -> IO StreamingState
+streamMarketIds a stoken mids mss m mn l r st =
+  fmap cState (startStreaming (context {cState = addMarketIds (cState context) mids}))
+  where context = initializeContext a stoken mss m mn l r st
+
+startStreaming :: Context -> IO Context
+startStreaming context
   | null (ssMarkets (cState context)) =
     do
        -- blocking read for MarketId's, waiting for marketIds as there
        -- are none to stream
        mids <- cBlockingReadMarketIds context
        -- start processing those marketids and market ids from streaming state
-       streamMarketIds
-         context {cState =
-                    (cState context) {ssMarkets =
-                                        (Map.fromList .
-                                         fmap (\mid ->
-                                                 (mid,def {msMarketId = mid}))) mids}}
+       startStreaming ( context {cState = addMarketIds (cState context) mids})
   |
    -- start processing if there are any marketid's in streaming state
    -- http://learnyouahaskell.com/input-and-output#exceptions
@@ -168,7 +169,7 @@ streamMarketIds context
          Left err ->
            toLog context ("streamMarketIds: Caught exception: " <> show err) >>
            threadDelay (60 * 1000 * 1000) >>
-           streamMarketIds context
+           startStreaming context
          Right connection ->
            do eitherContext <-
                 finally (runExceptT
@@ -182,7 +183,7 @@ streamMarketIds context
                                None
                                (show e) >>
                   return context
-                Right r -> streamMarketIds r
+                Right r -> startStreaming r
 
 authenticateAndReadDataLoop
   :: Context -> ExceptT ResponseException IO Context
@@ -202,11 +203,7 @@ readDataLoop c
         do mids <- lift (cNonBlockingReadMarketIds c)
            -- write state if changed
            -- send subscribe requests to new markets only, if needed
-           let cu = c {cState = (cState c) {
-                          ssMarkets =
-                            (Map.fromList .
-                              map (\mid -> (mid,def {msMarketId = mid}))) mids}
-                       }
+           let cu = c {cState = addMarketIds (cState c) mids}
            responseT cu >>= readDataLoop . fst
 
 connectToBetfair :: IO Connection

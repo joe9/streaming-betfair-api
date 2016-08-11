@@ -9,7 +9,8 @@ module Betfair.StreamingAPI.API.StreamingState
   ,MarketConnectionState(..)
   ,MarketId
   ,MarketName
-  ,EventName)
+  ,EventName
+  ,addMarketIds)
   where
 
 import           BasicPrelude
@@ -65,3 +66,10 @@ data MarketState =
 
 instance Default MarketState where
   def = MarketState Nothing "" "" False "" ToSubscribe Nothing Nothing 0
+
+addMarketIds :: StreamingState -> [ MarketId] -> StreamingState
+addMarketIds ss mids =
+         ss {ssMarkets =
+                    Map.union (ssMarkets ss)
+                              ((Map.fromList . fmap (\mid -> (mid,def {msMarketId = mid}))) mids)
+                   }
