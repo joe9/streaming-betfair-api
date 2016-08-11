@@ -18,15 +18,15 @@ import Data.Default.TH                        (deriveDefault)
 import Data.Text
 
 data MarketFilter =
-  MarketFilter {countryCodes :: Maybe [Text]
-               ,bettingTypes :: [BettingType]
+  MarketFilter {countryCodes      :: Maybe [Text]
+               ,bettingTypes      :: [BettingType]
                ,turnInPlayEnabled :: Maybe Bool
-               ,marketTypes :: Maybe [Text]
-               ,venues :: Maybe [Text]
-               ,marketIds :: Maybe [Text]
-               ,eventTypeIds :: Maybe [Text]
-               ,eventIds :: Maybe [Text]
-               ,bspMarket :: Maybe Bool}
+               ,marketTypes       :: Maybe [Text]
+               ,venues            :: Maybe [Text]
+               ,marketIds         :: Maybe [Text]
+               ,eventTypeIds      :: Maybe [Text]
+               ,eventIds          :: Maybe [Text]
+               ,bspMarket         :: Maybe Bool}
   deriving (Eq,Show,Read)
 
 -- this is what deriveDefault does anyway

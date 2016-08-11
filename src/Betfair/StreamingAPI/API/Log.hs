@@ -51,5 +51,5 @@ stdOutAndLog d s = logT d s >> lift ((putStr . show) d >> putStrLn s)
 
 instance Show Direction where
   show From = "--->"
-  show To = "<---"
+  show To   = "<---"
   show None = ""

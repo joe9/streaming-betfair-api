@@ -7,32 +7,32 @@ module Betfair.StreamingAPI.API.Context
   where
 
 import BasicPrelude
-import Betfair.StreamingAPI.API.CommonTypes
-import Control.Concurrent.STM.TChan
-import Control.Monad.STM
-import Data.Text
 import Network.Connection
+--
+-- import Betfair.StreamingAPI
+import Betfair.StreamingAPI.API.CommonTypes
+import Betfair.StreamingAPI.API.StreamingState
 
 data Context =
-  Context {cAppKey :: AppKey
-          ,cReadMarketIdsChannel :: TChan Text
-          ,cWriteResponsesChannel :: TChan Text
-          ,cWriteLogChannel :: TChan Text
-          ,cWriteStateChannel :: TChan Text
-          ,cSessionToken :: SessionToken
-          ,cConnection :: Connection}
+  Context {cAppKey        :: AppKey
+          ,cReadMarketIds :: IO [MarketId]
+          ,cSessionToken  :: SessionToken
+          ,
+           --           ,cWriteResponses :: Either ResponseException Response -> IO ()
+           cWriteLog      :: Text -> IO ()
+          ,cWriteState    :: StreamingState -> IO ()
+          ,cConnection    :: Connection}
 
-initializeContext
-  :: AppKey -> SessionToken -> IO Context
-initializeContext a s =
-  do readMarketIdsChannel <- atomically $ newTChan
-     writeResponsesChannel <- atomically $ newTChan
-     writeLogChannel <- atomically $ newTChan
-     writeStateChannel <- atomically $ newTChan
-     return Context {cAppKey = a
-                    ,cReadMarketIdsChannel = readMarketIdsChannel
-                    ,cWriteResponsesChannel = writeResponsesChannel
-                    ,cWriteLogChannel = writeLogChannel
-                    ,cWriteStateChannel = writeStateChannel
-                    ,cSessionToken = s
-                    ,cConnection = undefined}
+initializeContext :: AppKey
+                  -> SessionToken
+                  -> IO [MarketId]
+                  -> (Text -> IO ())
+                  -> (StreamingState -> IO ())
+                  -> Context
+initializeContext a s m l st =
+  Context {cAppKey = a
+          ,cReadMarketIds = m
+          ,cSessionToken = s
+          ,cWriteLog = l
+          ,cWriteState = st
+          ,cConnection = undefined}-- ,cWriteResponses :: Either ResponseException Response -> IO ()

@@ -4,7 +4,16 @@
 
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Betfair.StreamingAPI
-  (PersistenceType
+  (
+   -- Common Types
+   MarketId
+  ,MarketName
+  ,EventName
+  ,SessionToken
+  ,AppKey
+  ,
+   -- Other Types explicitly defined in modules
+   PersistenceType
   ,Order
   ,OrderMarketChange
   ,ChangeType

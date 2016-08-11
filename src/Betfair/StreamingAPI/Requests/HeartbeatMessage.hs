@@ -9,14 +9,14 @@ module Betfair.StreamingAPI.Requests.HeartbeatMessage
   (HeartbeatMessage(..))
   where
 
-import BasicPrelude
+import BasicPrelude  hiding (id)
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
+import Data.Default
 import Data.Text
 -- import Data.Default.TH (deriveDefault)
+--
 import Betfair.StreamingAPI.API.AddId
-import Data.Default
-import Prelude                        hiding (id)
 
 data HeartbeatMessage =
   HeartbeatMessage {op :: Text

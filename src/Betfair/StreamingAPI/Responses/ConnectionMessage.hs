@@ -12,7 +12,7 @@ import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
 import Data.Text
 
 data ConnectionMessage =
-  ConnectionMessage {op :: Text
+  ConnectionMessage {op           :: Text
                     ,connectionId :: Text -- The connection id
                     }
   deriving (Eq,Read,Show)

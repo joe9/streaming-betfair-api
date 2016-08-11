@@ -4,7 +4,7 @@
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Betfair.StreamingAPI.API.CommonTypes where
 
-import Data.Text
+import BasicPrelude
 
 type MarketId = Text
 

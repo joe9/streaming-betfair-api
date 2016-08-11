@@ -12,9 +12,9 @@ import Data.Default
 import Data.Text
 
 data Config =
-  Config {username :: Text
-         ,password :: Text
-         ,appKey :: AppKey
+  Config {username      :: Text
+         ,password      :: Text
+         ,appKey        :: AppKey
          ,delayedAppKey :: AppKey}
   deriving (Eq,Read,Show)
 

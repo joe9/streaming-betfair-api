@@ -8,19 +8,19 @@ module Betfair.StreamingAPI.Requests.AuthenticationMessage
   (AuthenticationMessage(..))
   where
 
-import BasicPrelude
+import BasicPrelude  hiding (id)
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Data.Default
 import Data.Text
-import Prelude       hiding (id)
 -- import Data.Default.TH (deriveDefault)
+--
 import Betfair.StreamingAPI.API.AddId
 
 data AuthenticationMessage =
-  AuthenticationMessage {op :: Text
-                        ,id :: Integer -- Client generated unique id to link request with response (like json rpc)
-                        ,appKey :: Text
+  AuthenticationMessage {op      :: Text
+                        ,id      :: Integer -- Client generated unique id to link request with response (like json rpc)
+                        ,appKey  :: Text
                         ,session :: Text}
   deriving (Eq,Read,Show)
 

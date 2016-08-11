@@ -69,7 +69,6 @@ library
                      , NoImplicitPrelude
   build-depends:       base
                      , mtl
-                     , json
                      , data-default
                      , time
                      , iso8601-time
@@ -85,7 +84,6 @@ library
                      , aeson
                      , swagger2
                      , insert-ordered-containers
-                     , writer-log
                      , containers
                      , safe-exceptions
                      , string-conversions

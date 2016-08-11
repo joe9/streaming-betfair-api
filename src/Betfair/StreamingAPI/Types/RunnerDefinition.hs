@@ -19,13 +19,13 @@ import Data.Text
 type DateString = Text
 
 data RunnerDefinition =
-  RunnerDefinition {sortPriority :: Integer
-                   ,removalDate :: Maybe DateString
-                   ,id :: Integer -- Selection Id - the id of the runner (selection)
-                   ,hc :: Maybe Double -- Handicap - the handicap of the runner (selection) (null if not applicable)
+  RunnerDefinition {sortPriority     :: Integer
+                   ,removalDate      :: Maybe DateString
+                   ,id               :: Integer -- Selection Id - the id of the runner (selection)
+                   ,hc               :: Maybe Double -- Handicap - the handicap of the runner (selection) (null if not applicable)
                    ,adjustmentFactor :: Maybe Double
-                   ,bsp :: Maybe Double
-                   ,status :: RunnerStatus}
+                   ,bsp              :: Maybe Double
+                   ,status           :: RunnerStatus}
   deriving (Eq,Read,Show)
 
 deriveDefault ''RunnerDefinition

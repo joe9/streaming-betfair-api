@@ -18,7 +18,7 @@ import Betfair.StreamingAPI.Types.Field
 
 data MarketDataFilter =
   MarketDataFilter {ladderLevels :: Maybe Integer
-                   ,fields :: [Field]}
+                   ,fields       :: [Field]}
   deriving (Eq,Show,Read)
 
 -- this is what deriveDefault does anyway
