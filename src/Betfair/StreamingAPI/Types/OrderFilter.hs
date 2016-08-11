@@ -1,7 +1,6 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-
 {-# LANGUAGE DeriveDataTypeable   #-}
 {-# LANGUAGE FlexibleContexts     #-}
+{-# LANGUAGE NoImplicitPrelude    #-}
 {-# LANGUAGE OverloadedStrings    #-}
 {-# LANGUAGE TemplateHaskell      #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -9,8 +8,8 @@
 module Betfair.StreamingAPI.Types.OrderFilter
   (OrderFilter(..))
   where
-import BasicPrelude
 
+import BasicPrelude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
 import Data.Default.TH (deriveDefault)

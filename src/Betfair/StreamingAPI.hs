@@ -1,8 +1,6 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-
 {-# LANGUAGE FlexibleContexts  #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Betfair.StreamingAPI
@@ -29,8 +27,8 @@ module Betfair.StreamingAPI
   ,MarketDataFilter
   ,RunnerStatus)
   where
-import BasicPrelude
 
+import BasicPrelude
 import BasicPrelude
 --
 import Betfair.StreamingAPI.API.AddId

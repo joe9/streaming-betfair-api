@@ -1,14 +1,13 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE NoImplicitPrelude  #-}
 {-# LANGUAGE OverloadedStrings  #-}
 {-# LANGUAGE TemplateHaskell    #-}
 
 module Betfair.StreamingAPI.Types.ChangeType
   (ChangeType(..))
   where
-import BasicPrelude
 
+import BasicPrelude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
 import Data.Default.TH (deriveDefault)

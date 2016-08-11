@@ -1,6 +1,4 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Betfair.StreamingAPI.API.Log
@@ -11,16 +9,16 @@ module Betfair.StreamingAPI.API.Log
   ,groomedLog
   ,stdOutAndLog)
   where
-import BasicPrelude
 
+import BasicPrelude
+import Betfair.StreamingAPI.API.Context
 import Control.Concurrent.STM.TChan
 import Control.Monad.RWS
-import Control.Monad.STM            (atomically)
+import Control.Monad.STM                (atomically)
 import Data.Text
-import Data.Text.IO                 hiding (putStr)
-import Betfair.StreamingAPI.API.Context
-import Prelude                      hiding (concat, log, putStrLn)
-import Text.Groom                   (groom)
+import Data.Text.IO                     hiding (putStr)
+import Prelude                          hiding (concat, log, putStrLn)
+import Text.Groom                       (groom)
 
 type Log = ()
 
@@ -53,5 +51,5 @@ stdOutAndLog d s = logT d s >> lift ((putStr . show) d >> putStrLn s)
 
 instance Show Direction where
   show From = "--->"
-  show To   = "<---"
+  show To = "<---"
   show None = ""

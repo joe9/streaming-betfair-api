@@ -1,21 +1,12 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-
 {-# LANGUAGE OverloadedStrings #-}
 
 module Betfair.StreamingAPI.API.Response
   (response
   ,Response(..))
   where
-import BasicPrelude
 
-import           Control.Monad.RWS
-import           Data.Aeson
-import           Data.Aeson.Types
-import           Data.ByteString                               hiding (append)
-import qualified Data.Map.Strict                               as Map
-import           Data.Maybe
-import           Data.String.Conversions
-import           Data.Text
+import           BasicPrelude
 import           Betfair.StreamingAPI.API.Context
 import           Betfair.StreamingAPI.API.Log
 import           Betfair.StreamingAPI.API.Request
@@ -26,6 +17,15 @@ import qualified Betfair.StreamingAPI.Responses.OrderChangeMessage  as O
 import qualified Betfair.StreamingAPI.Responses.StatusMessage       as S
 import           Betfair.StreamingAPI.Types.ChangeType
 import qualified Betfair.StreamingAPI.Types.MarketChange            as MarketChange
+import           Control.Monad.RWS
+import           Data.Aeson
+import           Data.Aeson.Types
+import           Data.ByteString                                    hiding
+                                                                     (append)
+import qualified Data.Map.Strict                                    as Map
+import           Data.Maybe
+import           Data.String.Conversions
+import           Data.Text
 import           Network.Connection
 import           Safe
 

@@ -1,5 +1,4 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-
 {-# LANGUAGE OverloadedStrings #-}
 
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
@@ -12,24 +11,24 @@ module Betfair.StreamingAPI.API.StreamingState
   ,MarketName
   ,EventName)
   where
-import BasicPrelude
 
+import BasicPrelude
 import Data.Default
 import Data.Text
 -- import Data.Maybe
-import qualified Data.Map.Strict                    as Map
 import           Betfair.StreamingAPI.API.CommonTypes
 import           Betfair.StreamingAPI.API.Request
 import           Betfair.StreamingAPI.Types.MarketStatus
+import qualified Data.Map.Strict                         as Map
 
 data StreamingState =
-  StreamingState {ssMarkets         :: Map.Map MarketId MarketState
-                 ,ssRequests        :: Map.Map Integer Request
-                 ,ssIdCounter       :: Integer
-                 ,ssSessionToken    :: SessionToken
-                 ,ssAppKey          :: AppKey
+  StreamingState {ssMarkets :: Map.Map MarketId MarketState
+                 ,ssRequests :: Map.Map Integer Request
+                 ,ssIdCounter :: Integer
+                 ,ssSessionToken :: SessionToken
+                 ,ssAppKey :: AppKey
                  ,ssConnectionState :: ConnectionState
-                 ,ssNeedHumanHelp   :: Bool}
+                 ,ssNeedHumanHelp :: Bool}
   deriving (Eq,Read,Show)
 
 instance Default StreamingState where
@@ -52,15 +51,15 @@ data MarketConnectionState
   deriving (Eq,Read,Show)
 
 data MarketState =
-  MarketState {msStatus          :: Maybe MarketStatus
-              ,msMarketName      :: MarketName
-              ,msEventName       :: EventName
-              ,msStateChanged    :: Bool
-              ,msMarketId        :: MarketId
+  MarketState {msStatus :: Maybe MarketStatus
+              ,msMarketName :: MarketName
+              ,msEventName :: EventName
+              ,msStateChanged :: Bool
+              ,msMarketId :: MarketId
               ,msConnectionState :: MarketConnectionState
-              ,msInitialClk      :: Maybe Text
-              ,msClk             :: Maybe Text
-              ,msPublishTime     :: Integer}
+              ,msInitialClk :: Maybe Text
+              ,msClk :: Maybe Text
+              ,msPublishTime :: Integer}
   deriving (Eq,Read,Show)
 
 instance Default MarketState where

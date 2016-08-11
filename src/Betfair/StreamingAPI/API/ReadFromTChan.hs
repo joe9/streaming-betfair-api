@@ -1,6 +1,4 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Betfair.StreamingAPI.API.ReadFromTChan
@@ -9,17 +7,17 @@ module Betfair.StreamingAPI.API.ReadFromTChan
   ,readMarketIdsFromTChan
   ,nonBlockingReadMarketIdsFromTChan)
   where
-import BasicPrelude
 
-import Control.Concurrent.STM.TChan       (TChan, readTChan,
-                                           tryReadTChan)
-import Control.Monad.RWS
-import Control.Monad.STM                  (atomically)
-import Data.Text
+import BasicPrelude
 import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Context
 import Betfair.StreamingAPI.API.StreamingState
-import Prelude                            hiding (words)
+import Control.Concurrent.STM.TChan            (TChan, readTChan,
+                                                tryReadTChan)
+import Control.Monad.RWS
+import Control.Monad.STM                       (atomically)
+import Data.Text
+import Prelude                                 hiding (words)
 
 nonBlockingReadFromTChan
   :: TChan a -> IO (Maybe a)

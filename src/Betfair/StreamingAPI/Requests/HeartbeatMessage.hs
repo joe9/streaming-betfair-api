@@ -1,5 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-
 {-# LANGUAGE DeriveDataTypeable   #-}
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE NoImplicitPrelude    #-}
@@ -10,15 +8,15 @@
 module Betfair.StreamingAPI.Requests.HeartbeatMessage
   (HeartbeatMessage(..))
   where
-import BasicPrelude
 
+import BasicPrelude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Data.Text
 -- import Data.Default.TH (deriveDefault)
-import Data.Default
 import Betfair.StreamingAPI.API.AddId
-import Prelude                   hiding (id)
+import Data.Default
+import Prelude                        hiding (id)
 
 data HeartbeatMessage =
   HeartbeatMessage {op :: Text

@@ -1,5 +1,4 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-
 {-# LANGUAGE OverloadedStrings #-}
 
 module Betfair.StreamingAPI.API.RequestProcessing
@@ -11,12 +10,8 @@ module Betfair.StreamingAPI.API.RequestProcessing
   ,orderSubscription
   ,addCRLF)
   where
-import BasicPrelude
 
-import           Control.Monad.RWS
-import           Data.Aeson
-import qualified Data.ByteString.Lazy                               as L
-import           Data.Default
+import           BasicPrelude
 import           Betfair.StreamingAPI.API.AddId
 import           Betfair.StreamingAPI.API.Context
 import           Betfair.StreamingAPI.API.Log
@@ -27,6 +22,10 @@ import qualified Betfair.StreamingAPI.Requests.MarketSubscriptionMessage as M
 import qualified Betfair.StreamingAPI.Requests.OrderSubscriptionMessage  as O
 import qualified Betfair.StreamingAPI.Types.BettingType                  as BT
 import qualified Betfair.StreamingAPI.Types.MarketFilter                 as MF
+import           Control.Monad.RWS
+import           Data.Aeson
+import qualified Data.ByteString.Lazy                                    as L
+import           Data.Default
 import           Network.Connection
 
 request

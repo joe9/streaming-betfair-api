@@ -1,27 +1,26 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-
 {-# LANGUAGE OverloadedStrings #-}
 
 module Betfair.StreamingAPI.API.Context
   (Context(..)
   ,initializeContext)
   where
-import BasicPrelude
 
+import BasicPrelude
+import Betfair.StreamingAPI.API.CommonTypes
 import Control.Concurrent.STM.TChan
 import Control.Monad.STM
 import Data.Text
-import Betfair.StreamingAPI.API.CommonTypes
 import Network.Connection
 
 data Context =
-  Context {cAppKey                :: AppKey
-          ,cReadMarketIdsChannel  :: TChan Text
+  Context {cAppKey :: AppKey
+          ,cReadMarketIdsChannel :: TChan Text
           ,cWriteResponsesChannel :: TChan Text
-          ,cWriteLogChannel       :: TChan Text
-          ,cWriteStateChannel     :: TChan Text
-          ,cSessionToken          :: SessionToken
-          ,cConnection            :: Connection}
+          ,cWriteLogChannel :: TChan Text
+          ,cWriteStateChannel :: TChan Text
+          ,cSessionToken :: SessionToken
+          ,cConnection :: Connection}
 
 initializeContext
   :: AppKey -> SessionToken -> IO Context
