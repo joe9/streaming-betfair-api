@@ -4,7 +4,8 @@
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Betfair.StreamingAPI.API.StreamingState
   (StreamingState(..)
-  ,ConnectionState(..))
+  ,ConnectionState(..)
+  ,addMarketIds)
   where
 
 import           BasicPrelude
@@ -37,3 +38,10 @@ data ConnectionState
   | Authenticated
   | ReceivingData
   deriving (Eq,Read,Show)
+
+addMarketIds
+  :: StreamingState -> [MarketId] -> StreamingState
+addMarketIds ss mids =
+  ss {ssMarkets =
+        Map.union (ssMarkets ss)
+                  ((Map.fromList . fmap (\mid -> (mid,def {msMarketId = mid}))) mids)}

@@ -21,6 +21,7 @@ import           Betfair.StreamingAPI.API.Log
 import           Betfair.StreamingAPI.API.Response
 import           Betfair.StreamingAPI.API.ResponseException
 import           Betfair.StreamingAPI.API.StreamingState
+import           Betfair.StreamingAPI.API.MarketState
 import qualified Betfair.StreamingAPI.Responses.MarketChangeMessage as M
 import qualified Betfair.StreamingAPI.Responses.StatusMessage       as S
 import           Betfair.StreamingAPI.Types.ChangeType
@@ -28,11 +29,11 @@ import qualified Betfair.StreamingAPI.Types.MarketChange            as MarketCha
 
 -- import           Betfair.StreamingAPI.Types.MarketStatus
 responseT
-  :: Context -> ExceptT ResponseException IO (Response,Context)
+  :: (Context a) -> ExceptT ResponseException IO (Response,(Context a))
 responseT = ExceptT . response
 
 response
-  :: Context -> IO (Either ResponseException (Response,Context))
+  :: (Context a) -> IO (Either ResponseException (Response,(Context a)))
 response c =
   do raw <-
        connectionGetLine 16384
@@ -44,7 +45,7 @@ response c =
 
 --      (return . Right) (c,undefined)
 processResponse
-  :: Context -> Response -> Either ResponseException (Response,Context)
+  :: (Context a) -> Response -> Either ResponseException (Response,(Context a))
 processResponse c r@(MarketChange m)
   | isNothing (M.ct m) || M.ct m == Just HEARTBEAT = Right (r,c)
   | isNothing (M.mc m) || M.mc m == Just [] = Right (r,c)

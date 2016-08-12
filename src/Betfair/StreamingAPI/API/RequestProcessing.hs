@@ -19,6 +19,7 @@ import           Network.Connection
 --
 import           Betfair.StreamingAPI.API.AddId
 import           Betfair.StreamingAPI.API.Context
+import           Betfair.StreamingAPI.API.CommonTypes
 import           Betfair.StreamingAPI.API.Log
 import           Betfair.StreamingAPI.API.StreamingState
 import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage     as A
@@ -28,9 +29,9 @@ import qualified Betfair.StreamingAPI.Requests.OrderSubscriptionMessage  as O
 import qualified Betfair.StreamingAPI.Types.BettingType                  as BT
 import qualified Betfair.StreamingAPI.Types.MarketFilter                 as MF
 
-request :: (ToJSON a
-           ,AddId a)
-        => Context -> a -> IO Context
+request :: (ToJSON b
+           ,AddId b)
+        => (Context a) -> b -> IO (Context a)
 request c r =
   do let currentId = ssIdCounter (cState c)
      b <- (groomedLog c To . L.toStrict . addCRLF . encode) (addId r currentId)
@@ -38,10 +39,10 @@ request c r =
                    b
      return (c {cState = (cState c) {ssIdCounter = succ currentId}})
 
-heartbeat :: Context -> IO Context
+heartbeat :: (Context a) -> IO (Context a)
 heartbeat c = request c (def :: H.HeartbeatMessage)
 
-authentication :: Context -> IO Context
+authentication :: (Context a) -> IO (Context a)
 authentication c =
   request c
           (def {A.session = ssSessionToken state
@@ -49,18 +50,18 @@ authentication c =
   where state = cState c
 
 marketSubscription
-  :: Context -> M.MarketSubscriptionMessage -> IO Context
+  :: (Context a) -> M.MarketSubscriptionMessage -> IO (Context a)
 marketSubscription c = request c
 
 orderSubscription
-  :: Context -> O.OrderSubscriptionMessage -> IO Context
+  :: (Context a) -> O.OrderSubscriptionMessage -> IO (Context a)
 orderSubscription c = request c
 
 addCRLF :: L.ByteString -> L.ByteString
 addCRLF a = a <> "\r" <> "\n"
 
 marketIdsSubscription
-  :: Context -> [MarketId] -> IO Context
+  :: (Context a) -> [MarketId] -> IO (Context a)
 marketIdsSubscription c [] = return c
 marketIdsSubscription c mids =
   marketSubscription

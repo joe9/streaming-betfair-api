@@ -121,9 +121,11 @@ streamMarketIds a stoken mids mss m mn l r st =
     (context {cState =
                 addMarketIds (cState context)
                              mids})
-  where context = initializeContext a stoken mss m mn l r st
+  where
+        --   context = initializeContext a stoken mss m mn l r st
+        context = initializeContext a stoken
 
-startStreaming :: Context -> IO Context
+startStreaming :: (Context a) -> IO (Context a)
 startStreaming context
   | null (ssMarkets (cState context)) =
     do
@@ -172,7 +174,7 @@ startStreaming context
                 Right r -> startStreaming r
 
 authenticateAndReadDataLoop
-  :: Context -> ExceptT ResponseException IO Context
+  :: (Context a) -> ExceptT ResponseException IO (Context a)
 authenticateAndReadDataLoop c =
   responseT c >>= lift . authentication . snd >>= responseT >>=
   (\(_,cu) ->
@@ -180,7 +182,7 @@ authenticateAndReadDataLoop c =
   readDataLoop
 
 readDataLoop
-  :: Context -> ExceptT ResponseException IO Context
+  :: (Context a) -> ExceptT ResponseException IO (Context a)
 -- readDataLoop c = undefined
 readDataLoop c
 -- TODO if all markets are closed, get out
@@ -193,7 +195,7 @@ readDataLoop c
              c {cState =
                   addMarketIds (cState c)
                                mids}
-       responseT cu >>= readDataLoop . fst
+       responseT cu >>= readDataLoop . snd
 
 connectToBetfair :: IO Connection
 connectToBetfair =

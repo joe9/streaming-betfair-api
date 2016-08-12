@@ -10,12 +10,10 @@ module Betfair.StreamingAPI.API.MarketState
 --   ,addMarketIds
 import           BasicPrelude
 import           Data.Default
-import qualified Data.Map.Strict as Map
 -- import           Data.Text
 -- import Data.Maybe
 --
 import Betfair.StreamingAPI.API.CommonTypes
-import Betfair.StreamingAPI.API.Request
 import Betfair.StreamingAPI.Types.MarketStatus
 
 data MarketState =
@@ -39,9 +37,4 @@ data MarketConnectionState
   | Subscribed
   | MarketChangeReceived
   | RemoveReceived
-  deriving (Eq,Read,Show)-- addMarketIds
-                         --   :: Map MarketId MarketState -> [MarketId] -> StreamingState
-                         -- addMarketIds ss mids = undefined
-                         --   ss {ssMarkets =
-                         --         Map.union (ssMarkets ss)
-                         --                   ((Map.fromList . fmap (\mid -> (mid,def {msMarketId = mid}))) mids)}
+  deriving (Eq,Read,Show)

@@ -3,6 +3,7 @@
 
 module Betfair.StreamingAPI.API.Context
   (Context(..)
+  ,initializeContext1
   ,initializeContext)
   where
 
@@ -26,21 +27,35 @@ data Context a =
           ,cWriteState :: StreamingState -> IO ()
           ,cConnection :: Connection
           ,cState :: StreamingState
-          ,cUserState :: a
-          ,cShowUserState :: a -> Text}
+          ,cUserState :: Maybe a
+          ,cShowUserState :: Maybe (a -> Text)}
 
-initializeContext :: AppKey
-                  -> SessionToken
-                  -> Maybe StreamingState
-                  -> Maybe (IO [MarketId])
-                  -> Maybe (IO [MarketId])
-                  -> Maybe (Text -> IO ())
-                  -> Maybe (Either ResponseException Response -> IO ())
-                  -> Maybe (StreamingState -> IO ())
-                  -> a
-                  -> (a -> Text)
-                  -> Context a
-initializeContext a s mss mb mn l r st userState showUserState =
+initializeContext
+  :: AppKey -> SessionToken -> Context a
+initializeContext a s =
+  Context {cBlockingReadMarketIds = (return [])
+          ,cNonBlockingReadMarketIds = (return [])
+          ,cLogger = putStrLn
+          ,cWriteResponses = print
+          ,cWriteState = print
+          ,cConnection = undefined
+          ,cState =
+             def {ssAppKey = a ,ssSessionToken = s}
+          ,cUserState = Nothing
+          ,cShowUserState = Nothing}
+
+initializeContext1 :: AppKey
+                   -> SessionToken
+                   -> Maybe StreamingState
+                   -> Maybe (IO [MarketId])
+                   -> Maybe (IO [MarketId])
+                   -> Maybe (Text -> IO ())
+                   -> Maybe (Either ResponseException Response -> IO ())
+                   -> Maybe (StreamingState -> IO ())
+                   -> Maybe a
+                   -> Maybe (a -> Text)
+                   -> Context a
+initializeContext1 a s mss mb mn l r st userState showUserState =
   Context {cBlockingReadMarketIds = fromMaybe (return []) mb
           ,cNonBlockingReadMarketIds = fromMaybe (return []) mn
           ,cLogger = fromMaybe putStrLn l
@@ -57,6 +72,4 @@ instance Show (Context a) where
   show = cs . showContext
 
 showContext :: Context a -> Text
-showContext c =
-  "Context: " <> BasicPrelude.show (cState c) <> ", " <>
-  (cShowUserState c) (cUserState c)
+showContext c = "Context: " <> BasicPrelude.show (cState c) -- <> ", " <> (cShowUserState c) (cUserState c)
