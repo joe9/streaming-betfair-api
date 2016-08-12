@@ -28,11 +28,11 @@ import qualified Betfair.StreamingAPI.Types.MarketChange            as MarketCha
 
 -- import           Betfair.StreamingAPI.Types.MarketStatus
 responseT
-  :: Context -> ExceptT ResponseException IO (Context,Response)
+  :: Context -> ExceptT ResponseException IO (Response,Context)
 responseT = ExceptT . response
 
 response
-  :: Context -> IO (Either ResponseException (Context,Response))
+  :: Context -> IO (Either ResponseException (Response,Context))
 response c =
   do raw <-
        connectionGetLine 16384
@@ -44,34 +44,33 @@ response c =
 
 --      (return . Right) (c,undefined)
 processResponse
-  :: Context -> Response -> Either ResponseException (Context,Response)
+  :: Context -> Response -> Either ResponseException (Response,Context)
 processResponse c r@(MarketChange m)
-  | isNothing (M.ct m) || M.ct m == Just HEARTBEAT = Right (c,r)
-  | isNothing (M.mc m) || M.mc m == Just [] = Right (c,r)
+  | isNothing (M.ct m) || M.ct m == Just HEARTBEAT = Right (r,c)
+  | isNothing (M.mc m) || M.mc m == Just [] = Right (r,c)
   | isJust (M.segmentType m) =
     notImplementedText
       r
       ("segmentType processing not implemented" <> (cs . show) m)
   | isNothing (M.segmentType m) =
-    Right (c {cState =
+    Right (r,c {cState =
                 ((foldl (updateStreamingState (M.clk m)
                                               (M.initialClk m)
                                               (M.pt m))
                         (cState c) .
                   fromJustNote "should have markets here" . M.mc) m)}
-          ,r)
+          )
   | otherwise =
     notImplementedText r
                        ("processResponse: " <> (cs . show) m)
 processResponse c (Status status _) =
-  Right (c
-        ,Status status
+  Right (Status status
                 (Map.lookup (fromMaybe 0 (S.id status))
-                            (ssRequests (cState c))))
-processResponse c r@(Connection _) = Right (c,r)
+                            (ssRequests (cState c))),c)
+processResponse c r@(Connection _) = Right (r,c)
 processResponse _ r@(OrderChange _) = notImplemented r
 
--- processResponse c r = Right (c,r)
+-- processResponse c r = Right (r,c)
 updateStreamingState :: Maybe Text
                      -> Maybe Text
                      -> Integer

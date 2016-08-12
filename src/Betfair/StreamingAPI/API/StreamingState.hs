@@ -4,13 +4,7 @@
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Betfair.StreamingAPI.API.StreamingState
   (StreamingState(..)
-  ,MarketState(..)
-  ,ConnectionState(..)
-  ,MarketConnectionState(..)
-  ,MarketId
-  ,MarketName
-  ,EventName
-  ,addMarketIds)
+  ,ConnectionState(..))
   where
 
 import           BasicPrelude
@@ -20,8 +14,8 @@ import qualified Data.Map.Strict as Map
 -- import Data.Maybe
 --
 import Betfair.StreamingAPI.API.CommonTypes
+import Betfair.StreamingAPI.API.MarketState
 import Betfair.StreamingAPI.API.Request
-import Betfair.StreamingAPI.Types.MarketStatus
 
 data StreamingState =
   StreamingState {ssMarkets         :: Map.Map MarketId MarketState
@@ -43,33 +37,3 @@ data ConnectionState
   | Authenticated
   | ReceivingData
   deriving (Eq,Read,Show)
-
-data MarketConnectionState
-  = ToSubscribe
-  | SubscribeSent
-  | Subscribed
-  | MarketChangeReceived
-  | RemoveReceived
-  deriving (Eq,Read,Show)
-
-data MarketState =
-  MarketState {msStatus          :: Maybe MarketStatus
-              ,msMarketName      :: MarketName
-              ,msEventName       :: EventName
-              ,msStateChanged    :: Bool
-              ,msMarketId        :: MarketId
-              ,msConnectionState :: MarketConnectionState
-              ,msInitialClk      :: Maybe Text
-              ,msClk             :: Maybe Text
-              ,msPublishTime     :: Integer}
-  deriving (Eq,Read,Show)
-
-instance Default MarketState where
-  def = MarketState Nothing "" "" False "" ToSubscribe Nothing Nothing 0
-
-addMarketIds
-  :: StreamingState -> [MarketId] -> StreamingState
-addMarketIds ss mids =
-  ss {ssMarkets =
-        Map.union (ssMarkets ss)
-                  ((Map.fromList . fmap (\mid -> (mid,def {msMarketId = mid}))) mids)}

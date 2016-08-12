@@ -174,8 +174,8 @@ startStreaming context
 authenticateAndReadDataLoop
   :: Context -> ExceptT ResponseException IO Context
 authenticateAndReadDataLoop c =
-  responseT c >>= lift . authentication . fst >>= responseT >>=
-  (\(cu,_) ->
+  responseT c >>= lift . authentication . snd >>= responseT >>=
+  (\(_,cu) ->
      (lift . marketIdsSubscription cu) ((Map.keys . ssMarkets . cState) cu)) >>=
   readDataLoop
 

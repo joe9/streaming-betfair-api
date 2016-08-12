@@ -18,14 +18,16 @@ import Betfair.StreamingAPI.API.Response
 import Betfair.StreamingAPI.API.ResponseException
 import Betfair.StreamingAPI.API.StreamingState
 
-data Context =
+data Context a =
   Context {cBlockingReadMarketIds :: IO [MarketId]
           ,cNonBlockingReadMarketIds :: IO [MarketId]
           ,cLogger :: Text -> IO ()
           ,cWriteResponses :: Either ResponseException Response -> IO ()
           ,cWriteState :: StreamingState -> IO ()
           ,cConnection :: Connection
-          ,cState :: StreamingState}
+          ,cState :: StreamingState
+          ,cUserState :: a
+          ,cShowUserState :: a -> Text}
 
 initializeContext :: AppKey
                   -> SessionToken
@@ -35,8 +37,10 @@ initializeContext :: AppKey
                   -> Maybe (Text -> IO ())
                   -> Maybe (Either ResponseException Response -> IO ())
                   -> Maybe (StreamingState -> IO ())
-                  -> Context
-initializeContext a s mss mb mn l r st =
+                  -> a
+                  -> (a -> Text)
+                  -> Context a
+initializeContext a s mss mb mn l r st userState showUserState =
   Context {cBlockingReadMarketIds = fromMaybe (return []) mb
           ,cNonBlockingReadMarketIds = fromMaybe (return []) mn
           ,cLogger = fromMaybe putStrLn l
@@ -45,10 +49,14 @@ initializeContext a s mss mb mn l r st =
           ,cConnection = undefined
           ,cState =
              (fromMaybe def mss) {ssAppKey = a
-                                 ,ssSessionToken = s}}
+                                 ,ssSessionToken = s}
+          ,cUserState = userState
+          ,cShowUserState = showUserState}
 
-instance Show Context where
+instance Show (Context a) where
   show = cs . showContext
 
-showContext :: Context -> Text
-showContext c = "Context: " <> BasicPrelude.show (cState c)
+showContext :: Context a -> Text
+showContext c =
+  "Context: " <> BasicPrelude.show (cState c) <> ", " <>
+  (cShowUserState c) (cUserState c)
