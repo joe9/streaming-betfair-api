@@ -193,7 +193,7 @@ readDataLoop c
        -- write state if changed
        -- send subscribe requests to new markets only, if needed
 --        (lift . ( marketIdsSubscription c mids >>= let cu = c {cState = addMarketIds (cState c) mids}))
-       responseT cu >>= readDataLoop . snd
+       responseT c >>= readDataLoop . snd
 
 connectToBetfair :: IO Connection
 connectToBetfair =
