@@ -180,9 +180,9 @@ startStreaming context
 authenticateAndReadDataLoop
   :: (Context a) -> ExceptT ResponseException IO (Context a)
 authenticateAndReadDataLoop c =
-  responseT c >>= lift . authentication . snd >>= responseT >>=
+  responseT c >>= lift . authentication >>= responseT >>=
   -- TODO check the response
-  (\(_,cu) ->
+  (\cu ->
      (lift . marketIdsSubscription cu) ((Map.keys . ssMarkets . cState) cu)) >>=
   readDataLoop
 
@@ -198,7 +198,7 @@ readDataLoop c
        -- send subscribe requests to new markets only, if needed
        cuu <- lift ( fmap (\cuu -> cuu {cState = addMarketIds (cState cuu) mids})
                            (marketIdsSubscription cu mids))
-       responseT cuu >>= readDataLoop . snd
+       responseT cuu >>= readDataLoop
 
 connectToBetfair :: IO Connection
 connectToBetfair =
