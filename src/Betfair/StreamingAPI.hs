@@ -48,6 +48,7 @@ module Betfair.StreamingAPI
   where
 
 import BasicPrelude hiding (finally)
+import           Control.Monad.Trans.Except
 --
 import Betfair.StreamingAPI.API.AddId
 import Betfair.StreamingAPI.API.CommonTypes
@@ -132,12 +133,14 @@ startStreaming context
     do
        -- blocking read for MarketId's, waiting for marketIds as there
        -- are none to stream
-       mids <- cBlockingReadMarketIds context
-       -- start processing those marketids and market ids from streaming state
-       startStreaming
-         (context {cState =
-                     addMarketIds (cState context)
-                                  mids})
+       emids <- runExceptT ((cBlockingReadMarketIds context) context)
+       case emids of
+         Left e -> print e >> return context
+         Right (mids,cu) ->
+                startStreaming
+                    (context {cState =
+                                addMarketIds (cState cu)
+                                            mids})
   |
    -- start processing if there are any marketid's in streaming state
    -- http://learnyouahaskell.com/input-and-output#exceptions
@@ -178,6 +181,7 @@ authenticateAndReadDataLoop
   :: (Context a) -> ExceptT ResponseException IO (Context a)
 authenticateAndReadDataLoop c =
   responseT c >>= lift . authentication . snd >>= responseT >>=
+  -- TODO check the response
   (\(_,cu) ->
      (lift . marketIdsSubscription cu) ((Map.keys . ssMarkets . cState) cu)) >>=
   readDataLoop
@@ -189,11 +193,12 @@ readDataLoop c
 -- TODO if all markets are closed, get out
   | (null . ssMarkets . cState) c = return c
   | otherwise =
-    do mids <- lift (cNonBlockingReadMarketIds c)
+    do (mids,cu) <- (cNonBlockingReadMarketIds c) c
        -- write state if changed
        -- send subscribe requests to new markets only, if needed
---        (lift . ( marketIdsSubscription c mids >>= let cu = c {cState = addMarketIds (cState c) mids}))
-       responseT c >>= readDataLoop . snd
+       cuu <- lift ( fmap (\cuu -> cuu {cState = addMarketIds (cState cuu) mids})
+                           (marketIdsSubscription cu mids))
+       responseT cuu >>= readDataLoop . snd
 
 connectToBetfair :: IO Connection
 connectToBetfair =

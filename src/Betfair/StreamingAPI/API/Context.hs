@@ -12,6 +12,7 @@ import           Data.Default
 import           Data.String.Conversions
 import           GHC.Show
 import           Network.Connection
+import           Control.Monad.Trans.Except
 --
 import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Response
@@ -19,11 +20,11 @@ import Betfair.StreamingAPI.API.ResponseException
 import Betfair.StreamingAPI.API.StreamingState
 
 data Context a =
-  Context {cBlockingReadMarketIds :: IO [ MarketId]
-          ,cNonBlockingReadMarketIds :: IO ([MarketId])
+  Context {cBlockingReadMarketIds :: Context a -> ExceptT ResponseException IO ([MarketId],Context a)
+          ,cNonBlockingReadMarketIds :: Context a -> ExceptT ResponseException IO ([MarketId],Context a)
           ,cLogger :: Text -> IO ()
-          ,cWriteResponses :: Either ResponseException Response -> IO ()
-          ,cWriteState :: StreamingState -> IO ()
+          ,cOnResponse :: Response -> Context a -> ExceptT ResponseException IO (Context a)
+          ,cOnStateChange :: Context a -> ExceptT ResponseException IO (Context a)
           ,cConnection :: Connection
           ,cState :: StreamingState
           ,cUserState :: a
@@ -32,11 +33,11 @@ data Context a =
 initializeContext
   :: AppKey -> SessionToken -> Context a
 initializeContext a s =
-  Context {cBlockingReadMarketIds = ( return [])
-          ,cNonBlockingReadMarketIds = (return [])
+  Context {cBlockingReadMarketIds = (\c -> return([],c))
+          ,cNonBlockingReadMarketIds = (\c -> return([],c))
           ,cLogger = putStrLn
-          ,cWriteResponses = print
-          ,cWriteState = print
+          ,cOnResponse = (\r c -> lift (print r) >> return c)
+          ,cOnStateChange = (\c -> return c)
           ,cConnection = undefined
           ,cState =
              def {ssAppKey = a

@@ -30,7 +30,7 @@ import qualified Betfair.StreamingAPI.Types.MarketChange            as MarketCha
 -- import           Betfair.StreamingAPI.Types.MarketStatus
 responseT
   :: (Context a) -> ExceptT ResponseException IO (Response,(Context a))
-responseT = ExceptT . response
+responseT c = ExceptT ( response c) >>= (\(r,cu) -> (cOnResponse cu) r cu)
 
 response
   :: (Context a) -> IO (Either ResponseException (Response,(Context a)))
