@@ -1,5 +1,5 @@
 name:                betfair-streaming-api
-version:             0.1.2.0
+version:             0.1.2.7
 synopsis:            betfair streaming api bindings
 description:         betfair streaming api bindings
 license:             MIT
@@ -29,12 +29,14 @@ library
                   Betfair.StreamingAPI.Requests.MarketSubscriptionMessage
                   Betfair.StreamingAPI.Requests.HeartbeatMessage
                   Betfair.StreamingAPI.API.Log
+                  Betfair.StreamingAPI.API.MarketState
                   Betfair.StreamingAPI.API.RequestProcessing
+                  Betfair.StreamingAPI.API.ResponseException
+                  Betfair.StreamingAPI.API.ResponseProcessing
                   Betfair.StreamingAPI.API.Config
                   Betfair.StreamingAPI.API.AddId
                   Betfair.StreamingAPI.API.CommonTypes
                   Betfair.StreamingAPI.API.Request
-                  Betfair.StreamingAPI.API.ReadFromTChan
                   Betfair.StreamingAPI.API.StreamingState
                   Betfair.StreamingAPI.API.Response
                   Betfair.StreamingAPI.API.Context
@@ -89,6 +91,10 @@ library
                      , string-conversions
                      , text
                      , basic-prelude
+                     , network
+                     , stm
+                     , transformers
+                     , betfair-api
   ghc-options:         -Wall
   hs-source-dirs:      src
   default-language:    Haskell2010

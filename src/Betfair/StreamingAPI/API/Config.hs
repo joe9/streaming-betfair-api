@@ -9,7 +9,6 @@ module Betfair.StreamingAPI.API.Config
 import BasicPrelude
 import Betfair.StreamingAPI.API.CommonTypes
 import Data.Default
-import Data.Text
 
 data Config =
   Config {username      :: Text

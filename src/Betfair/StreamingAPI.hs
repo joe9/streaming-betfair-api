@@ -7,7 +7,13 @@ module Betfair.StreamingAPI
   (
    -- from this file
    streamMarketIds
+  ,marketIdsContext
   ,sampleStart
+  ,startStreaming
+  ,Response(..)
+  ,ResponseException(..)
+  ,Context(..)
+  ,StreamingState(..)
   ,
    -- Common Types
    MarketId
@@ -102,28 +108,23 @@ import           Network.Socket
 -- session token from the api
 sampleStart
   :: AppKey -> SessionToken -> [MarketId] -> IO ()
-sampleStart a stoken mids =
-  streamMarketIds a stoken mids Nothing Nothing Nothing Nothing Nothing Nothing >>
-  return ()
+sampleStart a stoken mids = streamMarketIds a stoken mids >> return ()
+
+marketIdsContext :: AppKey
+                    -> SessionToken
+                    -> [MarketId]
+                    -> (Context a)
+marketIdsContext a stoken mids =
+  context {cState = addMarketIds (cState context) mids}
+  where context = initializeContext a stoken
+        --   context = initializeContext a stoken mss m mn l r st
 
 streamMarketIds :: AppKey
                 -> SessionToken
                 -> [MarketId]
-                -> Maybe StreamingState
-                -> Maybe (IO [MarketId])
-                -> Maybe (IO [MarketId])
-                -> Maybe (Text -> IO ())
-                -> Maybe (Either ResponseException Response -> IO ())
-                -> Maybe (StreamingState -> IO ())
                 -> IO StreamingState
-streamMarketIds a stoken mids mss m mn l r st =
-  (fmap cState . startStreaming)
-    (context {cState =
-                addMarketIds (cState context)
-                             mids})
-  where
-        --   context = initializeContext a stoken mss m mn l r st
-        context = initializeContext a stoken
+streamMarketIds a stoken =
+  fmap cState . startStreaming . marketIdsContext a stoken
 
 startStreaming :: (Context a) -> IO (Context a)
 startStreaming context
@@ -191,10 +192,7 @@ readDataLoop c
     do mids <- lift (cNonBlockingReadMarketIds c)
        -- write state if changed
        -- send subscribe requests to new markets only, if needed
-       let cu =
-             c {cState =
-                  addMarketIds (cState c)
-                               mids}
+--        (lift . ( marketIdsSubscription c mids >>= let cu = c {cState = addMarketIds (cState c) mids}))
        responseT cu >>= readDataLoop . snd
 
 connectToBetfair :: IO Connection
