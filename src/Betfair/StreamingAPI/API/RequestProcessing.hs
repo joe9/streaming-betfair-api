@@ -7,6 +7,7 @@ module Betfair.StreamingAPI.API.RequestProcessing
   ,authentication
   ,marketSubscription
   ,marketIdsSubscription
+  ,bulkMarketsSubscription
   ,orderSubscription
   ,addCRLF)
   where
@@ -18,8 +19,8 @@ import           Data.Default
 import           Network.Connection
 --
 import           Betfair.StreamingAPI.API.AddId
-import           Betfair.StreamingAPI.API.Context
 import           Betfair.StreamingAPI.API.CommonTypes
+import           Betfair.StreamingAPI.API.Context
 import           Betfair.StreamingAPI.API.Log
 import           Betfair.StreamingAPI.API.StreamingState
 import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage     as A
@@ -49,12 +50,14 @@ authentication c =
                ,A.appKey = ssAppKey state} :: A.AuthenticationMessage)
   where state = cState c
 
-marketSubscription
-  :: (Context a) -> M.MarketSubscriptionMessage -> IO (Context a)
+marketSubscription :: (Context a)
+                   -> M.MarketSubscriptionMessage
+                   -> IO (Context a)
 marketSubscription c = request c
 
-orderSubscription
-  :: (Context a) -> O.OrderSubscriptionMessage -> IO (Context a)
+orderSubscription :: (Context a)
+                  -> O.OrderSubscriptionMessage
+                  -> IO (Context a)
 orderSubscription c = request c
 
 addCRLF :: L.ByteString -> L.ByteString
@@ -71,3 +74,58 @@ marketIdsSubscription c mids =
                                                                           [BT.ODDS]
                                                                        ,MF.marketIds =
                                                                           Just mids})})
+
+-- event types
+-- 1 Soccer 13904
+-- 2 Tennis 3615
+-- 3 Golf 89
+-- 4 Cricket 170
+-- 5 Rugby Union 10
+-- 6 Boxing 51
+-- 7 Horse Racing 599
+-- 8 Motor Sport 11
+-- 10 Special Bets 16
+-- 11 Cycling 17
+-- 1477 Rugby League 28
+-- 3503 Darts 2
+-- 3988 Athletics 126
+-- 4339 Greyhound Racing 181
+-- 6231 Financial Bets 3
+-- 6422 Snooker 3
+-- 6423 American Football 32
+-- 7511 Baseball 68
+-- 7522 Basketball 143
+-- 7523 Hockey 12
+-- 7524 Ice Hockey 1
+-- 136332 Chess 15
+-- 315220 Poker 1
+-- 468328 Handball 48
+-- 620576 Swimming 4
+-- 627555 Badminton 10
+-- 998917 Volleyball 26
+-- 2152880 Gaelic Games 24
+-- 2378961 Politics 43
+-- 2593174 Table Tennis 4
+-- 2872194 Beach Volleyball 6
+-- 2901849 Water Polo 16
+-- 26420387 Mixed Martial Arts 77
+-- 27589895 Olympics 2016 156
+bulkMarketsSubscription
+  :: (Context a) -> IO (Context a)
+bulkMarketsSubscription c =
+  marketSubscription
+    c
+    ((def :: M.MarketSubscriptionMessage) {M.marketFilter =
+                                             ((def :: MF.MarketFilter) {MF.bettingTypes =
+                                                                          [BT.ODDS]
+                                                                       ,MF.turnInPlayEnabled =
+                                                                          Just True
+                                                                       ,MF.marketTypes =
+                                                                          Just ["MATCH_ODDS"]
+                                                                       ,MF.eventTypeIds =
+                                                                          Just [2
+                                                                               ,4
+                                                                               ,5
+                                                                               ,6423
+                                                                               ,7511
+                                                                               ,7522]})})
