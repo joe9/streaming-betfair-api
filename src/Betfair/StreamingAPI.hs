@@ -26,7 +26,7 @@ module Betfair.StreamingAPI
    PersistenceType
   ,Order
   ,OrderMarketChange
-  ,ChangeType
+  ,ChangeType(..)
   ,MarketFilter
   ,MarketChange
   ,OrderRunnerChange
