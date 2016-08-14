@@ -115,17 +115,15 @@ bulkMarketsSubscription
 bulkMarketsSubscription c =
   marketSubscription
     c
-    ((def :: M.MarketSubscriptionMessage) {M.marketFilter =
-                                             ((def :: MF.MarketFilter) {MF.bettingTypes =
-                                                                          [BT.ODDS]
-                                                                       ,MF.turnInPlayEnabled =
-                                                                          Just True
-                                                                       ,MF.marketTypes =
-                                                                          Just ["MATCH_ODDS"]
-                                                                       ,MF.eventTypeIds =
-                                                                          Just [2
-                                                                               ,4
-                                                                               ,5
-                                                                               ,6423
-                                                                               ,7511
-                                                                               ,7522]})})
+    ((def :: M.MarketSubscriptionMessage)
+     {M.marketFilter = ((def :: MF.MarketFilter) {MF.bettingTypes = [BT.ODDS]
+                                                ,MF.turnInPlayEnabled = Just True
+                                                ,MF.marketTypes = Just ["MATCH_ODDS"]
+                                                ,MF.eventTypeIds =
+                                                  (Just . fmap show)
+                                                    ([2 :: Integer
+                                                        ,4
+                                                        ,5
+                                                        ,6423
+                                                        ,7511
+                                                        ,7522])})})
