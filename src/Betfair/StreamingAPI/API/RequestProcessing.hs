@@ -16,6 +16,7 @@ import           BasicPrelude
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as L
 import           Data.Default
+import qualified Data.Map.Strict      as Map
 import           Network.Connection
 --
 import           Betfair.StreamingAPI.API.AddId
@@ -23,6 +24,7 @@ import           Betfair.StreamingAPI.API.CommonTypes
 import           Betfair.StreamingAPI.API.Context
 import           Betfair.StreamingAPI.API.Log
 import           Betfair.StreamingAPI.API.StreamingState
+import           Betfair.StreamingAPI.API.ToRequest
 import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage     as A
 import qualified Betfair.StreamingAPI.Requests.HeartbeatMessage          as H
 import qualified Betfair.StreamingAPI.Requests.MarketSubscriptionMessage as M
@@ -31,14 +33,22 @@ import qualified Betfair.StreamingAPI.Types.BettingType                  as BT
 import qualified Betfair.StreamingAPI.Types.MarketFilter                 as MF
 
 request :: (ToJSON b
+           ,ToRequest b
            ,AddId b)
         => (Context a) -> b -> IO (Context a)
 request c r =
   do let currentId = ssIdCounter (cState c)
-     b <- (groomedLog c To . L.toStrict . addCRLF . encode) (addId r currentId)
+         readyToSendRequest = (addId r currentId)
+     b <- (groomedLog c To . L.toStrict . addCRLF . encode) readyToSendRequest
      connectionPut (cConnection c)
                    b
-     return (c {cState = (cState c) {ssIdCounter = succ currentId}})
+     return (c {cState =
+                  (cState c) {ssIdCounter = succ currentId
+                             ,ssRequests =
+                                Map.insert
+                                  currentId
+                                  (toRequest readyToSendRequest,Nothing)
+                                  (ssRequests (cState c))}})
 
 heartbeat :: (Context a) -> IO (Context a)
 heartbeat c = request c (def :: H.HeartbeatMessage)
@@ -115,15 +125,20 @@ bulkMarketsSubscription
 bulkMarketsSubscription c =
   marketSubscription
     c
-    ((def :: M.MarketSubscriptionMessage)
-     {M.marketFilter = ((def :: MF.MarketFilter) {MF.bettingTypes = [BT.ODDS]
-                                                ,MF.turnInPlayEnabled = Just True
-                                                ,MF.marketTypes = Just ["MATCH_ODDS"]
-                                                ,MF.eventTypeIds =
-                                                  (Just . fmap show)
-                                                    ([2 :: Integer
-                                                        ,4
-                                                        ,5
-                                                        ,6423
-                                                        ,7511
-                                                        ,7522])})})
+    -- TODO check if this is a resubscribe and add clk and initialClk
+    ((def :: M.MarketSubscriptionMessage) {M.marketFilter =
+                                             ((def :: MF.MarketFilter) {MF.bettingTypes =
+                                                                          [BT.ODDS]
+                                                                       ,MF.turnInPlayEnabled =
+                                                                          Just True
+                                                                       ,MF.marketTypes =
+                                                                          Just ["MATCH_ODDS"]
+                                                                       ,MF.eventTypeIds =
+                                                                          (Just .
+                                                                           fmap show)
+                                                                            ([2 :: Integer
+                                                                             ,4
+                                                                             ,5
+                                                                             ,6423
+                                                                             ,7511
+                                                                             ,7522])})})

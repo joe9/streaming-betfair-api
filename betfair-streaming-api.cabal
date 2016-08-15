@@ -1,5 +1,5 @@
 name:                betfair-streaming-api
-version:             0.1.2.22
+version:             0.1.2.35
 synopsis:            betfair streaming api bindings
 description:         betfair streaming api bindings
 license:             MIT
@@ -19,7 +19,7 @@ source-repository head
 
 library
   exposed-modules:
-                  Betfair.StreamingAPI
+--                   Betfair.StreamingAPI
                   Betfair.BulkStreamingAPI
                   Betfair.StreamingAPI.Responses.MarketChangeMessage
                   Betfair.StreamingAPI.Responses.OrderChangeMessage
@@ -29,18 +29,18 @@ library
                   Betfair.StreamingAPI.Requests.OrderSubscriptionMessage
                   Betfair.StreamingAPI.Requests.MarketSubscriptionMessage
                   Betfair.StreamingAPI.Requests.HeartbeatMessage
+                  Betfair.StreamingAPI.API.AddId
+                  Betfair.StreamingAPI.API.Clks
+                  Betfair.StreamingAPI.API.CommonTypes
+                  Betfair.StreamingAPI.API.Config
+                  Betfair.StreamingAPI.API.Context
                   Betfair.StreamingAPI.API.Log
-                  Betfair.StreamingAPI.API.MarketState
+                  Betfair.StreamingAPI.API.Request
                   Betfair.StreamingAPI.API.RequestProcessing
+                  Betfair.StreamingAPI.API.Response
                   Betfair.StreamingAPI.API.ResponseException
                   Betfair.StreamingAPI.API.ResponseProcessing
-                  Betfair.StreamingAPI.API.Config
-                  Betfair.StreamingAPI.API.AddId
-                  Betfair.StreamingAPI.API.CommonTypes
-                  Betfair.StreamingAPI.API.Request
                   Betfair.StreamingAPI.API.StreamingState
-                  Betfair.StreamingAPI.API.Response
-                  Betfair.StreamingAPI.API.Context
                   Betfair.StreamingAPI.Types.PersistenceType
                   Betfair.StreamingAPI.Types.Order
                   Betfair.StreamingAPI.Types.OrderMarketChange

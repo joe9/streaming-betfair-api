@@ -3,13 +3,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
-module Betfair.StreamingAPI
+module Betfair.BulkStreamingAPI
   (
    -- from this file
-   streamMarketIds
-  ,marketIdsContext
-  ,sampleStart
+  sampleStart
   ,startStreaming
+  ,initializeContext
   ,Response(..)
   ,ResponseException(..)
   ,Context(..)
@@ -109,7 +108,7 @@ import           Network.Socket
 -- session token from the api
 sampleStart
   :: AppKey -> SessionToken -> IO ()
-sampleStart a stoken mids = streamMarketIds a stoken >> return ()
+sampleStart a stoken = stream a stoken >> return ()
 
 stream :: AppKey
                 -> SessionToken
@@ -166,7 +165,7 @@ readDataLoop c =
     do
        -- write state if changed
        -- send subscribe requests to new markets only, if needed
-       responseT cuu >>= readDataLoop
+       responseT c >>= readDataLoop
 
 connectToBetfair :: IO Connection
 connectToBetfair =

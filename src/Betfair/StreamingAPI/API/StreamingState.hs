@@ -4,8 +4,7 @@
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Betfair.StreamingAPI.API.StreamingState
   (StreamingState(..)
-  ,ConnectionState(..)
-  ,addMarketIds)
+  ,ConnectionState(..))
   where
 
 import           BasicPrelude
@@ -15,12 +14,11 @@ import qualified Data.Map.Strict as Map
 -- import Data.Maybe
 --
 import Betfair.StreamingAPI.API.CommonTypes
-import Betfair.StreamingAPI.API.MarketState
 import Betfair.StreamingAPI.API.Request
+import Betfair.StreamingAPI.API.Clks
 
 data StreamingState =
-  StreamingState {ssMarkets         :: Map.Map MarketId MarketState
-                 ,ssRequests        :: Map.Map Integer Request
+  StreamingState {ssRequests        :: Map.Map Integer (Request,Maybe Clks)
                  ,ssIdCounter       :: Integer
                  ,ssSessionToken    :: SessionToken
                  ,ssAppKey          :: AppKey
@@ -29,7 +27,7 @@ data StreamingState =
   deriving (Eq,Read,Show)
 
 instance Default StreamingState where
-  def = StreamingState Map.empty Map.empty 1 "" "" NotConnected False
+  def = StreamingState Map.empty 1 "" "" NotConnected False
 
 data ConnectionState
   = NotConnected
@@ -38,10 +36,3 @@ data ConnectionState
   | Authenticated
   | ReceivingData
   deriving (Eq,Read,Show)
-
-addMarketIds
-  :: StreamingState -> [MarketId] -> StreamingState
-addMarketIds ss mids =
-  ss {ssMarkets =
-        Map.union (ssMarkets ss)
-                  ((Map.fromList . fmap (\mid -> (mid,def {msMarketId = mid}))) mids)}

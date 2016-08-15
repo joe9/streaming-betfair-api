@@ -15,6 +15,7 @@ import qualified Betfair.StreamingAPI.Requests.OrderSubscriptionMessage  as O
 data Request
   = Heartbeat H.HeartbeatMessage
   | Authentication A.AuthenticationMessage
-  | MarkeSubscribe M.MarketSubscriptionMessage
+  | MarketSubscribe M.MarketSubscriptionMessage
   | OrderSubscribe O.OrderSubscriptionMessage
+  | UnknownRequest
   deriving (Eq,Read,Show)
