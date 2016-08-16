@@ -15,7 +15,6 @@ import qualified Data.Map.Strict as Map
 --
 import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Request
-import Betfair.StreamingAPI.API.Clks
 
 data StreamingState =
   StreamingState {ssRequests        :: Map.Map Integer Request
