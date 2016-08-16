@@ -18,11 +18,13 @@ import qualified Data.ByteString.Lazy as L
 import           Data.Default
 import qualified Data.Map.Strict      as Map
 import           Network.Connection
+import           Safe
 --
 import           Betfair.StreamingAPI.API.AddId
 import           Betfair.StreamingAPI.API.CommonTypes
 import           Betfair.StreamingAPI.API.Context
 import           Betfair.StreamingAPI.API.Log
+import           Betfair.StreamingAPI.API.Request
 import           Betfair.StreamingAPI.API.StreamingState
 import           Betfair.StreamingAPI.API.ToRequest
 import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage     as A
@@ -45,10 +47,18 @@ request c r =
      return (c {cState =
                   (cState c) {ssIdCounter = succ currentId
                              ,ssRequests =
-                                Map.insert
-                                  currentId
-                                  (toRequest readyToSendRequest,Nothing)
-                                  (ssRequests (cState c))}})
+                                Map.insert currentId
+                                           (toRequest readyToSendRequest)
+                                           (ssRequests (cState c))}})
+
+resendOldRequest
+  :: (ToJSON b)
+  => (Context a) -> b -> IO (Context a)
+resendOldRequest c readyToSendRequest =
+  do b <- (groomedLog c To . L.toStrict . addCRLF . encode) readyToSendRequest
+     connectionPut (cConnection c)
+                   b
+     return c
 
 heartbeat :: (Context a) -> IO (Context a)
 heartbeat c = request c (def :: H.HeartbeatMessage)
@@ -63,12 +73,52 @@ authentication c =
 marketSubscription :: (Context a)
                    -> M.MarketSubscriptionMessage
                    -> IO (Context a)
-marketSubscription c = request c
+marketSubscription c new =
+  case (fmap snd .
+        headMay .
+        Map.toDescList .
+        Map.filter isJust .
+        Map.map (sameAsNewMarketSubscribeRequests new) . ssRequests . cState) c of
+    Nothing    -> request c new
+    (Just old) -> resendOldRequest c old
+
+sameAsNewMarketSubscribeRequests
+  :: M.MarketSubscriptionMessage
+  -> Request
+  -> Maybe M.MarketSubscriptionMessage
+sameAsNewMarketSubscribeRequests new (MarketSubscribe old)
+  | old {M.id = 0
+        ,M.clk = Nothing
+        ,M.initialClk = Nothing} ==
+      new {M.id = 0
+          ,M.clk = Nothing
+          ,M.initialClk = Nothing} = Just old
+  | otherwise = Nothing
+sameAsNewMarketSubscribeRequests _ _ = Nothing
 
 orderSubscription :: (Context a)
                   -> O.OrderSubscriptionMessage
                   -> IO (Context a)
-orderSubscription c = request c
+orderSubscription c new =
+  case (fmap snd .
+        headMay .
+        Map.toDescList .
+        Map.filter isJust .
+        Map.map (sameAsNewOrderSubscribeRequests new) . ssRequests . cState) c of
+    Nothing    -> request c new
+    (Just old) -> resendOldRequest c old
+
+sameAsNewOrderSubscribeRequests
+  :: O.OrderSubscriptionMessage -> Request -> Maybe O.OrderSubscriptionMessage
+sameAsNewOrderSubscribeRequests new (OrderSubscribe old)
+  | old {O.id = 0
+        ,O.clk = Nothing
+        ,O.initialClk = Nothing} ==
+      new {O.id = 0
+          ,O.clk = Nothing
+          ,O.initialClk = Nothing} = Just old
+  | otherwise = Nothing
+sameAsNewOrderSubscribeRequests _ _ = Nothing
 
 addCRLF :: L.ByteString -> L.ByteString
 addCRLF a = a <> "\r" <> "\n"

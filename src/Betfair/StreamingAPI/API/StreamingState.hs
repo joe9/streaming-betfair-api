@@ -18,7 +18,7 @@ import Betfair.StreamingAPI.API.Request
 import Betfair.StreamingAPI.API.Clks
 
 data StreamingState =
-  StreamingState {ssRequests        :: Map.Map Integer (Request,Maybe Clks)
+  StreamingState {ssRequests        :: Map.Map Integer Request
                  ,ssIdCounter       :: Integer
                  ,ssSessionToken    :: SessionToken
                  ,ssAppKey          :: AppKey

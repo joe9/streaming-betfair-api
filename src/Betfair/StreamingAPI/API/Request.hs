@@ -17,5 +17,5 @@ data Request
   | Authentication A.AuthenticationMessage
   | MarketSubscribe M.MarketSubscriptionMessage
   | OrderSubscribe O.OrderSubscriptionMessage
-  | UnknownRequest
+  | UnknownRequest (Maybe Text) (Maybe Text)
   deriving (Eq,Read,Show)

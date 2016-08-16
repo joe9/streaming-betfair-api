@@ -16,7 +16,6 @@ import           Data.String.Conversions
 import           Network.Connection
 -- import           Safe
 --
-import           Betfair.StreamingAPI.API.Clks
 import           Betfair.StreamingAPI.API.Context
 import           Betfair.StreamingAPI.API.Log
 import           Betfair.StreamingAPI.API.Request
@@ -24,6 +23,8 @@ import           Betfair.StreamingAPI.API.Response
 import           Betfair.StreamingAPI.API.ResponseException
 import           Betfair.StreamingAPI.API.StreamingState
 import qualified Betfair.StreamingAPI.Responses.MarketChangeMessage as M
+import qualified Betfair.StreamingAPI.Requests.MarketSubscriptionMessage as MS
+import qualified Betfair.StreamingAPI.Requests.OrderSubscriptionMessage as OS
 import qualified Betfair.StreamingAPI.Responses.StatusMessage       as S
 import           Betfair.StreamingAPI.Types.ChangeType
 
@@ -67,9 +68,7 @@ processResponse c r@(MarketChange m)
 processResponse c (Status status _) =
   Right (Status status
                 (S.id status >>=
-                 (\i ->
-                    fmap fst
-                         (Map.lookup i
+                 (\i -> (Map.lookup i
                                      (ssRequests (cState c)))))
         ,c)
 processResponse c r@(Connection _) = Right (r,c)
@@ -79,8 +78,8 @@ updateClks
   :: Maybe Text -- clk
   -> Maybe Text -- initialClk
   -> Integer -- Request Id from MarketChange.id
-  -> Map.Map Integer (Request,Maybe Clks)
-  -> Map.Map Integer (Request,Maybe Clks)
+  -> Map.Map Integer Request
+  -> Map.Map Integer Request
 updateClks Nothing Nothing _ mrs = mrs
 updateClks c i rid mrs =
   Map.insert
@@ -92,14 +91,19 @@ updateClks c i rid mrs =
 
 updateRequestClks :: Maybe Text -- clk
                   -> Maybe Text -- initialClk
-                  -> Maybe (Request,Maybe Clks)
-                  -> (Request,Maybe Clks)
-updateRequestClks c i Nothing = (UnknownRequest,Just (Clks c i))
-updateRequestClks c i (Just (r,Nothing)) = (r,Just (Clks c i))
-updateRequestClks c i (Just (r,(Just clks))) =
-  (r
-  ,Just (clks {cInitialClk = maybe (cInitialClk clks) Just i
-              ,cClk = maybe (cClk clks) Just c}))
+                  -> Maybe Request
+                  -> Request
+updateRequestClks c i Nothing = (UnknownRequest c i)
+updateRequestClks _ _ (Just r@(Heartbeat _)) = r
+updateRequestClks _ _ (Just r@(Authentication _)) = r
+updateRequestClks c i (Just   (MarketSubscribe m)) =
+  MarketSubscribe (m {MS.initialClk = maybe (MS.initialClk m) Just i
+                     ,MS.clk = maybe (MS.clk m) Just c})
+updateRequestClks c i (Just   (OrderSubscribe m)) =
+  OrderSubscribe (m {OS.initialClk = maybe (OS.initialClk m) Just i
+                     ,OS.clk = maybe (OS.clk m) Just c})
+updateRequestClks c i (Just   (UnknownRequest oc oi)) =
+  UnknownRequest (maybe oi Just i) (maybe oc Just c)
 
 opIs :: Object -> Either ResponseException Text
 opIs = either (Left . ParserError . cs) Right . parseEither (flip (.:) "op")

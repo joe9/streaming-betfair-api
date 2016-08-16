@@ -22,9 +22,9 @@ data OrderSubscriptionMessage =
                            ,id                  :: Integer -- Client generated unique id to link request with response (like json rpc)
                            ,segmentationEnabled :: Bool -- Segmentation Enabled - allow the server to send large sets of data in segments, instead of a single block
                            ,orderFilter         :: OrderFilter
-                           ,clk                 :: Text -- Token value delta (received in MarketChangeMessage) that should be passed to resume a subscription
+                           ,clk                 :: Maybe Text -- Token value delta (received in MarketChangeMessage) that should be passed to resume a subscription
                            ,heartbeatMs         :: Integer -- Heartbeat Milliseconds - the heartbeat rate (looped back on initial image after validation: bounds are 500 to 30000)
-                           ,initialClk          :: Text -- Token value (received in initial MarketChangeMessage) that should be passed to resume a subscription
+                           ,initialClk          :: Maybe Text -- Token value (received in initial MarketChangeMessage) that should be passed to resume a subscription
                            ,conflateMs          :: Integer -- Conflate Milliseconds - the conflation rate (looped back on initial image after validation: bounds are 0 to 120000)
                            }
   deriving (Eq,Read,Show)
@@ -34,7 +34,7 @@ $(deriveJSON defaultOptions {omitNothingFields = True}
 
 -- deriveDefault ''OrderSubscriptionMessage
 instance Default OrderSubscriptionMessage where
-  def = OrderSubscriptionMessage "OrderSubscription" 0 True def "" 500 "" 0
+  def = OrderSubscriptionMessage "OrderSubscription" 0 True def Nothing (30 * 1000) Nothing 0
 
 instance AddId OrderSubscriptionMessage where
   addId o i = o {id = i}
