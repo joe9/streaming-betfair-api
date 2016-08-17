@@ -1,8 +1,18 @@
-flags: {}
+flags:
+  semigroups:
+    bytestring-builder: false
 extra-package-dbs: []
 packages:
 - '.'
+- location:
+    git: git@github.com:bos/aeson.git
+    commit: a41f2a6ff1a43f86ae903b7149c8a6341285248c
+- location:
+    git: git://github.com/ekmett/semigroups.git
+    commit: 380c88314a2fad2f68ffe798fb0b0110a35fb9bb
 extra-deps:
+- aeson-1.0.0.0
 - safe-exceptions-0.1.4.0
+- semigroups-0.18.2
 - template-default-0.1.2
 resolver: lts-6.12
