@@ -11,4 +11,4 @@ import Data.Aeson
 
 class ToJSON a =>
       AddId a  where
-  addId :: a -> Integer -> a
+  addId :: a -> Int -> a

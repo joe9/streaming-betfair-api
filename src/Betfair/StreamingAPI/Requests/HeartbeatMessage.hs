@@ -18,7 +18,7 @@ import Betfair.StreamingAPI.API.AddId
 
 data HeartbeatMessage =
   HeartbeatMessage {op :: Text
-                   ,id :: Integer}
+                   ,id :: Int}
   deriving (Eq,Read,Show)
 
 $(deriveJSON defaultOptions {omitNothingFields = True}
@@ -26,7 +26,7 @@ $(deriveJSON defaultOptions {omitNothingFields = True}
 
 -- deriveDefault ''HeartbeatMessage
 instance Default HeartbeatMessage where
-  def = HeartbeatMessage "Heartbeat" def
+  def = HeartbeatMessage "Heartbeat" 0
 
 instance AddId HeartbeatMessage where
   addId o i = o {id = i}

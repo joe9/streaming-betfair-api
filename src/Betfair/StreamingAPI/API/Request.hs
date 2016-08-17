@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE TemplateHaskell      #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Betfair.StreamingAPI.API.Request
@@ -6,6 +7,8 @@ module Betfair.StreamingAPI.API.Request
   where
 
 import BasicPrelude
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 --
 import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage     as A
 import qualified Betfair.StreamingAPI.Requests.HeartbeatMessage          as H
@@ -19,3 +22,6 @@ data Request
   | OrderSubscribe O.OrderSubscriptionMessage
   | UnknownRequest (Maybe Text) (Maybe Text)
   deriving (Eq,Read,Show)
+
+$(deriveJSON defaultOptions {omitNothingFields = True}
+             ''Request)

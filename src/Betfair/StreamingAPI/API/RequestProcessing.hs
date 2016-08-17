@@ -16,7 +16,7 @@ import           BasicPrelude
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as L
 import           Data.Default
-import qualified Data.Map.Strict      as Map
+import qualified Data.IntMap.Strict      as IntMap
 import           Network.Connection
 import           Safe
 --
@@ -47,7 +47,7 @@ request c r =
      return (c {cState =
                   (cState c) {ssIdCounter = succ currentId
                              ,ssRequests =
-                                Map.insert currentId
+                                IntMap.insert currentId
                                            (toRequest readyToSendRequest)
                                            (ssRequests (cState c))}})
 
@@ -76,9 +76,9 @@ marketSubscription :: (Context a)
 marketSubscription c new =
   case (fmap snd .
         headMay .
-        Map.toDescList .
-        Map.filter isJust .
-        Map.map (sameAsNewMarketSubscribeRequests new) . ssRequests . cState) c of
+        IntMap.toDescList .
+        IntMap.filter isJust .
+        IntMap.map (sameAsNewMarketSubscribeRequests new) . ssRequests . cState) c of
     Nothing    -> request c new
     (Just old) -> resendOldRequest c old
 
@@ -102,9 +102,9 @@ orderSubscription :: (Context a)
 orderSubscription c new =
   case (fmap snd .
         headMay .
-        Map.toDescList .
-        Map.filter isJust .
-        Map.map (sameAsNewOrderSubscribeRequests new) . ssRequests . cState) c of
+        IntMap.toDescList .
+        IntMap.filter isJust .
+        IntMap.map (sameAsNewOrderSubscribeRequests new) . ssRequests . cState) c of
     Nothing    -> request c new
     (Just old) -> resendOldRequest c old
 

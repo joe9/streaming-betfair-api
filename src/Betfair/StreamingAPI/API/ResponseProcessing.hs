@@ -11,7 +11,7 @@ import           BasicPrelude
 import           Control.Monad.Trans.Except
 import           Data.Aeson
 import           Data.Aeson.Types
-import qualified Data.Map.Strict            as Map
+import qualified Data.IntMap.Strict            as IntMap
 import           Data.String.Conversions
 import           Network.Connection
 -- import           Safe
@@ -68,7 +68,7 @@ processResponse c r@(MarketChange m)
 processResponse c (Status status _) =
   Right (Status status
                 (S.id status >>=
-                 (\i -> (Map.lookup i
+                 (\i -> (IntMap.lookup (fromIntegral i)
                                      (ssRequests (cState c)))))
         ,c)
 processResponse c r@(Connection _) = Right (r,c)
@@ -78,15 +78,15 @@ updateClks
   :: Maybe Text -- clk
   -> Maybe Text -- initialClk
   -> Integer -- Request Id from MarketChange.id
-  -> Map.Map Integer Request
-  -> Map.Map Integer Request
+  -> IntMap.IntMap Request
+  -> IntMap.IntMap Request
 updateClks Nothing Nothing _ mrs = mrs
 updateClks c i rid mrs =
-  Map.insert
-    rid
+  IntMap.insert
+    (fromIntegral rid)
     (updateRequestClks c
                        i
-                       (Map.lookup rid mrs))
+                       (IntMap.lookup (fromIntegral rid) mrs))
     mrs
 
 updateRequestClks :: Maybe Text -- clk

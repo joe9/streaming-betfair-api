@@ -19,7 +19,7 @@ import Betfair.StreamingAPI.Types.OrderFilter (OrderFilter)
 
 data OrderSubscriptionMessage =
   OrderSubscriptionMessage {op                  :: Text
-                           ,id                  :: Integer -- Client generated unique id to link request with response (like json rpc)
+                           ,id                  :: Int -- Client generated unique id to link request with response (like json rpc)
                            ,segmentationEnabled :: Bool -- Segmentation Enabled - allow the server to send large sets of data in segments, instead of a single block
                            ,orderFilter         :: OrderFilter
                            ,clk                 :: Maybe Text -- Token value delta (received in MarketChangeMessage) that should be passed to resume a subscription

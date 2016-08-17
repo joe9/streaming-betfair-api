@@ -96,7 +96,7 @@ import           Control.Concurrent
 import           Control.Exception.Safe
 import           Control.Monad.Trans.Except
 import           Data.Default
-import qualified Data.HashMap.Strict            as HashMap
+import qualified Data.Map.Strict            as Map
 import           Data.Maybe
 import           Data.String.Conversions
 import           Data.Text                  hiding (map, null)
