@@ -18,7 +18,7 @@ data MarketStatus
   | OPEN
   | SUSPENDED
   | CLOSED
-  deriving (Eq,Show,Read)
+  deriving (Eq,Show,Read,Enum)
 
 deriveDefault ''MarketStatus
 

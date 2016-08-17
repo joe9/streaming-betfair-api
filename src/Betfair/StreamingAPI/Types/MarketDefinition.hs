@@ -28,10 +28,10 @@ data MarketDefinition =
                    ,marketBaseRate        :: Maybe Double
                    ,numberOfWinners       :: Integer
                    ,countryCode           :: Maybe Text
-                   ,inPlay                :: Bool
+                   ,inPlay                :: Maybe Bool
                    ,betDelay              :: Integer
                    ,bspMarket             :: Bool
-                   ,bettingTypes          :: [BettingType]
+                   ,bettingTypes          :: Maybe [BettingType]
                    ,numberOfActiveRunners :: Integer
                    ,eventId               :: Text
                    ,crossMatching         :: Bool

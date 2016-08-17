@@ -24,8 +24,8 @@ data Context a =
           ,cNonBlockingReadMarketIds :: Context a -> ExceptT ResponseException IO ([MarketId],Context a)
           ,cLogger :: Text -> IO ()
           ,cOnResponse :: Response -> Context a -> ExceptT ResponseException IO (Context a)
-          ,cOnStateChange :: Context a -> ExceptT ResponseException IO (Context a)
           ,cConnection :: Connection
+          ,cOnConnection :: Context a -> ExceptT ResponseException IO (Context a)
           ,cState :: StreamingState
           ,cUserState :: a
           }
@@ -37,8 +37,8 @@ initializeContext a s =
           ,cNonBlockingReadMarketIds = (\c -> return([],c))
           ,cLogger = putStrLn
           ,cOnResponse = (\r c -> lift (print r) >> return c)
-          ,cOnStateChange = (\c -> return c)
           ,cConnection = undefined
+          ,cOnConnection = (\c -> return c)
           ,cState =
              def {ssAppKey = a
                  ,ssSessionToken = s}

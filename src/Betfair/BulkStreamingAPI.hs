@@ -6,7 +6,7 @@
 module Betfair.BulkStreamingAPI
   (
    -- from this file
-  sampleStart
+   sampleStart
   ,startStreaming
   ,initializeContext
   ,Response(..)
@@ -46,8 +46,8 @@ module Betfair.BulkStreamingAPI
   ,RunnerStatus)
   where
 
-import BasicPrelude hiding (finally)
-import           Control.Monad.Trans.Except
+import BasicPrelude               hiding (finally)
+import Control.Monad.Trans.Except
 --
 import Betfair.StreamingAPI.API.AddId
 import Betfair.StreamingAPI.API.CommonTypes
@@ -96,7 +96,7 @@ import           Control.Concurrent
 import           Control.Exception.Safe
 import           Control.Monad.Trans.Except
 import           Data.Default
-import qualified Data.Map.Strict            as Map
+import qualified Data.HashMap.Strict            as HashMap
 import           Data.Maybe
 import           Data.String.Conversions
 import           Data.Text                  hiding (map, null)
@@ -106,66 +106,65 @@ import           Network.Socket
 
 -- app key from betfair subscription
 -- session token from the api
-sampleStart
-  :: AppKey -> SessionToken -> IO ()
+sampleStart :: AppKey -> SessionToken -> IO ()
 sampleStart a stoken = stream a stoken >> return ()
 
-stream :: AppKey
-                -> SessionToken
-                -> IO StreamingState
-stream a =
-  fmap cState . startStreaming . initializeContext a
+stream
+  :: AppKey -> SessionToken -> IO StreamingState
+stream a = fmap cState . startStreaming . initializeContext a
 
 startStreaming :: (Context a) -> IO (Context a)
 startStreaming context =
-   -- start processing if there are any marketid's in streaming state
-   -- http://learnyouahaskell.com/input-and-output#exceptions
-   -- https://haskell-lang.org/tutorial/exception-safety
-   -- https://haskell-lang.org/library/safe-exceptions
-   -- http://neilmitchell.blogspot.com/2015/05/handling-control-c-in-haskell.html
-   -- the below exception handling mechanism is perfect. "tryAny"
-   -- handles any synchronous exceptions and recovers from
-   -- them. Synchronous exceptions are exceptions directly related to
-   -- the executed code such as "no network connection", "no host",
-   -- etc. Whereas, "finally" is for cleanup. "finally" handles both
-   -- synchronous and asynchronous exceptions. If a user presses
-   -- Ctrl-C (asynchronous exception), "finally" cleans up the open
-   -- connection thus preventing a leak.
-    do result <- tryAny connectToBetfair
-       case result of
-         Left err ->
-           toLog context ("streamMarketIds: Caught exception: " <> show err) >>
-           threadDelay (60 * 1000 * 1000) >>
-           startStreaming context
-         Right connection ->
-           do eitherContext <-
-                finally (runExceptT
-                           (authenticateAndReadDataLoop
-                              context {cConnection = connection}))
-                        (toLog context "Closing connection" >>
-                         connectionClose connection)
-              case eitherContext of
-                Left e ->
-                  stdOutAndLog context
-                               None
-                               (show e) >>
-                  return context
-                Right r -> return r --startStreaming r
+  -- start processing if there are any marketid's in streaming state
+  -- http://learnyouahaskell.com/input-and-output#exceptions
+  -- https://haskell-lang.org/tutorial/exception-safety
+  -- https://haskell-lang.org/library/safe-exceptions
+  -- http://neilmitchell.blogspot.com/2015/05/handling-control-c-in-haskell.html
+  -- the below exception handling mechanism is perfect. "tryAny"
+  -- handles any synchronous exceptions and recovers from
+  -- them. Synchronous exceptions are exceptions directly related to
+  -- the executed code such as "no network connection", "no host",
+  -- etc. Whereas, "finally" is for cleanup. "finally" handles both
+  -- synchronous and asynchronous exceptions. If a user presses
+  -- Ctrl-C (asynchronous exception), "finally" cleans up the open
+  -- connection thus preventing a leak.
+  do result <- tryAny connectToBetfair
+     case result of
+       Left err ->
+         toLog context ("streamMarketIds: Caught exception: " <> show err) >>
+         threadDelay (60 * 1000 * 1000) >>
+         startStreaming context
+       Right connection ->
+         do eitherContext <-
+              finally (runExceptT
+                         (do ((cOnConnection context)
+                                context {cConnection = connection}) >>=
+                               authenticateAndReadDataLoop))
+                      (toLog context "Closing connection" >>
+                       connectionClose connection)
+            case eitherContext of
+              Left e ->
+                stdOutAndLog context
+                             None
+                             (show e) >>
+                return context
+              Right r -> return r --startStreaming r
 
 authenticateAndReadDataLoop
   :: (Context a) -> ExceptT ResponseException IO (Context a)
 authenticateAndReadDataLoop c =
   responseT c >>= lift . authentication >>= responseT >>=
-  -- TODO check the response
-     lift . bulkMarketsSubscription >>= readDataLoop
+  lift . bulkMarketsSubscription >>=
+  readDataLoop
 
 readDataLoop
   :: (Context a) -> ExceptT ResponseException IO (Context a)
 readDataLoop c =
-    do
-       -- write state if changed
-       -- send subscribe requests to new markets only, if needed
-       responseT c >>= readDataLoop
+  do
+     -- write state if changed
+     -- send subscribe requests to new markets only, if needed
+     responseT c >>=
+       readDataLoop
 
 connectToBetfair :: IO Connection
 connectToBetfair =

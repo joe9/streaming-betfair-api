@@ -8,12 +8,12 @@ module Betfair.StreamingAPI.API.ResponseException
 import BasicPrelude
 --
 import Betfair.StreamingAPI.API.Response
-import qualified Betfair.APING as NG
 
 data ResponseException
   = ParserError Text
   | EmptyLine Text
   | NotImplemented Response
                    (Maybe Text)
-  | APINGResponseException NG.ResponseException
-  deriving (Eq,Show)
+  deriving (Eq,Show,Typeable)
+
+instance Exception ResponseException
