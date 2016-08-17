@@ -10,7 +10,7 @@ module Betfair.StreamingAPI.API.StreamingState
 
 import           BasicPrelude
 import           Data.Default
-import qualified Data.HashMap.Strict as HashMap
+import qualified Data.Map.Strict as Map
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 --
@@ -18,7 +18,7 @@ import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Request
 
 data StreamingState =
-  StreamingState {ssRequests        :: HashMap.HashMap Integer Request
+  StreamingState {ssRequests        :: Map.Map Integer Request
                  ,ssIdCounter       :: Integer
                  ,ssSessionToken    :: SessionToken
                  ,ssAppKey          :: AppKey
@@ -27,7 +27,7 @@ data StreamingState =
   deriving (Eq,Read,Show)
 
 instance Default StreamingState where
-  def = StreamingState HashMap.empty 1 "" "" NotConnected False
+  def = StreamingState Map.empty 1 "" "" NotConnected False
 
 data ConnectionState
   = NotConnected

@@ -86,6 +86,7 @@ library
                      , old-locale
                      , aeson
                      , unordered-containers
+                     , containers
                      , exceptions
                      , safe-exceptions
                      , string-conversions
