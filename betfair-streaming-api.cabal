@@ -1,5 +1,5 @@
 name:                betfair-streaming-api
-version:             0.1.2.48
+version:             0.1.2.50
 synopsis:            betfair streaming api bindings
 description:         betfair streaming api bindings
 license:             MIT
@@ -85,7 +85,6 @@ library
                      , groom
                      , old-locale
                      , aeson
-                     , unordered-containers
                      , containers
                      , exceptions
                      , safe-exceptions
