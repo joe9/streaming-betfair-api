@@ -30,9 +30,8 @@ logD c d s = toLog c ((cs . show) d <> s)
 toLog :: Context a -> Text -> IO ()
 toLog c = cLogger c
 
-groomedLog
-  :: Show b
-  => Context a -> Direction -> b -> IO b
+groomedLog :: Show b
+           => Context a -> Direction -> b -> IO b
 groomedLog c d s = (logD c d . cs . groom) s >> return s
 
 stdOutAndLog

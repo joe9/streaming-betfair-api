@@ -96,9 +96,8 @@ sameAsNewMarketSubscribeRequests new (MarketSubscribe old)
   | otherwise = Nothing
 sameAsNewMarketSubscribeRequests _ _ = Nothing
 
-orderSubscription :: Context a
-                  -> O.OrderSubscriptionMessage
-                  -> IO (Context a)
+orderSubscription
+  :: Context a -> O.OrderSubscriptionMessage -> IO (Context a)
 orderSubscription c new =
   case (fmap snd .
         headMay .
@@ -131,9 +130,9 @@ marketIdsSubscription c mids =
     c
     ((def :: M.MarketSubscriptionMessage) {M.marketFilter =
                                              (def :: MF.MarketFilter) {MF.bettingTypes =
-                                                                          [BT.ODDS]
-                                                                       ,MF.marketIds =
-                                                                          Just mids}})
+                                                                         [BT.ODDS]
+                                                                      ,MF.marketIds =
+                                                                         Just mids}})
 
 bulkMarketsSubscription
   :: MF.MarketFilter -> Context a -> IO (Context a)

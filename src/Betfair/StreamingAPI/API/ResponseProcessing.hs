@@ -70,7 +70,7 @@ processResponse c (Status status _) =
                 (S.id status >>=
                  (\i ->
                     IntMap.lookup (fromIntegral i)
-                                   (ssRequests (cState c))))
+                                  (ssRequests (cState c))))
         ,c)
 processResponse c r@(Connection _) = Right (r,c)
 processResponse _ r@(OrderChange _) = notImplemented r
@@ -100,12 +100,12 @@ updateRequestClks _ _ (Just r@(Heartbeat _)) = r
 updateRequestClks _ _ (Just r@(Authentication _)) = r
 updateRequestClks c i (Just (MarketSubscribe m)) =
   MarketSubscribe
-    (m {MS.initialClk =i Control.Applicative.<|> (MS.initialClk m)
-       ,MS.clk =c Control.Applicative.<|> (MS.clk m)})
+    (m {MS.initialClk = i Control.Applicative.<|> (MS.initialClk m)
+       ,MS.clk = c Control.Applicative.<|> (MS.clk m)})
 updateRequestClks c i (Just (OrderSubscribe m)) =
   OrderSubscribe
-    (m {OS.initialClk =i Control.Applicative.<|> (OS.initialClk m)
-       ,OS.clk =c Control.Applicative.<|> (OS.clk m)})
+    (m {OS.initialClk = i Control.Applicative.<|> (OS.initialClk m)
+       ,OS.clk = c Control.Applicative.<|> (OS.clk m)})
 updateRequestClks c i (Just (UnknownRequest oc oi)) =
   UnknownRequest (i Control.Applicative.<|> oi)
                  (c Control.Applicative.<|> oc)
@@ -124,8 +124,7 @@ responseIs b op
     eitherDecodeStrictResponseException b >>= (Right . Connection)
   | op == "status" =
     eitherDecodeStrictResponseException b >>= (\r -> Right (Status r Nothing))
-  | otherwise =
-    parserError ("response: could not parse bytestring: " <> cs b)
+  | otherwise = parserError ("response: could not parse bytestring: " <> cs b)
 
 parseResponse
   :: ByteString -> Either ResponseException Response

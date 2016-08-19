@@ -96,10 +96,10 @@ import Betfair.StreamingAPI.Types.Side
 import           Control.Concurrent
 import           Control.Exception.Safe
 import           Data.Default
-import qualified Data.Map.Strict            as Map
+import qualified Data.Map.Strict         as Map
 import           Data.Maybe
 import           Data.String.Conversions
-import           Data.Text                  hiding (map, null)
+import           Data.Text               hiding (map, null)
 import           Data.Text.IO
 import           Network.Connection
 import           Network.Socket
