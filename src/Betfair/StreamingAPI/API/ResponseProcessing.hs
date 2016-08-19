@@ -10,7 +10,7 @@ import           BasicPrelude
 import           Control.Exception.Safe
 import           Data.Aeson
 import           Data.Aeson.Types
-import qualified Data.IntMap.Strict         as IntMap
+import qualified Data.IntMap.Strict      as IntMap
 import           Data.String.Conversions
 import           Network.Connection
 -- import           Safe
@@ -29,8 +29,7 @@ import           Betfair.StreamingAPI.Types.ChangeType
 
 -- import qualified Betfair.StreamingAPI.Types.MarketChange            as MarketChange
 -- import           Betfair.StreamingAPI.Types.MarketStatus
-response
-  :: Context a -> IO (Context a)
+response :: Context a -> IO (Context a)
 response c =
   do raw <-
        connectionGetLine 268435456
@@ -38,10 +37,10 @@ response c =
      _ <- groomedLog c From raw
      eitherResponse <-
        groomedLog c
-                From
-                (parseResponse raw >>= processResponse c)
+                  From
+                  (parseResponse raw >>= processResponse c)
      case eitherResponse of
-       Left e -> throwM e
+       Left e       -> throwM e
        Right (r,cu) -> (cOnResponse cu) r cu
 
 --      (return . Right) (c,undefined)

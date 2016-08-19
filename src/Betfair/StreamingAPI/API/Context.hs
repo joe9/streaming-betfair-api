@@ -6,7 +6,7 @@ module Betfair.StreamingAPI.API.Context
   ,initializeContext)
   where
 
-import           BasicPrelude               hiding (show)
+import           BasicPrelude            hiding (show)
 import qualified BasicPrelude
 import           Data.Default
 import           Data.String.Conversions
@@ -19,12 +19,12 @@ import Betfair.StreamingAPI.API.Response
 import Betfair.StreamingAPI.API.StreamingState
 
 data Context a =
-  Context {cConnection :: Connection
-          ,cLogger :: Text -> IO ()
-          ,cOnResponse :: Response -> Context a -> IO (Context a)
+  Context {cConnection   :: Connection
+          ,cLogger       :: Text -> IO ()
+          ,cOnResponse   :: Response -> Context a -> IO (Context a)
           ,cOnConnection :: Context a -> IO (Context a)
-          ,cState :: StreamingState
-          ,cUserState :: a}
+          ,cState        :: StreamingState
+          ,cUserState    :: a}
 
 -- Should I pass through the ResponsException to the cOnResponse?
 initializeContext
