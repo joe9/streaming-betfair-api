@@ -31,11 +31,11 @@ import           Betfair.StreamingAPI.Types.ChangeType
 -- import qualified Betfair.StreamingAPI.Types.MarketChange            as MarketChange
 -- import           Betfair.StreamingAPI.Types.MarketStatus
 responseT
-  :: (Context a) -> ExceptT ResponseException IO (Context a)
-responseT c = ExceptT (response c) >>= (\(r,cu) -> (cOnResponse cu) r cu)
+  :: Context a -> ExceptT ResponseException IO (Context a)
+responseT c = ExceptT (response c) >>= (\(r,cu) -> cOnResponse cu r cu)
 
 response
-  :: (Context a) -> IO (Either ResponseException (Response,(Context a)))
+  :: Context a -> IO (Either ResponseException (Response,Context a))
 response c =
   do raw <-
        connectionGetLine 268435456
@@ -47,7 +47,7 @@ response c =
 
 --      (return . Right) (c,undefined)
 processResponse
-  :: (Context a) -> Response -> Either ResponseException (Response,(Context a))
+  :: Context a -> Response -> Either ResponseException (Response,Context a)
 processResponse c r@(MarketChange m)
   | M.ct m == Just HEARTBEAT = Right (r,c)
   | isNothing (M.segmentType m) && isJust (M.mc m) =
@@ -69,8 +69,8 @@ processResponse c (Status status _) =
   Right (Status status
                 (S.id status >>=
                  (\i ->
-                    (IntMap.lookup (fromIntegral i)
-                                   (ssRequests (cState c)))))
+                    IntMap.lookup (fromIntegral i)
+                                   (ssRequests (cState c))))
         ,c)
 processResponse c r@(Connection _) = Right (r,c)
 processResponse _ r@(OrderChange _) = notImplemented r
@@ -95,20 +95,20 @@ updateRequestClks :: Maybe Text -- clk
                   -> Maybe Text -- initialClk
                   -> Maybe Request
                   -> Request
-updateRequestClks c i Nothing = (UnknownRequest c i)
+updateRequestClks c i Nothing = UnknownRequest c i
 updateRequestClks _ _ (Just r@(Heartbeat _)) = r
 updateRequestClks _ _ (Just r@(Authentication _)) = r
 updateRequestClks c i (Just (MarketSubscribe m)) =
   MarketSubscribe
-    (m {MS.initialClk = maybe (MS.initialClk m) Just i
-       ,MS.clk = maybe (MS.clk m) Just c})
+    (m {MS.initialClk =i Control.Applicative.<|> (MS.initialClk m)
+       ,MS.clk =c Control.Applicative.<|> (MS.clk m)})
 updateRequestClks c i (Just (OrderSubscribe m)) =
   OrderSubscribe
-    (m {OS.initialClk = maybe (OS.initialClk m) Just i
-       ,OS.clk = maybe (OS.clk m) Just c})
+    (m {OS.initialClk =i Control.Applicative.<|> (OS.initialClk m)
+       ,OS.clk =c Control.Applicative.<|> (OS.clk m)})
 updateRequestClks c i (Just (UnknownRequest oc oi)) =
-  UnknownRequest (maybe oi Just i)
-                 (maybe oc Just c)
+  UnknownRequest (i Control.Applicative.<|> oi)
+                 (c Control.Applicative.<|> oc)
 
 opIs :: Object -> Either ResponseException Text
 opIs = either (Left . ParserError . cs) Right . parseEither (flip (.:) "op")
@@ -117,24 +117,24 @@ responseIs
   :: ByteString -> Text -> Either ResponseException Response
 responseIs b op
   | op == "mcm" =
-    eitherDecodeStrictResponseException b >>= (\r -> Right (MarketChange r))
+    eitherDecodeStrictResponseException b >>= (Right . MarketChange)
   | op == "ocm" =
-    eitherDecodeStrictResponseException b >>= (\r -> Right (OrderChange r))
+    eitherDecodeStrictResponseException b >>= (Right . OrderChange)
   | op == "connection" =
-    eitherDecodeStrictResponseException b >>= (\r -> Right (Connection r))
+    eitherDecodeStrictResponseException b >>= (Right . Connection)
   | op == "status" =
     eitherDecodeStrictResponseException b >>= (\r -> Right (Status r Nothing))
   | otherwise =
-    parserError ("response: could not parse bytestring: " <> (cs b))
+    parserError ("response: could not parse bytestring: " <> cs b)
 
 parseResponse
   :: ByteString -> Either ResponseException Response
 parseResponse b
   | b == "" = (Left . EmptyLine . cs) b
-  | b == "\n" = parserError ("response: received newline only: " <> (cs b))
+  | b == "\n" = parserError ("response: received newline only: " <> cs b)
   | b == "\r" =
-    parserError ("response: received carriage return only: " <> (cs b))
-  | b == "\r\n" = parserError ("response: received CRLF only: " <> (cs b))
+    parserError ("response: received carriage return only: " <> cs b)
+  | b == "\r\n" = parserError ("response: received CRLF only: " <> cs b)
   | otherwise = eitherDecodeStrictResponseException b >>= opIs >>= responseIs b
 
 eitherDecodeStrictResponseException

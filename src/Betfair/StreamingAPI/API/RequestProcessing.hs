@@ -37,10 +37,10 @@ import qualified Betfair.StreamingAPI.Types.MarketFilter                 as MF
 request :: (ToJSON b
            ,ToRequest b
            ,AddId b)
-        => (Context a) -> b -> IO (Context a)
+        => Context a -> b -> IO (Context a)
 request c r =
   do let currentId = ssIdCounter (cState c)
-         readyToSendRequest = (addId r currentId)
+         readyToSendRequest = addId r currentId
      b <- (groomedLog c To . L.toStrict . addCRLF . encode) readyToSendRequest
      connectionPut (cConnection c)
                    b
@@ -53,24 +53,24 @@ request c r =
 
 resendOldRequest
   :: (ToJSON b)
-  => (Context a) -> b -> IO (Context a)
+  => Context a -> b -> IO (Context a)
 resendOldRequest c readyToSendRequest =
   do b <- (groomedLog c To . L.toStrict . addCRLF . encode) readyToSendRequest
      connectionPut (cConnection c)
                    b
      return c
 
-heartbeat :: (Context a) -> IO (Context a)
+heartbeat :: Context a -> IO (Context a)
 heartbeat c = request c (def :: H.HeartbeatMessage)
 
-authentication :: (Context a) -> IO (Context a)
+authentication :: Context a -> IO (Context a)
 authentication c =
   request c
           (def {A.session = ssSessionToken state
                ,A.appKey = ssAppKey state} :: A.AuthenticationMessage)
   where state = cState c
 
-marketSubscription :: (Context a)
+marketSubscription :: Context a
                    -> M.MarketSubscriptionMessage
                    -> IO (Context a)
 marketSubscription c new =
@@ -96,7 +96,7 @@ sameAsNewMarketSubscribeRequests new (MarketSubscribe old)
   | otherwise = Nothing
 sameAsNewMarketSubscribeRequests _ _ = Nothing
 
-orderSubscription :: (Context a)
+orderSubscription :: Context a
                   -> O.OrderSubscriptionMessage
                   -> IO (Context a)
 orderSubscription c new =
@@ -124,19 +124,19 @@ addCRLF :: L.ByteString -> L.ByteString
 addCRLF a = a <> "\r" <> "\n"
 
 marketIdsSubscription
-  :: (Context a) -> [MarketId] -> IO (Context a)
+  :: Context a -> [MarketId] -> IO (Context a)
 marketIdsSubscription c [] = return c
 marketIdsSubscription c mids =
   marketSubscription
     c
     ((def :: M.MarketSubscriptionMessage) {M.marketFilter =
-                                             ((def :: MF.MarketFilter) {MF.bettingTypes =
+                                             (def :: MF.MarketFilter) {MF.bettingTypes =
                                                                           [BT.ODDS]
                                                                        ,MF.marketIds =
-                                                                          Just mids})})
+                                                                          Just mids}})
 
 bulkMarketsSubscription
-  :: MF.MarketFilter -> (Context a) -> IO (Context a)
+  :: MF.MarketFilter -> Context a -> IO (Context a)
 bulkMarketsSubscription mf c =
   marketSubscription c
                      ((def :: M.MarketSubscriptionMessage) {M.marketFilter = mf})

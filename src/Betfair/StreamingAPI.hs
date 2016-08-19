@@ -95,7 +95,6 @@ import Betfair.StreamingAPI.Types.Side
 --
 import           Control.Concurrent
 import           Control.Exception.Safe
-import           Control.Monad.Trans.Except
 import           Data.Default
 import qualified Data.Map.Strict            as Map
 import           Data.Maybe
@@ -109,10 +108,10 @@ import           Network.Socket
 -- session token from the api
 sampleStart
   :: AppKey -> SessionToken -> [MarketId] -> IO ()
-sampleStart a stoken mids = streamMarketIds a stoken mids >> return ()
+sampleStart a stoken mids = Control.Monad.void (streamMarketIds a stoken mids)
 
 marketIdsContext
-  :: AppKey -> SessionToken -> [MarketId] -> (Context a)
+  :: AppKey -> SessionToken -> [MarketId] -> Context a
 marketIdsContext a stoken mids =
   context {cState =
              addMarketIds (cState context)
@@ -125,13 +124,13 @@ streamMarketIds
 streamMarketIds a stoken =
   fmap cState . startStreaming . marketIdsContext a stoken
 
-startStreaming :: (Context a) -> IO (Context a)
+startStreaming :: Context a -> IO (Context a)
 startStreaming context
   | null (ssMarkets (cState context)) =
     do
        -- blocking read for MarketId's, waiting for marketIds as there
        -- are none to stream
-       emids <- runExceptT ((cBlockingReadMarketIds context) context)
+       emids <- runExceptT (cBlockingReadMarketIds context context)
        case emids of
          Left e -> print e >> return context
          Right (mids,cu) ->
@@ -176,7 +175,7 @@ startStreaming context
                 Right r -> startStreaming r
 
 authenticateAndReadDataLoop
-  :: (Context a) -> ExceptT ResponseException IO (Context a)
+  :: Context a -> ExceptT ResponseException IO (Context a)
 authenticateAndReadDataLoop c =
   responseT c >>= lift . authentication >>= responseT >>=
   -- TODO check the response
@@ -185,13 +184,13 @@ authenticateAndReadDataLoop c =
   readDataLoop
 
 readDataLoop
-  :: (Context a) -> ExceptT ResponseException IO (Context a)
+  :: Context a -> ExceptT ResponseException IO (Context a)
 -- readDataLoop c = undefined
 readDataLoop c
 -- TODO if all markets are closed, get out
   | (null . ssMarkets . cState) c = return c
   | otherwise =
-    do (mids,cu) <- (cNonBlockingReadMarketIds c) c
+    do (mids,cu) <- cNonBlockingReadMarketIds c c
        -- write state if changed
        -- send subscribe requests to new markets only, if needed
        cuu <-

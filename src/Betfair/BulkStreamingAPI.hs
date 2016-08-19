@@ -95,7 +95,6 @@ import           Betfair.StreamingAPI.Types.Side
 --
 import           Control.Concurrent
 import           Control.Exception.Safe
-import           Control.Monad.Trans.Except
 import           Data.Default
 import qualified Data.Map.Strict            as Map
 import           Data.Maybe
@@ -108,14 +107,14 @@ import           Network.Socket
 -- app key from betfair subscription
 -- session token from the api
 sampleStart :: AppKey -> SessionToken -> IO ()
-sampleStart a stoken = stream a stoken >> return ()
+sampleStart a stoken = Control.Monad.void (stream a stoken)
 
 stream
   :: AppKey -> SessionToken -> IO StreamingState
 stream a = fmap cState . startStreaming def . initializeContext a
 
 startStreaming
-  :: MF.MarketFilter -> (Context a) -> IO (Context a)
+  :: MF.MarketFilter -> Context a -> IO (Context a)
 startStreaming mf context =
   -- start processing if there are any marketid's in streaming state
   -- http://learnyouahaskell.com/input-and-output#exceptions
@@ -139,9 +138,9 @@ startStreaming mf context =
        Right connection ->
          do eitherContext <-
               finally (runExceptT
-                         (do ((cOnConnection context)
-                                context {cConnection = connection}) >>=
-                               authenticateAndReadDataLoop mf))
+                         (((cOnConnection context)
+               context {cConnection = connection}) >>=
+              authenticateAndReadDataLoop mf))
                       (toLog context "Closing connection" >>
                        connectionClose connection)
             case eitherContext of
@@ -153,20 +152,17 @@ startStreaming mf context =
               Right r -> return r --startStreaming r
 
 authenticateAndReadDataLoop
-  :: MF.MarketFilter -> (Context a) -> ExceptT ResponseException IO (Context a)
+  :: MF.MarketFilter -> Context a -> ExceptT ResponseException IO (Context a)
 authenticateAndReadDataLoop mf c =
   responseT c >>= lift . authentication >>= responseT >>=
   lift . bulkMarketsSubscription mf >>=
   readDataLoop
 
 readDataLoop
-  :: (Context a) -> ExceptT ResponseException IO (Context a)
+  :: Context a -> ExceptT ResponseException IO (Context a)
 readDataLoop c =
-  do
-     -- write state if changed
-     -- send subscribe requests to new markets only, if needed
      responseT c >>=
-       readDataLoop
+  readDataLoop
 
 connectToBetfair :: IO Connection
 connectToBetfair =

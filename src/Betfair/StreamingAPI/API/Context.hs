@@ -34,12 +34,12 @@ data Context a =
 initializeContext
   :: AppKey -> SessionToken -> Context a
 initializeContext a s =
-  Context {cBlockingReadMarketIds = (\c -> return ([],c))
-          ,cNonBlockingReadMarketIds = (\c -> return ([],c))
+  Context {cBlockingReadMarketIds = \c -> return ([],c)
+          ,cNonBlockingReadMarketIds = \c -> return ([],c)
           ,cLogger = putStrLn
-          ,cOnResponse = (\r c -> lift (print r) >> return c)
+          ,cOnResponse = \r c -> lift (print r) >> return c
           ,cConnection = undefined
-          ,cOnConnection = (\c -> return c)
+          ,cOnConnection = \c -> return c
           ,cState =
              def {ssAppKey = a
                  ,ssSessionToken = s}
