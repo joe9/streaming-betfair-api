@@ -36,7 +36,15 @@ $(deriveJSON defaultOptions {omitNothingFields = True}
 -- deriveDefault ''MarketSubscriptionMessage
 instance Default MarketSubscriptionMessage where
   def =
-    MarketSubscriptionMessage "marketSubscription" 0 True Nothing (30 * 1000) Nothing def 0 def
+    MarketSubscriptionMessage "marketSubscription"
+                              0
+                              True
+                              Nothing
+                              (30 * 1000)
+                              Nothing
+                              def
+                              0
+                              def
 
 instance AddId MarketSubscriptionMessage where
   addId o i = o {id = i}

@@ -47,8 +47,8 @@ module Betfair.StreamingAPI
   ,RunnerStatus)
   where
 
-import BasicPrelude hiding (finally)
-import           Control.Monad.Trans.Except
+import BasicPrelude               hiding (finally)
+import Control.Monad.Trans.Except
 --
 import Betfair.StreamingAPI.API.AddId
 import Betfair.StreamingAPI.API.CommonTypes
@@ -111,19 +111,17 @@ sampleStart
   :: AppKey -> SessionToken -> [MarketId] -> IO ()
 sampleStart a stoken mids = streamMarketIds a stoken mids >> return ()
 
-marketIdsContext :: AppKey
-                    -> SessionToken
-                    -> [MarketId]
-                    -> (Context a)
+marketIdsContext
+  :: AppKey -> SessionToken -> [MarketId] -> (Context a)
 marketIdsContext a stoken mids =
-  context {cState = addMarketIds (cState context) mids}
+  context {cState =
+             addMarketIds (cState context)
+                          mids}
   where context = initializeContext a stoken
-        --   context = initializeContext a stoken mss m mn l r st
 
-streamMarketIds :: AppKey
-                -> SessionToken
-                -> [MarketId]
-                -> IO StreamingState
+--   context = initializeContext a stoken mss m mn l r st
+streamMarketIds
+  :: AppKey -> SessionToken -> [MarketId] -> IO StreamingState
 streamMarketIds a stoken =
   fmap cState . startStreaming . marketIdsContext a stoken
 
@@ -137,10 +135,10 @@ startStreaming context
        case emids of
          Left e -> print e >> return context
          Right (mids,cu) ->
-                startStreaming
-                    (context {cState =
-                                addMarketIds (cState cu)
-                                            mids})
+           startStreaming
+             (context {cState =
+                         addMarketIds (cState cu)
+                                      mids})
   |
    -- start processing if there are any marketid's in streaming state
    -- http://learnyouahaskell.com/input-and-output#exceptions
@@ -196,8 +194,12 @@ readDataLoop c
     do (mids,cu) <- (cNonBlockingReadMarketIds c) c
        -- write state if changed
        -- send subscribe requests to new markets only, if needed
-       cuu <- lift ( fmap (\cuu -> cuu {cState = addMarketIds (cState cuu) mids})
-                           (marketIdsSubscription cu mids))
+       cuu <-
+         lift (fmap (\cuu ->
+                       cuu {cState =
+                              addMarketIds (cState cuu)
+                                           mids})
+                    (marketIdsSubscription cu mids))
        responseT cuu >>= readDataLoop
 
 connectToBetfair :: IO Connection

@@ -1,6 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE TemplateHaskell      #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 
 module Betfair.StreamingAPI.API.Request
   (Request(..))
@@ -20,7 +20,8 @@ data Request
   | Authentication A.AuthenticationMessage
   | MarketSubscribe M.MarketSubscriptionMessage
   | OrderSubscribe O.OrderSubscriptionMessage
-  | UnknownRequest (Maybe Text) (Maybe Text)
+  | UnknownRequest (Maybe Text)
+                   (Maybe Text)
   deriving (Eq,Read,Show)
 
 $(deriveJSON defaultOptions {omitNothingFields = True}

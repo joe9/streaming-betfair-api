@@ -34,7 +34,6 @@ data MarketFilter =
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''MarketFilter)
 
-
 --- event types
 --- 1 Soccer 13904
 --- 2 Tennis 3615
@@ -70,7 +69,6 @@ $(deriveJSON defaultOptions {omitNothingFields = True}
 --- 2901849 Water Polo 16
 --- 26420387 Mixed Martial Arts 77
 --- 27589895 Olympics 2016 156
-
 -- deriveDefault ''MarketFilter
 instance Default MarketFilter where
   def =

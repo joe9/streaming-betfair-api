@@ -8,13 +8,13 @@ module Betfair.StreamingAPI.API.ToRequest
 
 -- import BasicPrelude
 --
-import Betfair.StreamingAPI.API.Request
+import           Betfair.StreamingAPI.API.Request
 import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage     as A
 import qualified Betfair.StreamingAPI.Requests.HeartbeatMessage          as H
 import qualified Betfair.StreamingAPI.Requests.MarketSubscriptionMessage as M
 import qualified Betfair.StreamingAPI.Requests.OrderSubscriptionMessage  as O
 
-class ToRequest a where
+class ToRequest a  where
   toRequest :: a -> Request
 
 instance ToRequest A.AuthenticationMessage where

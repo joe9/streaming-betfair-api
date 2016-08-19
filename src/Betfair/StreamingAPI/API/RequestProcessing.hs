@@ -16,7 +16,7 @@ import           BasicPrelude
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as L
 import           Data.Default
-import qualified Data.IntMap.Strict      as IntMap
+import qualified Data.IntMap.Strict   as IntMap
 import           Network.Connection
 import           Safe
 --
@@ -48,8 +48,8 @@ request c r =
                   (cState c) {ssIdCounter = succ currentId
                              ,ssRequests =
                                 IntMap.insert currentId
-                                           (toRequest readyToSendRequest)
-                                           (ssRequests (cState c))}})
+                                              (toRequest readyToSendRequest)
+                                              (ssRequests (cState c))}})
 
 resendOldRequest
   :: (ToJSON b)
@@ -138,6 +138,5 @@ marketIdsSubscription c mids =
 bulkMarketsSubscription
   :: MF.MarketFilter -> (Context a) -> IO (Context a)
 bulkMarketsSubscription mf c =
-  marketSubscription
-    c
-    ((def :: M.MarketSubscriptionMessage) {M.marketFilter = mf})
+  marketSubscription c
+                     ((def :: M.MarketSubscriptionMessage) {M.marketFilter = mf})
