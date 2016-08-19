@@ -100,12 +100,12 @@ updateRequestClks _ _ (Just r@(Heartbeat _)) = r
 updateRequestClks _ _ (Just r@(Authentication _)) = r
 updateRequestClks c i (Just (MarketSubscribe m)) =
   MarketSubscribe
-    (m {MS.initialClk = i <|> (MS.initialClk m)
-       ,MS.clk = c <|> (MS.clk m)})
+    (m {MS.initialClk = i <|> MS.initialClk m
+       ,MS.clk = c <|> MS.clk m})
 updateRequestClks c i (Just (OrderSubscribe m)) =
   OrderSubscribe
-    (m {OS.initialClk = i <|> (OS.initialClk m)
-       ,OS.clk = c <|> (OS.clk m)})
+    (m {OS.initialClk = i <|> OS.initialClk m
+       ,OS.clk = c <|> OS.clk m})
 updateRequestClks c i (Just (UnknownRequest oc oi)) =
   UnknownRequest (i <|> oi)
                  (c <|> oc)
