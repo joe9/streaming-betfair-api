@@ -100,15 +100,15 @@ updateRequestClks _ _ (Just r@(Heartbeat _)) = r
 updateRequestClks _ _ (Just r@(Authentication _)) = r
 updateRequestClks c i (Just (MarketSubscribe m)) =
   MarketSubscribe
-    (m {MS.initialClk = i Control.Applicative.<|> (MS.initialClk m)
-       ,MS.clk = c Control.Applicative.<|> (MS.clk m)})
+    (m {MS.initialClk = i <|> (MS.initialClk m)
+       ,MS.clk = c <|> (MS.clk m)})
 updateRequestClks c i (Just (OrderSubscribe m)) =
   OrderSubscribe
-    (m {OS.initialClk = i Control.Applicative.<|> (OS.initialClk m)
-       ,OS.clk = c Control.Applicative.<|> (OS.clk m)})
+    (m {OS.initialClk = i <|> (OS.initialClk m)
+       ,OS.clk = c <|> (OS.clk m)})
 updateRequestClks c i (Just (UnknownRequest oc oi)) =
-  UnknownRequest (i Control.Applicative.<|> oi)
-                 (c Control.Applicative.<|> oc)
+  UnknownRequest (i <|> oi)
+                 (c <|> oc)
 
 opIs :: Object -> Either ResponseException Text
 opIs = either (Left . ParserError . cs) Right . parseEither (flip (.:) "op")
