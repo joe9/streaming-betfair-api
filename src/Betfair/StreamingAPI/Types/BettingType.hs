@@ -9,9 +9,9 @@ module Betfair.StreamingAPI.Types.BettingType
   where
 
 import BasicPrelude
-import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
-                        deriveJSON)
-import Data.Default.TH (deriveDefault)
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
+import Data.Default
 
 data BettingType
   = ODDS
@@ -22,7 +22,9 @@ data BettingType
   | FIXED_ODDS
   deriving (Eq,Read,Show)
 
-deriveDefault ''BettingType
-
 $(deriveJSON defaultOptions {omitNothingFields = True}
              ''BettingType)
+
+-- deriveDefault ''BettingType
+instance Default BettingType where
+  def = ODDS

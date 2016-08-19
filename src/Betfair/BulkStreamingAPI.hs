@@ -91,6 +91,7 @@ import Betfair.StreamingAPI.Types.RunnerDefinition
 import Betfair.StreamingAPI.Types.RunnerStatus
 import Betfair.StreamingAPI.Types.SegmentType
 import Betfair.StreamingAPI.Types.Side
+import qualified Betfair.StreamingAPI.Types.MarketFilter                 as MF
 --
 import           Control.Concurrent
 import           Control.Exception.Safe
@@ -111,10 +112,10 @@ sampleStart a stoken = stream a stoken >> return ()
 
 stream
   :: AppKey -> SessionToken -> IO StreamingState
-stream a = fmap cState . startStreaming . initializeContext a
+stream a = fmap cState . startStreaming def . initializeContext a
 
-startStreaming :: (Context a) -> IO (Context a)
-startStreaming context =
+startStreaming :: MF.MarketFilter -> (Context a) -> IO (Context a)
+startStreaming mf context =
   -- start processing if there are any marketid's in streaming state
   -- http://learnyouahaskell.com/input-and-output#exceptions
   -- https://haskell-lang.org/tutorial/exception-safety
@@ -133,13 +134,13 @@ startStreaming context =
        Left err ->
          toLog context ("streamMarketIds: Caught exception: " <> show err) >>
          threadDelay (60 * 1000 * 1000) >>
-         startStreaming context
+         startStreaming mf context
        Right connection ->
          do eitherContext <-
               finally (runExceptT
                          (do ((cOnConnection context)
                                 context {cConnection = connection}) >>=
-                               authenticateAndReadDataLoop))
+                               authenticateAndReadDataLoop mf))
                       (toLog context "Closing connection" >>
                        connectionClose connection)
             case eitherContext of
@@ -151,10 +152,10 @@ startStreaming context =
               Right r -> return r --startStreaming r
 
 authenticateAndReadDataLoop
-  :: (Context a) -> ExceptT ResponseException IO (Context a)
-authenticateAndReadDataLoop c =
+  :: MF.MarketFilter -> (Context a) -> ExceptT ResponseException IO (Context a)
+authenticateAndReadDataLoop mf c =
   responseT c >>= lift . authentication >>= responseT >>=
-  lift . bulkMarketsSubscription >>=
+  lift . bulkMarketsSubscription mf >>=
   readDataLoop
 
 readDataLoop
