@@ -107,7 +107,7 @@ import           Network.Socket
 -- app key from betfair subscription
 -- session token from the api
 sampleStart :: AppKey -> SessionToken -> IO ()
-sampleStart a stoken = Control.Monad.void (stream a stoken)
+sampleStart a stoken = void (stream a stoken)
 
 stream
   :: AppKey -> SessionToken -> IO StreamingState
