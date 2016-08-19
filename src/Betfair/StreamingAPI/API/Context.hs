@@ -32,7 +32,7 @@ initializeContext
 initializeContext a s =
   Context {cConnection = undefined
           ,cLogger = putStrLn
-          ,cOnResponse = \r c -> (print r) >> return c
+          ,cOnResponse = \r c -> print r >> return c
           ,cOnConnection = return
           ,cState =
              def {ssAppKey = a

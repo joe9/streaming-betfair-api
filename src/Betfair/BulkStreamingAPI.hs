@@ -109,13 +109,13 @@ stream a = fmap cState . startStreaming def . initializeContext a
 startStreaming
   :: MF.MarketFilter -> Context a -> IO (Context a)
 startStreaming mf context =
-  do bracket connectToBetfair
-             (\connection ->
-                toLog context "Closing connection" >>
-                connectionClose connection)
-             (\connection ->
-                (cOnConnection context) (context {cConnection = connection}) >>=
-                authenticateAndReadDataLoop mf)
+  bracket connectToBetfair
+        (\connection ->
+           toLog context "Closing connection" >>
+           connectionClose connection)
+        (\connection ->
+           (cOnConnection context) (context {cConnection = connection}) >>=
+           authenticateAndReadDataLoop mf)
 
 authenticateAndReadDataLoop
   :: MF.MarketFilter -> Context a -> IO (Context a)
