@@ -3,12 +3,11 @@
 
 module Betfair.StreamingAPI.API.ResponseProcessing
   (response
-  ,responseT
   ,Response(..))
   where
 
 import           BasicPrelude
-import           Control.Monad.Trans.Except
+import           Control.Exception.Safe
 import           Data.Aeson
 import           Data.Aeson.Types
 import qualified Data.IntMap.Strict         as IntMap
@@ -30,20 +29,20 @@ import           Betfair.StreamingAPI.Types.ChangeType
 
 -- import qualified Betfair.StreamingAPI.Types.MarketChange            as MarketChange
 -- import           Betfair.StreamingAPI.Types.MarketStatus
-responseT
-  :: Context a -> ExceptT ResponseException IO (Context a)
-responseT c = ExceptT (response c) >>= (\(r,cu) -> cOnResponse cu r cu)
-
 response
-  :: Context a -> IO (Either ResponseException (Response,Context a))
+  :: Context a -> IO (Context a)
 response c =
   do raw <-
        connectionGetLine 268435456
                          (cConnection c)
      _ <- groomedLog c From raw
-     groomedLog c
+     eitherResponse <-
+       groomedLog c
                 From
                 (parseResponse raw >>= processResponse c)
+     case eitherResponse of
+       Left e -> throwM e
+       Right (r,cu) -> (cOnResponse cu) r cu
 
 --      (return . Right) (c,undefined)
 processResponse

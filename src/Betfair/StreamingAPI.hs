@@ -130,7 +130,7 @@ startStreaming context
     do
        -- blocking read for MarketId's, waiting for marketIds as there
        -- are none to stream
-       emids <- runExceptT (cBlockingReadMarketIds context context)
+       emids <- run(cBlockingReadMarketIds context context)
        case emids of
          Left e -> print e >> return context
          Right (mids,cu) ->
@@ -175,7 +175,7 @@ startStreaming context
                 Right r -> startStreaming r
 
 authenticateAndReadDataLoop
-  :: Context a -> ExceptT ResponseException IO (Context a)
+  :: Context a -> IO (Context a)
 authenticateAndReadDataLoop c =
   responseT c >>= lift . authentication >>= responseT >>=
   -- TODO check the response
@@ -184,7 +184,7 @@ authenticateAndReadDataLoop c =
   readDataLoop
 
 readDataLoop
-  :: Context a -> ExceptT ResponseException IO (Context a)
+  :: Context a -> IO (Context a)
 -- readDataLoop c = undefined
 readDataLoop c
 -- TODO if all markets are closed, get out

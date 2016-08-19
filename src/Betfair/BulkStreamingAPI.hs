@@ -46,15 +46,18 @@ module Betfair.BulkStreamingAPI
   ,RunnerStatus)
   where
 
-import BasicPrelude               hiding (finally)
-import Control.Monad.Trans.Except
+import BasicPrelude            hiding (bracket, finally)
+import Control.Exception.Safe
+import Data.Default
+import Data.String.Conversions
+import Network.Connection
+import Network.Socket
 --
-import Betfair.StreamingAPI.API.AddId
-import Betfair.StreamingAPI.API.CommonTypes
-import Betfair.StreamingAPI.API.Config
-import Betfair.StreamingAPI.API.Context
-import Betfair.StreamingAPI.API.Log
--- import Betfair.StreamingAPI.API.ReadFromTChan
+import           Betfair.StreamingAPI.API.AddId
+import           Betfair.StreamingAPI.API.CommonTypes
+import           Betfair.StreamingAPI.API.Config
+import           Betfair.StreamingAPI.API.Context
+import           Betfair.StreamingAPI.API.Log
 import           Betfair.StreamingAPI.API.Request
 import           Betfair.StreamingAPI.API.RequestProcessing
 import           Betfair.StreamingAPI.API.Response
@@ -92,18 +95,8 @@ import           Betfair.StreamingAPI.Types.RunnerDefinition
 import           Betfair.StreamingAPI.Types.RunnerStatus
 import           Betfair.StreamingAPI.Types.SegmentType
 import           Betfair.StreamingAPI.Types.Side
---
-import           Control.Concurrent
-import           Control.Exception.Safe
-import           Data.Default
-import qualified Data.Map.Strict         as Map
-import           Data.Maybe
-import           Data.String.Conversions
-import           Data.Text               hiding (map, null)
-import           Data.Text.IO
-import           Network.Connection
-import           Network.Socket
 
+--
 -- app key from betfair subscription
 -- session token from the api
 sampleStart :: AppKey -> SessionToken -> IO ()
@@ -116,51 +109,22 @@ stream a = fmap cState . startStreaming def . initializeContext a
 startStreaming
   :: MF.MarketFilter -> Context a -> IO (Context a)
 startStreaming mf context =
-  -- start processing if there are any marketid's in streaming state
-  -- http://learnyouahaskell.com/input-and-output#exceptions
-  -- https://haskell-lang.org/tutorial/exception-safety
-  -- https://haskell-lang.org/library/safe-exceptions
-  -- http://neilmitchell.blogspot.com/2015/05/handling-control-c-in-haskell.html
-  -- the below exception handling mechanism is perfect. "tryAny"
-  -- handles any synchronous exceptions and recovers from
-  -- them. Synchronous exceptions are exceptions directly related to
-  -- the executed code such as "no network connection", "no host",
-  -- etc. Whereas, "finally" is for cleanup. "finally" handles both
-  -- synchronous and asynchronous exceptions. If a user presses
-  -- Ctrl-C (asynchronous exception), "finally" cleans up the open
-  -- connection thus preventing a leak.
-  do result <- tryAny connectToBetfair
-     case result of
-       Left err ->
-         toLog context ("streamMarketIds: Caught exception: " <> show err) >>
-         threadDelay (60 * 1000 * 1000) >>
-         startStreaming mf context
-       Right connection ->
-         do eitherContext <-
-              finally (runExceptT
-                         (cOnConnection context
-                                        context {cConnection = connection} >>=
-                          authenticateAndReadDataLoop mf))
-                      (toLog context "Closing connection" >>
-                       connectionClose connection)
-            case eitherContext of
-              Left e ->
-                stdOutAndLog context
-                             None
-                             (show e) >>
-                return context
-              Right r -> return r --startStreaming r
+  do bracket connectToBetfair
+             (\connection ->
+                toLog context "Closing connection" >>
+                connectionClose connection)
+             (\connection ->
+                (cOnConnection context) (context {cConnection = connection}) >>=
+                authenticateAndReadDataLoop mf)
 
 authenticateAndReadDataLoop
-  :: MF.MarketFilter -> Context a -> ExceptT ResponseException IO (Context a)
+  :: MF.MarketFilter -> Context a -> IO (Context a)
 authenticateAndReadDataLoop mf c =
-  responseT c >>= lift . authentication >>= responseT >>=
-  lift . bulkMarketsSubscription mf >>=
+  response c >>= authentication >>= response >>= bulkMarketsSubscription mf >>=
   readDataLoop
 
-readDataLoop
-  :: Context a -> ExceptT ResponseException IO (Context a)
-readDataLoop c = responseT c >>= readDataLoop
+readDataLoop :: Context a -> IO (Context a)
+readDataLoop c = response c >>= readDataLoop
 
 connectToBetfair :: IO Connection
 connectToBetfair =

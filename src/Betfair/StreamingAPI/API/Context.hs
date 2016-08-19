@@ -8,7 +8,6 @@ module Betfair.StreamingAPI.API.Context
 
 import           BasicPrelude               hiding (show)
 import qualified BasicPrelude
-import           Control.Monad.Trans.Except
 import           Data.Default
 import           Data.String.Conversions
 import           GHC.Show
@@ -16,29 +15,24 @@ import           Network.Connection
 --
 import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Response
-import Betfair.StreamingAPI.API.ResponseException
+-- import Betfair.StreamingAPI.API.ResponseException
 import Betfair.StreamingAPI.API.StreamingState
 
 data Context a =
-  Context {cBlockingReadMarketIds :: Context a -> ExceptT ResponseException IO ([MarketId]
-                                                                               ,Context a)
-          ,cNonBlockingReadMarketIds :: Context a -> ExceptT ResponseException IO ([MarketId]
-                                                                                  ,Context a)
+  Context {cConnection :: Connection
           ,cLogger :: Text -> IO ()
-          ,cOnResponse :: Response -> Context a -> ExceptT ResponseException IO (Context a)
-          ,cConnection :: Connection
-          ,cOnConnection :: Context a -> ExceptT ResponseException IO (Context a)
+          ,cOnResponse :: Response -> Context a -> IO (Context a)
+          ,cOnConnection :: Context a -> IO (Context a)
           ,cState :: StreamingState
           ,cUserState :: a}
 
+-- Should I pass through the ResponsException to the cOnResponse?
 initializeContext
   :: AppKey -> SessionToken -> Context a
 initializeContext a s =
-  Context {cBlockingReadMarketIds = \c -> return ([],c)
-          ,cNonBlockingReadMarketIds = \c -> return ([],c)
+  Context {cConnection = undefined
           ,cLogger = putStrLn
-          ,cOnResponse = \r c -> lift (print r) >> return c
-          ,cConnection = undefined
+          ,cOnResponse = \r c -> (print r) >> return c
           ,cOnConnection = return
           ,cState =
              def {ssAppKey = a
