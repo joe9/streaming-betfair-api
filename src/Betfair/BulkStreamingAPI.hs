@@ -139,7 +139,7 @@ startStreaming mf context =
          do eitherContext <-
               finally (runExceptT
                          (cOnConnection context
-                             context {cConnection = connection} >>=
+                                        context {cConnection = connection} >>=
                           authenticateAndReadDataLoop mf))
                       (toLog context "Closing connection" >>
                        connectionClose connection)
