@@ -35,13 +35,10 @@ response c =
        connectionGetLine 268435456
                          (cConnection c)
      _ <- groomedLog c From raw
-     eitherResponse <-
-       groomedLog c
-                  From
-                  (parseResponse raw >>= processResponse c)
+     let eitherResponse = parseResponse raw >>= processResponse c
      case eitherResponse of
        Left e       -> throwM e
-       Right (r,cu) -> (cOnResponse cu) r cu
+       Right (r,cu) -> (groomedLog cu From) r >> (cOnResponse cu) r cu
 
 --      (return . Right) (c,undefined)
 processResponse

@@ -1,5 +1,5 @@
 name:                betfair-streaming-api
-version:             0.1.3.2
+version:             0.1.3.3
 synopsis:            betfair streaming api bindings
 description:         betfair streaming api bindings
 license:             MIT
