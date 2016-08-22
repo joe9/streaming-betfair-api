@@ -136,9 +136,9 @@ connectToBetfair =
 
 host :: Text
 -- for pre-production
-host = "stream-api-integration.betfair.com"
-
+-- host = "stream-api-integration.betfair.com"
 -- for production
--- host = "stream-api.betfair.com"
+host = "stream-api.betfair.com"
+
 port :: PortNumber
 port = 443
