@@ -104,26 +104,26 @@ sampleStart a stoken = void (stream a stoken)
 
 stream
   :: AppKey -> SessionToken -> IO StreamingState
-stream a = fmap cState . startStreaming def . initializeContext a
+stream a = fmap cState . startStreaming . initializeContext a
 
-startStreaming
-  :: MF.MarketFilter -> Context a -> IO (Context a)
-startStreaming mf context =
+startStreaming :: Context a -> IO (Context a)
+startStreaming context =
   bracket connectToBetfair
           (\connection ->
              toLog context "Closing connection" >> connectionClose connection)
           (\connection ->
              (cOnConnection context) (context {cConnection = connection}) >>=
-             authenticateAndReadDataLoop mf)
+             authenticateAndReadDataLoop)
 
 authenticateAndReadDataLoop
-  :: MF.MarketFilter -> Context a -> IO (Context a)
-authenticateAndReadDataLoop mf c =
-  response c >>= authentication >>= response >>= bulkMarketsSubscription mf >>=
+  :: Context a -> IO (Context a)
+authenticateAndReadDataLoop c =
+  sresponse c >>= authentication >>= sresponse >>= resendLastSubscription >>=
   readDataLoop
+  where sresponse = fmap snd . response
 
 readDataLoop :: Context a -> IO (Context a)
-readDataLoop c = response c >>= readDataLoop
+readDataLoop c = response c >>= reSubscribeIfNeeded >>= readDataLoop
 
 connectToBetfair :: IO Connection
 connectToBetfair =
@@ -136,9 +136,20 @@ connectToBetfair =
 
 host :: Text
 -- for pre-production
--- host = "stream-api-integration.betfair.com"
--- for production
-host = "stream-api.betfair.com"
+host = "stream-api-integration.betfair.com"
 
+-- for production
+-- host = "stream-api.betfair.com"
 port :: PortNumber
 port = 443
+
+reSubscribeIfNeeded :: (Maybe MarketSubscriptionMessage,Context a)
+                    -> IO (Context a)
+reSubscribeIfNeeded (Just m,c) = resubscribe m c
+reSubscribeIfNeeded (_,c)      = return c
+
+resendLastSubscription
+  :: Context a -> IO (Context a)
+resendLastSubscription c =
+  (flip resubscribe c .
+   fromMaybe (def :: MarketSubscriptionMessage) . lastMarketSubscriptionMessage) c

@@ -69,7 +69,8 @@ $(deriveJSON defaultOptions {omitNothingFields = True}
 --- 2901849 Water Polo 16
 --- 26420387 Mixed Martial Arts 77
 --- 27589895 Olympics 2016 156
--- deriveDefault ''MarketFilter
+-- defaulting to Cricket as it has less markets and will not exceed
+--- the subscription limit of 200
 instance Default MarketFilter where
   def =
     MarketFilter Nothing
@@ -78,6 +79,6 @@ instance Default MarketFilter where
                  (Just ["MATCH_ODDS"])
                  Nothing
                  Nothing
-                 (Just ["2"])
+                 (Just ["4"])
                  Nothing
                  Nothing

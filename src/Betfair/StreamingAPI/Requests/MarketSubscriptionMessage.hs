@@ -6,7 +6,8 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Betfair.StreamingAPI.Requests.MarketSubscriptionMessage
-  (MarketSubscriptionMessage(..))
+  (MarketSubscriptionMessage(..)
+  ,addMarketIdsToMarketSubscriptionMessage)
   where
 
 import BasicPrelude  hiding (id)
@@ -48,3 +49,13 @@ instance Default MarketSubscriptionMessage where
 
 instance AddId MarketSubscriptionMessage where
   addId o i = o {id = i}
+
+type MarketId = Text
+
+addMarketIdsToMarketSubscriptionMessage
+  :: [MarketId] -> MarketSubscriptionMessage -> MarketSubscriptionMessage
+addMarketIdsToMarketSubscriptionMessage mids ms =
+  ms {marketFilter =
+        (marketFilter ms) {marketIds = Just mids
+                          ,eventTypeIds = Nothing
+                          ,marketTypes = Nothing}}

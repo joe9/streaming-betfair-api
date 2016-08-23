@@ -15,13 +15,14 @@ import           Network.Connection
 --
 import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Response
+import Betfair.StreamingAPI.Requests.MarketSubscriptionMessage
 -- import Betfair.StreamingAPI.API.ResponseException
 import Betfair.StreamingAPI.API.StreamingState
 
 data Context a =
   Context {cConnection   :: Connection
           ,cLogger       :: Text -> IO ()
-          ,cOnResponse   :: Response -> Context a -> IO (Context a)
+          ,cOnResponse   :: Response -> Context a -> IO (Maybe MarketSubscriptionMessage,Context a)
           ,cOnConnection :: Context a -> IO (Context a)
           ,cState        :: StreamingState
           ,cUserState    :: a}
@@ -32,7 +33,7 @@ initializeContext
 initializeContext a s =
   Context {cConnection = undefined
           ,cLogger = putStrLn
-          ,cOnResponse = \r c -> print r >> return c
+          ,cOnResponse = \r c -> print r >> return (Nothing,c)
           ,cOnConnection = return
           ,cState =
              def {ssAppKey = a

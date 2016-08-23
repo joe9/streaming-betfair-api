@@ -8,6 +8,8 @@ module Betfair.StreamingAPI.API.RequestProcessing
   ,marketSubscription
   ,marketIdsSubscription
   ,bulkMarketsSubscription
+  ,resubscribe
+  ,lastMarketSubscriptionMessage
   ,orderSubscription
   ,addCRLF)
   where
@@ -74,9 +76,8 @@ marketSubscription :: Context a
                    -> M.MarketSubscriptionMessage
                    -> IO (Context a)
 marketSubscription c new =
-  case (fmap snd .
-        headMay .
-        IntMap.toDescList .
+  case (lastMay .
+        IntMap.elems .
         IntMap.filter isJust .
         IntMap.map (sameAsNewMarketSubscribeRequests new) . ssRequests . cState) c of
     Nothing    -> request c new
@@ -99,9 +100,8 @@ sameAsNewMarketSubscribeRequests _ _ = Nothing
 orderSubscription
   :: Context a -> O.OrderSubscriptionMessage -> IO (Context a)
 orderSubscription c new =
-  case (fmap snd .
-        headMay .
-        IntMap.toDescList .
+  case (lastMay .
+        IntMap.elems .
         IntMap.filter isJust .
         IntMap.map (sameAsNewOrderSubscribeRequests new) . ssRequests . cState) c of
     Nothing    -> request c new
@@ -139,3 +139,29 @@ bulkMarketsSubscription
 bulkMarketsSubscription mf c =
   marketSubscription c
                      ((def :: M.MarketSubscriptionMessage) {M.marketFilter = mf})
+
+resubscribe
+  :: M.MarketSubscriptionMessage -> Context a -> IO (Context a)
+resubscribe new c =
+  case (IntMap.lookup (M.id new) . ssRequests . cState) c of
+    Nothing -> request c new
+    (Just _) ->
+      resendOldRequest
+        (c {cState =
+              (cState c) {ssRequests =
+                            IntMap.insert (M.id new)
+                                          (toRequest new)
+                                          (ssRequests (cState c))}})
+        new
+
+lastMarketSubscriptionMessage
+  :: Context a -> Maybe M.MarketSubscriptionMessage
+lastMarketSubscriptionMessage =
+  lastMay .
+  catMaybes .
+  IntMap.elems . IntMap.map marketSubscriptionMessage . ssRequests . cState
+
+marketSubscriptionMessage
+  :: Request -> Maybe M.MarketSubscriptionMessage
+marketSubscriptionMessage (MarketSubscribe m) = Just m
+marketSubscriptionMessage _                   = Nothing

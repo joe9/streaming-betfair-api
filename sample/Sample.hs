@@ -17,4 +17,4 @@ main = void (stream (undefined :: AppKey) (undefined :: SessionToken))
 
 stream
   :: AppKey -> SessionToken -> IO StreamingState
-stream a = fmap cState . startStreaming def . initializeContext a
+stream a = fmap cState . startStreaming . initializeContext a

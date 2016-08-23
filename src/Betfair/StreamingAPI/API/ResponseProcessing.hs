@@ -29,7 +29,8 @@ import           Betfair.StreamingAPI.Types.ChangeType
 
 -- import qualified Betfair.StreamingAPI.Types.MarketChange            as MarketChange
 -- import           Betfair.StreamingAPI.Types.MarketStatus
-response :: Context a -> IO (Context a)
+response
+  :: Context a -> IO (Maybe MS.MarketSubscriptionMessage,Context a)
 response c =
   do raw <-
        connectionGetLine 268435456
@@ -37,7 +38,7 @@ response c =
      _ <- groomedLog c From raw
      let eitherResponse = parseResponse raw >>= processResponse c
      case eitherResponse of
-       Left e       -> throwM e
+       Left e -> throwM e
        Right (r,cu) -> (groomedLog cu From) r >> (cOnResponse cu) r cu
 
 --      (return . Right) (c,undefined)
