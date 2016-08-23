@@ -110,6 +110,7 @@ startStreaming :: Context a -> IO (Context a)
 startStreaming context =
   bracket connectToBetfair
           (\connection ->
+             putStrLn "Closing connection" >>
              toLog context "Closing connection" >> connectionClose connection)
           (\connection ->
              (cOnConnection context) (context {cConnection = connection}) >>=
@@ -136,10 +137,10 @@ connectToBetfair =
 
 host :: Text
 -- for pre-production
-host = "stream-api-integration.betfair.com"
-
+-- host = "stream-api-integration.betfair.com"
 -- for production
--- host = "stream-api.betfair.com"
+host = "stream-api.betfair.com"
+
 port :: PortNumber
 port = 443
 
