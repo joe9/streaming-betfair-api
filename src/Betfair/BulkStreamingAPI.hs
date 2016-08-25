@@ -106,7 +106,7 @@ stream
   :: AppKey -> SessionToken -> IO StreamingState
 stream a = fmap cState . startStreaming . initializeContext a
 
-startStreaming :: Context a -> IO (Context a)
+startStreaming :: Context -> IO (Context)
 startStreaming context =
   bracket connectToBetfair
           (\connection ->
@@ -117,13 +117,13 @@ startStreaming context =
              authenticateAndReadDataLoop)
 
 authenticateAndReadDataLoop
-  :: Context a -> IO (Context a)
+  :: Context -> IO (Context)
 authenticateAndReadDataLoop c =
   sresponse c >>= authentication >>= sresponse >>= resendLastSubscription >>=
   readDataLoop
   where sresponse = fmap snd . response
 
-readDataLoop :: Context a -> IO (Context a)
+readDataLoop :: Context -> IO (Context)
 readDataLoop c = response c >>= reSubscribeIfNeeded >>= readDataLoop
 
 connectToBetfair :: IO Connection
@@ -144,13 +144,13 @@ host = "stream-api.betfair.com"
 port :: PortNumber
 port = 443
 
-reSubscribeIfNeeded :: (Maybe MarketSubscriptionMessage,Context a)
-                    -> IO (Context a)
+reSubscribeIfNeeded :: (Maybe MarketSubscriptionMessage,Context)
+                    -> IO (Context)
 reSubscribeIfNeeded (Just m,c) = resubscribe m c
 reSubscribeIfNeeded (_,c)      = return c
 
 resendLastSubscription
-  :: Context a -> IO (Context a)
+  :: Context -> IO (Context)
 resendLastSubscription c =
   (flip resubscribe c .
    fromMaybe (def :: MarketSubscriptionMessage) . lastMarketSubscriptionMessage) c

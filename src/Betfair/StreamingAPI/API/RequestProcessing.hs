@@ -39,7 +39,7 @@ import qualified Betfair.StreamingAPI.Types.MarketFilter                 as MF
 request :: (ToJSON b
            ,ToRequest b
            ,AddId b)
-        => Context a -> b -> IO (Context a)
+        => Context -> b -> IO (Context)
 request c r =
   do let currentId = ssIdCounter (cState c)
          readyToSendRequest = addId r currentId
@@ -55,26 +55,26 @@ request c r =
 
 resendOldRequest
   :: (ToJSON b)
-  => Context a -> b -> IO (Context a)
+  => Context -> b -> IO (Context)
 resendOldRequest c readyToSendRequest =
   do b <- (groomedLog c To . L.toStrict . addCRLF . encode) readyToSendRequest
      connectionPut (cConnection c)
                    b
      return c
 
-heartbeat :: Context a -> IO (Context a)
+heartbeat :: Context -> IO (Context)
 heartbeat c = request c (def :: H.HeartbeatMessage)
 
-authentication :: Context a -> IO (Context a)
+authentication :: Context -> IO (Context)
 authentication c =
   request c
           (def {A.session = ssSessionToken state
                ,A.appKey = ssAppKey state} :: A.AuthenticationMessage)
   where state = cState c
 
-marketSubscription :: Context a
+marketSubscription :: Context
                    -> M.MarketSubscriptionMessage
-                   -> IO (Context a)
+                   -> IO (Context)
 marketSubscription c new =
   case (lastMay .
         IntMap.elems .
@@ -98,7 +98,7 @@ sameAsNewMarketSubscribeRequests new (MarketSubscribe old)
 sameAsNewMarketSubscribeRequests _ _ = Nothing
 
 orderSubscription
-  :: Context a -> O.OrderSubscriptionMessage -> IO (Context a)
+  :: Context -> O.OrderSubscriptionMessage -> IO (Context)
 orderSubscription c new =
   case (lastMay .
         IntMap.elems .
@@ -123,7 +123,7 @@ addCRLF :: L.ByteString -> L.ByteString
 addCRLF a = a <> "\r" <> "\n"
 
 marketIdsSubscription
-  :: Context a -> [MarketId] -> IO (Context a)
+  :: Context -> [MarketId] -> IO (Context)
 marketIdsSubscription c [] = return c
 marketIdsSubscription c mids =
   marketSubscription
@@ -135,13 +135,13 @@ marketIdsSubscription c mids =
                                                                          Just mids}})
 
 bulkMarketsSubscription
-  :: MF.MarketFilter -> Context a -> IO (Context a)
+  :: MF.MarketFilter -> Context -> IO (Context)
 bulkMarketsSubscription mf c =
   marketSubscription c
                      ((def :: M.MarketSubscriptionMessage) {M.marketFilter = mf})
 
 resubscribe
-  :: M.MarketSubscriptionMessage -> Context a -> IO (Context a)
+  :: M.MarketSubscriptionMessage -> Context -> IO (Context)
 resubscribe new c =
   case (IntMap.lookup (M.id new) . ssRequests . cState) c of
     Nothing -> request c new
@@ -155,7 +155,7 @@ resubscribe new c =
         new
 
 lastMarketSubscriptionMessage
-  :: Context a -> Maybe M.MarketSubscriptionMessage
+  :: Context -> Maybe M.MarketSubscriptionMessage
 lastMarketSubscriptionMessage =
   lastMay .
   catMaybes .

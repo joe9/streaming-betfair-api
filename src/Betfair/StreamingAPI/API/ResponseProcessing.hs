@@ -30,7 +30,7 @@ import           Betfair.StreamingAPI.Types.ChangeType
 -- import qualified Betfair.StreamingAPI.Types.MarketChange            as MarketChange
 -- import           Betfair.StreamingAPI.Types.MarketStatus
 response
-  :: Context a -> IO (Maybe MS.MarketSubscriptionMessage,Context a)
+  :: Context -> IO (Maybe MS.MarketSubscriptionMessage,Context)
 response c =
   do raw <-
        connectionGetLine 268435456
@@ -43,7 +43,7 @@ response c =
 
 --      (return . Right) (c,undefined)
 processResponse
-  :: Context a -> Response -> Either ResponseException (Response,Context a)
+  :: Context -> Response -> Either ResponseException (Response,Context)
 processResponse c r@(MarketChange m)
   | M.ct m == Just HEARTBEAT = Right (r,c)
   | isNothing (M.segmentType m) && isJust (M.mc m) =

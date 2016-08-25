@@ -111,20 +111,20 @@ sampleStart
 sampleStart a stoken mids = Control.Monad.void (streamMarketIds a stoken mids)
 
 marketIdsContext
-  :: AppKey -> SessionToken -> [MarketId] -> Context a
-marketIdsContext a stoken mids =
+  :: AppKey -> SessionToken -> [MarketId] -> Context
+marketIdsContext stoken mids =
   context {cState =
              addMarketIds (cState context)
                           mids}
-  where context = initializeContext a stoken
+  where context = initializeContext stoken
 
---   context = initializeContext a stoken mss m mn l r st
+--   context = initializeContext stoken mss m mn l r st
 streamMarketIds
   :: AppKey -> SessionToken -> [MarketId] -> IO StreamingState
 streamMarketIds a stoken =
-  fmap cState . startStreaming . marketIdsContext a stoken
+  fmap cState . startStreaming . marketIdsContext stoken
 
-startStreaming :: Context a -> IO (Context a)
+startStreaming :: Context -> IO (Context)
 startStreaming context
   | null (ssMarkets (cState context)) =
     do
@@ -175,7 +175,7 @@ startStreaming context
                 Right r -> startStreaming r
 
 authenticateAndReadDataLoop
-  :: Context a -> IO (Context a)
+  :: Context -> IO (Context)
 authenticateAndReadDataLoop c =
   responseT c >>= lift . authentication >>= responseT >>=
   -- TODO check the response
@@ -183,7 +183,7 @@ authenticateAndReadDataLoop c =
      (lift . marketIdsSubscription cu) ((Map.keys . ssMarkets . cState) cu)) >>=
   readDataLoop
 
-readDataLoop :: Context a -> IO (Context a)
+readDataLoop :: Context -> IO (Context)
 -- readDataLoop c = undefined
 readDataLoop c
 -- TODO if all markets are closed, get out

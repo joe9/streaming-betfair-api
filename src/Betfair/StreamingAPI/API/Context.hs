@@ -19,18 +19,18 @@ import Betfair.StreamingAPI.Requests.MarketSubscriptionMessage
 -- import Betfair.StreamingAPI.API.ResponseException
 import Betfair.StreamingAPI.API.StreamingState
 
-data Context a =
+data Context =
   Context {cConnection   :: Connection
           ,cLogger       :: Text -> IO ()
-          ,cOnResponse   :: Response -> Context a -> IO (Maybe MarketSubscriptionMessage,Context a)
-          ,cOnConnection :: Context a -> IO (Context a)
+          ,cOnResponse   :: Response -> Context -> IO (Maybe MarketSubscriptionMessage,Context)
+          ,cOnConnection :: Context -> IO (Context)
           ,cState        :: StreamingState
-          ,cUserState    :: a}
+          }
 
 -- Should I pass through the ResponsException to the cOnResponse?
 initializeContext
-  :: AppKey -> SessionToken -> Context a
-initializeContext a s =
+  :: AppKey -> SessionToken -> Context
+initializeContext s =
   Context {cConnection = undefined
           ,cLogger = putStrLn
           ,cOnResponse = \r c -> print r >> return (Nothing,c)
@@ -38,10 +38,10 @@ initializeContext a s =
           ,cState =
              def {ssAppKey = a
                  ,ssSessionToken = s}
-          ,cUserState = undefined}
+          }
 
-instance Show (Context a) where
+instance Show (Context) where
   show = cs . showContext
 
-showContext :: Context a -> Text
+showContext :: Context -> Text
 showContext c = "Context: " <> BasicPrelude.show (cState c)-- <> ", " <> (cShowUserState c) (cUserState c)

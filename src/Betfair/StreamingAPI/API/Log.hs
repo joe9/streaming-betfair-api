@@ -24,18 +24,18 @@ data Direction
   | To
   | None
 
-logD :: Context a -> Direction -> Text -> IO ()
+logD :: Context -> Direction -> Text -> IO ()
 logD c d s = toLog c ((cs . show) d <> s)
 
-toLog :: Context a -> Text -> IO ()
+toLog :: Context -> Text -> IO ()
 toLog c = cLogger c
 
 groomedLog :: Show b
-           => Context a -> Direction -> b -> IO b
+           => Context -> Direction -> b -> IO b
 groomedLog c d s = (logD c d . cs . groom) s >> return s
 
 stdOutAndLog
-  :: Context a -> Direction -> Text -> IO ()
+  :: Context -> Direction -> Text -> IO ()
 stdOutAndLog c d s = logD c d s >> ((putStr . cs . show) d >> putStrLn s)
 
 instance Show Direction where
