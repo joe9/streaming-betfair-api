@@ -30,7 +30,7 @@ data Context =
 -- Should I pass through the ResponsException to the cOnResponse?
 initializeContext
   :: AppKey -> SessionToken -> Context
-initializeContext s =
+initializeContext a s =
   Context {cConnection = undefined
           ,cLogger = putStrLn
           ,cOnResponse = \r c -> print r >> return (Nothing,c)
