@@ -2,18 +2,19 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Betfair.StreamingAPI.API.Log
-  (Log
-  ,Direction(..)
-  ,toLog
-  ,logD
-  ,groomedLog
-  ,stdOutAndLog)
-  where
+  ( Log
+  , Direction(..)
+  , toLog
+  , logD
+  , groomedLog
+  , stdOutAndLog
+  ) where
 
 import BasicPrelude            hiding (show)
 import Data.String.Conversions
 import GHC.Show
 import Text.Groom              (groom)
+
 --
 import Betfair.StreamingAPI.API.Context
 
@@ -30,12 +31,12 @@ logD c d s = toLog c ((cs . show) d <> s)
 toLog :: Context -> Text -> IO ()
 toLog c = cLogger c
 
-groomedLog :: Show b
-           => Context -> Direction -> b -> IO b
+groomedLog
+  :: Show b
+  => Context -> Direction -> b -> IO b
 groomedLog c d s = (logD c d . cs . groom) s >> return s
 
-stdOutAndLog
-  :: Context -> Direction -> Text -> IO ()
+stdOutAndLog :: Context -> Direction -> Text -> IO ()
 stdOutAndLog c d s = logD c d s >> ((putStr . cs . show) d >> putStrLn s)
 
 instance Show Direction where

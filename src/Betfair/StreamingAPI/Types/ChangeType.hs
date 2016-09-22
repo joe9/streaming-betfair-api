@@ -4,8 +4,8 @@
 {-# LANGUAGE TemplateHaskell    #-}
 
 module Betfair.StreamingAPI.Types.ChangeType
-  (ChangeType(..))
-  where
+  ( ChangeType(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
@@ -17,9 +17,8 @@ data ChangeType
   = SUB_IMAGE
   | RESUB_DELTA
   | HEARTBEAT
-  deriving (Eq,Show,Read)
+  deriving (Eq, Show, Read)
 
 deriveDefault ''ChangeType
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''ChangeType)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''ChangeType)

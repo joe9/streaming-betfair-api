@@ -2,10 +2,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Betfair.StreamingAPI.API.Response
-  (Response(..))
-  where
+  ( Response(..)
+  ) where
 
 import BasicPrelude
+
 --
 import           Betfair.StreamingAPI.API.Request
 import qualified Betfair.StreamingAPI.Responses.ConnectionMessage   as C
@@ -19,4 +20,4 @@ data Response
   | OrderChange O.OrderChangeMessage
   | Status S.StatusMessage
            (Maybe Request)
-  deriving (Eq,Read,Show)
+  deriving (Eq, Read, Show)

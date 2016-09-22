@@ -4,8 +4,8 @@
 {-# LANGUAGE TemplateHaskell    #-}
 
 module Betfair.StreamingAPI.Types.OrderStatus
-  (OrderStatus(..))
-  where
+  ( OrderStatus(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
@@ -16,9 +16,8 @@ import Data.Default.TH (deriveDefault)
 data OrderStatus
   = E
   | EC
-  deriving (Eq,Show,Read)
+  deriving (Eq, Show, Read)
 
 deriveDefault ''OrderStatus
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''OrderStatus)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''OrderStatus)

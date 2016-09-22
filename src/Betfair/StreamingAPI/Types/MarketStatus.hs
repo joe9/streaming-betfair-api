@@ -5,8 +5,8 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Betfair.StreamingAPI.Types.MarketStatus
-  (MarketStatus(..))
-  where
+  ( MarketStatus(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
@@ -18,9 +18,8 @@ data MarketStatus
   | OPEN
   | SUSPENDED
   | CLOSED
-  deriving (Eq,Show,Read,Enum)
+  deriving (Eq, Show, Read, Enum)
 
 deriveDefault ''MarketStatus
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''MarketStatus)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''MarketStatus)

@@ -4,8 +4,8 @@
 {-# LANGUAGE TemplateHaskell    #-}
 
 module Betfair.StreamingAPI.Types.PersistenceType
-  (PersistenceType(..))
-  where
+  ( PersistenceType(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
@@ -17,9 +17,8 @@ data PersistenceType
   = L
   | P
   | MOC
-  deriving (Eq,Read,Show)
+  deriving (Eq, Read, Show)
 
 deriveDefault ''PersistenceType
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''PersistenceType)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''PersistenceType)

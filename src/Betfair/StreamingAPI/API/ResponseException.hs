@@ -2,10 +2,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Betfair.StreamingAPI.API.ResponseException
-  (ResponseException(..))
-  where
+  ( ResponseException(..)
+  ) where
 
 import BasicPrelude
+
 --
 import Betfair.StreamingAPI.API.Response
 
@@ -14,6 +15,6 @@ data ResponseException
   | EmptyLine Text
   | NotImplemented Response
                    (Maybe Text)
-  deriving (Eq,Show,Typeable)
+  deriving (Eq, Show, Typeable)
 
 instance Exception ResponseException

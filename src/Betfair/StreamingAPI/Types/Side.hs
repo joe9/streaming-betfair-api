@@ -5,8 +5,8 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Betfair.StreamingAPI.Types.Side
-  (Side(..))
-  where
+  ( Side(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
@@ -17,9 +17,8 @@ import Data.Default.TH (deriveDefault)
 data Side
   = B
   | L
-  deriving (Eq,Read,Show)
+  deriving (Eq, Read, Show)
 
 deriveDefault ''Side
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''Side)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''Side)

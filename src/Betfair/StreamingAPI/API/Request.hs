@@ -3,12 +3,13 @@
 {-# LANGUAGE TemplateHaskell   #-}
 
 module Betfair.StreamingAPI.API.Request
-  (Request(..))
-  where
+  ( Request(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
+
 --
 import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage     as A
 import qualified Betfair.StreamingAPI.Requests.HeartbeatMessage          as H
@@ -22,7 +23,6 @@ data Request
   | OrderSubscribe O.OrderSubscriptionMessage
   | UnknownRequest (Maybe Text)
                    (Maybe Text)
-  deriving (Eq,Read,Show)
+  deriving (Eq, Read, Show)
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''Request)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''Request)

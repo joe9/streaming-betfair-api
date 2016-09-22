@@ -5,8 +5,8 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Betfair.StreamingAPI.Types.OrderType
-  (OrderType(..))
-  where
+  ( OrderType(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
@@ -18,9 +18,8 @@ data OrderType
   = L
   | LOC
   | MOC
-  deriving (Eq,Read,Show)
+  deriving (Eq, Read, Show)
 
 deriveDefault ''OrderType
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''OrderType)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''OrderType)

@@ -6,33 +6,33 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Betfair.StreamingAPI.Types.MarketFilter
-  (MarketFilter(..))
-  where
+  ( MarketFilter(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Data.Default
+
 --
 import Betfair.StreamingAPI.Types.BettingType (BettingType (ODDS))
 
-data MarketFilter =
-  MarketFilter {countryCodes      :: Maybe [Text]
-               ,bettingTypes      :: [BettingType]
-               ,turnInPlayEnabled :: Maybe Bool
-               ,marketTypes       :: Maybe [Text]
-               ,venues            :: Maybe [Text]
-               ,marketIds         :: Maybe [Text]
-               ,eventTypeIds      :: Maybe [Text]
-               ,eventIds          :: Maybe [Text]
-               ,bspMarket         :: Maybe Bool}
-  deriving (Eq,Show,Read)
+data MarketFilter = MarketFilter
+  { countryCodes      :: Maybe [Text]
+  , bettingTypes      :: [BettingType]
+  , turnInPlayEnabled :: Maybe Bool
+  , marketTypes       :: Maybe [Text]
+  , venues            :: Maybe [Text]
+  , marketIds         :: Maybe [Text]
+  , eventTypeIds      :: Maybe [Text]
+  , eventIds          :: Maybe [Text]
+  , bspMarket         :: Maybe Bool
+  } deriving (Eq, Show, Read)
 
 -- this is what deriveDefault does anyway
 -- instance Default MarketSort where def = FIRST_TO_START
 -- $(deriveJSON id ''Record)
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''MarketFilter)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''MarketFilter)
 
 --- event types
 --- 1 Soccer 13904
@@ -73,12 +73,13 @@ $(deriveJSON defaultOptions {omitNothingFields = True}
 --- the subscription limit of 200
 instance Default MarketFilter where
   def =
-    MarketFilter Nothing
-                 [ODDS]
-                 (Just True)
-                 (Just ["MATCH_ODDS"])
-                 Nothing
-                 Nothing
-                 (Just ["4"])
-                 Nothing
-                 Nothing
+    MarketFilter
+      Nothing
+      [ODDS]
+      (Just True)
+      (Just ["MATCH_ODDS"])
+      Nothing
+      Nothing
+      (Just ["4"])
+      Nothing
+      Nothing

@@ -4,8 +4,8 @@
 {-# LANGUAGE TemplateHaskell    #-}
 
 module Betfair.StreamingAPI.Types.RequestStatus
-  (RequestStatus(..))
-  where
+  ( RequestStatus(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
@@ -15,9 +15,8 @@ import Data.Default.TH (deriveDefault)
 data RequestStatus
   = SUCCESS
   | FAILURE
-  deriving (Eq,Show,Read)
+  deriving (Eq, Show, Read)
 
 deriveDefault ''RequestStatus
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''RequestStatus)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''RequestStatus)

@@ -4,8 +4,8 @@
 {-# LANGUAGE TemplateHaskell    #-}
 
 module Betfair.StreamingAPI.Types.ErrorCode
-  (ErrorCode(..))
-  where
+  ( ErrorCode(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
@@ -27,9 +27,8 @@ data ErrorCode
   | INVALID_REQUEST
   | CONNECTION_FAILED
   | MAX_CONNECTION_LIMIT_EXCEEDED
-  deriving (Eq,Show,Read)
+  deriving (Eq, Show, Read)
 
 deriveDefault ''ErrorCode
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''ErrorCode)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''ErrorCode)

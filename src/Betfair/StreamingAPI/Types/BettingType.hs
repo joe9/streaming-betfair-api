@@ -5,8 +5,8 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Betfair.StreamingAPI.Types.BettingType
-  (BettingType(..))
-  where
+  ( BettingType(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
@@ -20,10 +20,9 @@ data BettingType
   | ASIAN_HANDICAP_DOUBLE_LINE
   | ASIAN_HANDICAP_SINGLE_LINE
   | FIXED_ODDS
-  deriving (Eq,Read,Show)
+  deriving (Eq, Read, Show)
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''BettingType)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''BettingType)
 
 -- deriveDefault ''BettingType
 instance Default BettingType where

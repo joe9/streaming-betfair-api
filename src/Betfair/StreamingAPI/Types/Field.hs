@@ -5,8 +5,8 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Betfair.StreamingAPI.Types.Field
-  (Field(..))
-  where
+  ( Field(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
@@ -23,9 +23,8 @@ data Field
   | EX_MARKET_DEF
   | SP_TRADED
   | SP_PROJECTED
-  deriving (Eq,Show,Read)
+  deriving (Eq, Show, Read)
 
 deriveDefault ''Field
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''Field)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''Field)

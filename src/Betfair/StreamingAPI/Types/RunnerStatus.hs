@@ -4,8 +4,8 @@
 {-# LANGUAGE TemplateHaskell    #-}
 
 module Betfair.StreamingAPI.Types.RunnerStatus
-  (RunnerStatus(..))
-  where
+  ( RunnerStatus(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
@@ -19,9 +19,8 @@ data RunnerStatus
   | REMOVED_VACANT
   | REMOVED
   | HIDDEN
-  deriving (Eq,Show,Read,Enum)
+  deriving (Eq, Show, Read, Enum)
 
 deriveDefault ''RunnerStatus
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''RunnerStatus)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''RunnerStatus)

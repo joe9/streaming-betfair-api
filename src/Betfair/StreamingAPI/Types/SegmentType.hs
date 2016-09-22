@@ -4,8 +4,8 @@
 {-# LANGUAGE TemplateHaskell    #-}
 
 module Betfair.StreamingAPI.Types.SegmentType
-  (SegmentType(..))
-  where
+  ( SegmentType(..)
+  ) where
 
 import BasicPrelude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
@@ -16,9 +16,8 @@ data SegmentType
   = SEG_START
   | SEG
   | SEG_END
-  deriving (Eq,Show,Read)
+  deriving (Eq, Show, Read)
 
 deriveDefault ''SegmentType
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''SegmentType)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''SegmentType)

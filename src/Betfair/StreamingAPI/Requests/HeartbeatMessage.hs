@@ -6,23 +6,23 @@
 {-# LANGUAGE UndecidableInstances #-}
 
 module Betfair.StreamingAPI.Requests.HeartbeatMessage
-  (HeartbeatMessage(..))
-  where
+  ( HeartbeatMessage(..)
+  ) where
 
 import BasicPrelude  hiding (id)
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Data.Default
+
 --
 import Betfair.StreamingAPI.API.AddId
 
-data HeartbeatMessage =
-  HeartbeatMessage {op :: Text
-                   ,id :: Int}
-  deriving (Eq,Read,Show)
+data HeartbeatMessage = HeartbeatMessage
+  { op :: Text
+  , id :: Int
+  } deriving (Eq, Read, Show)
 
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''HeartbeatMessage)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''HeartbeatMessage)
 
 -- deriveDefault ''HeartbeatMessage
 instance Default HeartbeatMessage where

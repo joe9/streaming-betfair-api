@@ -2,9 +2,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Betfair.StreamingAPI.API.ToRequest
-  (ToRequest
-  ,toRequest)
-  where
+  ( ToRequest
+  , toRequest
+  ) where
 
 -- import BasicPrelude
 --
@@ -14,7 +14,7 @@ import qualified Betfair.StreamingAPI.Requests.HeartbeatMessage          as H
 import qualified Betfair.StreamingAPI.Requests.MarketSubscriptionMessage as M
 import qualified Betfair.StreamingAPI.Requests.OrderSubscriptionMessage  as O
 
-class ToRequest a  where
+class ToRequest a where
   toRequest :: a -> Request
 
 instance ToRequest A.AuthenticationMessage where
