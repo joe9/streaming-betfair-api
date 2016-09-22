@@ -63,6 +63,7 @@ library
                   Betfair.StreamingAPI.Types.MarketStatus
                   Betfair.StreamingAPI.Types.MarketDataFilter
                   Betfair.StreamingAPI.Types.RunnerStatus
+                  TimeUnitsJSONInstance
 
   other-extensions:    DeriveDataTypeable
                      , FlexibleContexts
@@ -74,6 +75,7 @@ library
                      , mtl
                      , data-default
                      , time
+                     , time-units
                      , iso8601-time
                      , bytestring
                      , safe

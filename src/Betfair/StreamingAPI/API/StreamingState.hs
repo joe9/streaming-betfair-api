@@ -15,8 +15,10 @@ import           Data.Default
 import qualified Data.IntMap.Strict    as IntMap
 import           Data.Ratio
 import           Data.Time.Clock.POSIX
+import Data.Time.Units
 
 --
+import TimeUnitsJSONInstance()
 import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Request
 
@@ -26,16 +28,16 @@ data StreamingState = StreamingState
   , ssSessionToken                        :: SessionToken
   , ssAppKey                              :: AppKey
   , ssNeedHumanHelp                       :: Bool
-  , ssLastMarketSubscriptionMessageSentAt :: Integer
+  , ssLastMarketSubscriptionMessageSentAt :: Microsecond
   } deriving (Eq, Read, Show)
 
 instance Default StreamingState where
-  def = StreamingState IntMap.empty 1 "" "" False 0
+  def = StreamingState IntMap.empty 1 "" "" False (fromMicroseconds 0)
 
 -- deriveDefault ''MarketDefinition
 $(deriveJSON defaultOptions {omitNothingFields = True} ''StreamingState)
 
 -- to use for the ssLastMarketSubscriptionMessageSentAt
-timeInMicroseconds :: IO Integer
+timeInMicroseconds :: IO Microsecond
 timeInMicroseconds =
-  fromIntegral . numerator . toRational . (* 1000000) <$> getPOSIXTime
+  fromMicroseconds . fromIntegral . numerator . toRational . (* 1000000) <$> getPOSIXTime
