@@ -17,15 +17,14 @@ import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Request
 
 data StreamingState =
-  StreamingState {ssRequests      :: IntMap.IntMap Request
-                 ,ssIdCounter     :: Int
+  StreamingState {ssRequests      :: IntMap.IntMap Request -- index is time in milliseconds
                  ,ssSessionToken  :: SessionToken
                  ,ssAppKey        :: AppKey
                  ,ssNeedHumanHelp :: Bool}
   deriving (Eq,Read,Show)
 
 instance Default StreamingState where
-  def = StreamingState IntMap.empty 1 "" "" False
+  def = StreamingState IntMap.empty "" "" False
 
 -- deriveDefault ''MarketDefinition
 $(deriveJSON defaultOptions {omitNothingFields = True}
