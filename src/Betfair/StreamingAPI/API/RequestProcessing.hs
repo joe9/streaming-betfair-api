@@ -44,19 +44,16 @@ request
     :: (ToJSON b, ToRequest b, AddId b)
     => Context -> b -> IO (Context)
 request c r = do
-    currentId <- timeInMicroseconds
-    let readyToSendRequest = addId r currentId
+    let currentId = ssIdCounter (cState c)
+        readyToSendRequest = addId r currentId
     b <- (groomedLog c To . L.toStrict . addCRLF . encode) readyToSendRequest
     connectionPut (cConnection c) b
-    return
-        (c
-         { cState = (cState c)
-           { ssRequests = IntMap.insert
-                 currentId
-                 (toRequest readyToSendRequest)
-                 (ssRequests (cState c))
-           }
-         })
+    return (c {cState =
+                 (cState c) {ssIdCounter = succ currentId
+                            ,ssRequests =
+                               IntMap.insert currentId
+                                             (toRequest readyToSendRequest)
+                                             (ssRequests (cState c))}})
 
 resendOldRequest
     :: (ToJSON b)
@@ -81,15 +78,17 @@ authentication c =
     state = cState c
 
 marketSubscription :: Context -> M.MarketSubscriptionMessage -> IO (Context)
-marketSubscription c new =
-    case (lastMay .
+marketSubscription c new = do
+  timeInMicros <- timeInMicroseconds
+  let cn = c {cState = (cState c) {ssLastMarketSubscriptionMessageSentAt = timeInMicros}}
+  case (lastMay .
           IntMap.elems .
           IntMap.filter isJust .
           IntMap.map (sameAsNewMarketSubscribeRequests new) .
           ssRequests . cState)
              c of
-        Nothing -> request c new
-        (Just old) -> resendOldRequest c old
+        Nothing -> request cn new
+        (Just old) -> resendOldRequest cn old
 
 sameAsNewMarketSubscribeRequests :: M.MarketSubscriptionMessage
                                  -> Request
@@ -162,20 +161,7 @@ bulkMarketsSubscription mf c =
          })
 
 resubscribe :: M.MarketSubscriptionMessage -> Context -> IO (Context)
-resubscribe new c =
-    case (IntMap.lookup (M.id new) . ssRequests . cState) c of
-        Nothing -> request c new
-        (Just _) ->
-            resendOldRequest
-                (c
-                 { cState = (cState c)
-                   { ssRequests = IntMap.insert
-                         (M.id new)
-                         (toRequest new)
-                         (ssRequests (cState c))
-                   }
-                 })
-                new
+resubscribe new c = marketSubscription c new
 
 lastMarketSubscriptionMessage :: Context -> Maybe M.MarketSubscriptionMessage
 lastMarketSubscriptionMessage c
