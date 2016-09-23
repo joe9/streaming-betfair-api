@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Sample where
+module Main where
 
 import BasicPrelude
 import Data.Default

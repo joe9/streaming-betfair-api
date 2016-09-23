@@ -104,7 +104,7 @@ executable Sample
   ghc-options:         -threaded
                        -rtsopts
                        -with-rtsopts=-N
-  hs-source-dirs:    sample
+  hs-source-dirs:    app
   main-is:             Sample.hs
   default-extensions:  NoImplicitPrelude
   other-extensions:    DeriveDataTypeable
