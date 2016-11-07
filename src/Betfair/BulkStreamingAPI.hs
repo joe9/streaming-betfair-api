@@ -43,17 +43,14 @@ module Betfair.BulkStreamingAPI
   , RunnerStatus
   ) where
 
-import BasicPrelude            hiding (bracket, finally)
+import Protolude            hiding (bracket, finally)
 import Control.Exception.Safe
-import Data.Default
 import Data.String.Conversions
 import Network.Connection
 import Network.Socket
 
---
 import           Betfair.StreamingAPI.API.AddId
 import           Betfair.StreamingAPI.API.CommonTypes
-import           Betfair.StreamingAPI.API.Config
 import           Betfair.StreamingAPI.API.Context
 import           Betfair.StreamingAPI.API.Log
 import           Betfair.StreamingAPI.API.Request
@@ -108,7 +105,7 @@ startStreaming context =
   bracket
     connectToBetfair
     (\connection ->
-       putStrLn "Closing connection" >> toLog context "Closing connection" >>
+       putText "Closing connection" >> toLog context "Closing connection" >>
        connectionClose connection)
     (\connection ->
        (cOnConnection context) (context {cConnection = connection}) >>=
@@ -127,7 +124,7 @@ readDataLoop c = response c >>= reSubscribeIfNeeded >>= readDataLoop
 connectToBetfair :: IO Connection
 connectToBetfair =
   initConnectionContext >>=
-  flip connectTo (ConnectionParams (cs host) port (Just def) Nothing)
+  flip connectTo (ConnectionParams (cs host) port (Just (TLSSettingsSimple False False False)) Nothing)
 
 host :: Text
 -- for pre-production
@@ -146,5 +143,5 @@ reSubscribeIfNeeded (_, c)      = return c
 resendLastSubscription :: Context -> IO (Context)
 resendLastSubscription c =
   (flip resubscribe c .
-   fromMaybe (def :: MarketSubscriptionMessage) . lastMarketSubscriptionMessage)
+   fromMaybe (defaultMarketSubscriptionMessage) . lastMarketSubscriptionMessage)
     c

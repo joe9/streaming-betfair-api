@@ -6,10 +6,9 @@ module Betfair.StreamingAPI.API.Context
   , initializeContext
   ) where
 
-import           BasicPrelude            hiding (show)
-import qualified BasicPrelude
-import           Data.Default
-import           Data.String.Conversions
+import           Protolude            hiding (show)
+import qualified Protolude
+import           Data.String.Conversions (cs)
 import           GHC.Show
 import           Network.Connection
 
@@ -37,11 +36,11 @@ initializeContext a s =
   , cLogger = putStrLn
   , cOnResponse = \r c -> print r >> return (Nothing, c)
   , cOnConnection = return
-  , cState = def {ssAppKey = a, ssSessionToken = s}
+  , cState = defaultStreamingState {ssAppKey = a, ssSessionToken = s}
   }
 
 instance Show (Context) where
   show = cs . showContext
 
 showContext :: Context -> Text
-showContext c = "Context: " <> BasicPrelude.show (cState c) -- <> ", " <> (cShowUserState c) (cUserState c)
+showContext c = "Context: " <> Protolude.show (cState c) -- <> ", " <> (cShowUserState c) (cUserState c)

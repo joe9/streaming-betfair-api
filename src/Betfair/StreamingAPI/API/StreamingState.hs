@@ -6,14 +6,13 @@
 module Betfair.StreamingAPI.API.StreamingState
   ( StreamingState(..)
   , timeInMicroseconds
+  , defaultStreamingState
   ) where
 
-import           BasicPrelude
+import           Protolude
 import           Data.Aeson.TH         (Options (omitNothingFields),
                                         defaultOptions, deriveJSON)
-import           Data.Default
 import qualified Data.IntMap.Strict    as IntMap
-import           Data.Ratio
 import           Data.Time.Clock.POSIX
 import Data.Time.Units
 
@@ -31,10 +30,9 @@ data StreamingState = StreamingState
   , ssLastMarketSubscriptionMessageSentAt :: Microsecond
   } deriving (Eq, Read, Show)
 
-instance Default StreamingState where
-  def = StreamingState IntMap.empty 1 "" "" False (fromMicroseconds 0)
+defaultStreamingState :: StreamingState
+defaultStreamingState = StreamingState IntMap.empty 1 "" "" False (fromMicroseconds 0)
 
--- deriveDefault ''MarketDefinition
 $(deriveJSON defaultOptions {omitNothingFields = True} ''StreamingState)
 
 -- to use for the ssLastMarketSubscriptionMessageSentAt

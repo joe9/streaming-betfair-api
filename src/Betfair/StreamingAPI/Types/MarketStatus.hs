@@ -8,10 +8,9 @@ module Betfair.StreamingAPI.Types.MarketStatus
   ( MarketStatus(..)
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
-import Data.Default.TH (deriveDefault)
 
 data MarketStatus
   = INACTIVE
@@ -20,6 +19,5 @@ data MarketStatus
   | CLOSED
   deriving (Eq, Show, Read, Enum)
 
-deriveDefault ''MarketStatus
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketStatus)

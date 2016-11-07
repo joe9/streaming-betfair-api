@@ -8,7 +8,7 @@ module Betfair.StreamingAPI.Types.MarketChange
   ( MarketChange(..)
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 
@@ -25,5 +25,4 @@ data MarketChange = MarketChange
   , id               :: Text -- Market Id - the id of the market
   } deriving (Eq, Read, Show)
 
--- deriveDefault ''MarketChange
 $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketChange)

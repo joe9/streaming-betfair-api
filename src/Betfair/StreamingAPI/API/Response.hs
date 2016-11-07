@@ -5,7 +5,7 @@ module Betfair.StreamingAPI.API.Response
   ( Response(..)
   ) where
 
-import BasicPrelude
+import Protolude
 
 --
 import           Betfair.StreamingAPI.API.Request

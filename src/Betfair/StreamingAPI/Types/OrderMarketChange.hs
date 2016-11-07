@@ -6,7 +6,7 @@ module Betfair.StreamingAPI.Types.OrderMarketChange
   ( OrderMarketChange(..)
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 
@@ -20,5 +20,4 @@ data OrderMarketChange = OrderMarketChange
   , id        :: Text -- Market Id - the id of the market the order is on
   } deriving (Eq, Read, Show)
 
--- deriveDefault ''OrderMarketChange
 $(deriveJSON defaultOptions {omitNothingFields = True} ''OrderMarketChange)

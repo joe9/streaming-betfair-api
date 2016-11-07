@@ -6,12 +6,12 @@
 
 module Betfair.StreamingAPI.Types.BettingType
   ( BettingType(..)
+  , defaultBettingType
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
-import Data.Default
 
 data BettingType
   = ODDS
@@ -24,6 +24,5 @@ data BettingType
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''BettingType)
 
--- deriveDefault ''BettingType
-instance Default BettingType where
-  def = ODDS
+defaultBettingType :: BettingType
+defaultBettingType = ODDS

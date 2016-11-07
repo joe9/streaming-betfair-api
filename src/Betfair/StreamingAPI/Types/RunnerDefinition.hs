@@ -8,10 +8,9 @@ module Betfair.StreamingAPI.Types.RunnerDefinition
   ( RunnerDefinition(..)
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
-import Data.Default.TH (deriveDefault)
 
 --
 import Betfair.StreamingAPI.Types.RunnerStatus (RunnerStatus)
@@ -27,7 +26,5 @@ data RunnerDefinition = RunnerDefinition
   , bsp              :: Maybe Double
   , status           :: RunnerStatus
   } deriving (Eq, Read, Show)
-
-deriveDefault ''RunnerDefinition
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''RunnerDefinition)

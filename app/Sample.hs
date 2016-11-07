@@ -4,12 +4,10 @@
 
 module Main where
 
-import BasicPrelude
-import Data.Default
---
-import           Betfair.BulkStreamingAPI
+import Protolude
 
---
+import Betfair.BulkStreamingAPI
+
 -- app key from betfair subscription
 -- session token from the api
 main :: IO ()

@@ -3,6 +3,5 @@ extra-package-dbs: []
 packages:
 - '.'
 extra-deps:
-- safe-exceptions-0.1.4.0
-- template-default-0.1.2
-resolver: lts-6.12
+- time-units-1.0.0
+resolver: nightly-2016-11-04

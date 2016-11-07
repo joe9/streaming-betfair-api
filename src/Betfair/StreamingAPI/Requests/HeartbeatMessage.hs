@@ -7,12 +7,12 @@
 
 module Betfair.StreamingAPI.Requests.HeartbeatMessage
   ( HeartbeatMessage(..)
+  , defaultHeartbeatMessage
   ) where
 
-import BasicPrelude  hiding (id)
+import Protolude  hiding (id)
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
-import Data.Default
 
 --
 import Betfair.StreamingAPI.API.AddId
@@ -24,9 +24,8 @@ data HeartbeatMessage = HeartbeatMessage
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''HeartbeatMessage)
 
--- deriveDefault ''HeartbeatMessage
-instance Default HeartbeatMessage where
-  def = HeartbeatMessage "Heartbeat" 0
+defaultHeartbeatMessage :: HeartbeatMessage
+defaultHeartbeatMessage = HeartbeatMessage "Heartbeat" 0
 
 instance AddId HeartbeatMessage where
   addId o i = o {id = i}

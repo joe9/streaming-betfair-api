@@ -6,7 +6,7 @@ module Betfair.StreamingAPI.API.AddId
   , addId
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson
 
 class ToJSON a =>

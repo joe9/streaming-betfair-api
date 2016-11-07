@@ -44,7 +44,7 @@ module Betfair.StreamingAPI
   , RunnerStatus
   ) where
 
-import BasicPrelude               hiding (finally)
+import Protolude               hiding (finally)
 import Control.Monad.Trans.Except
 
 --
@@ -95,7 +95,6 @@ import Betfair.StreamingAPI.Types.Side
 --
 import           Control.Concurrent
 import           Control.Exception.Safe
-import           Data.Default
 import qualified Data.Map.Strict         as Map
 import           Data.Maybe
 import           Data.String.Conversions

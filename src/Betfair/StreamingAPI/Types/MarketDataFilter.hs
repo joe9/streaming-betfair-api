@@ -7,14 +7,13 @@
 
 module Betfair.StreamingAPI.Types.MarketDataFilter
   ( MarketDataFilter(..)
+  , defaultMarketDataFilter
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
-import Data.Default
 
--- import Data.Default.TH             (deriveDefault)
 import Betfair.StreamingAPI.Types.Field
 
 data MarketDataFilter = MarketDataFilter
@@ -22,14 +21,12 @@ data MarketDataFilter = MarketDataFilter
   , fields       :: [Field]
   } deriving (Eq, Show, Read)
 
--- this is what deriveDefault does anyway
 -- instance Default MarketSort where def = FIRST_TO_START
 -- $(deriveJSON id ''Record)
 $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketDataFilter)
 
--- deriveDefault ''MarketDataFilter
-instance Default MarketDataFilter where
-  def =
+defaultMarketDataFilter :: MarketDataFilter
+defaultMarketDataFilter =
     MarketDataFilter
       (Just 3)
       [EX_BEST_OFFERS_DISP, EX_TRADED, EX_TRADED_VOL, EX_MARKET_DEF]

@@ -6,11 +6,10 @@ module Betfair.StreamingAPI.Types.Order
   ( Order(..)
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 
--- import Data.Default.TH (deriveDefault)
 --
 import Betfair.StreamingAPI.Types.OrderStatus     (OrderStatus)
 import Betfair.StreamingAPI.Types.OrderType       (OrderType)
@@ -40,5 +39,4 @@ data Order = Order
   , sr     :: Maybe Double -- Size Remaining - the amount of the order that is remaining unmatched
   } deriving (Eq, Read, Show)
 
--- deriveDefault ''Order
 $(deriveJSON defaultOptions {omitNothingFields = True} ''Order)

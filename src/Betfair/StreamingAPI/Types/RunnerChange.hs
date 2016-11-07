@@ -8,7 +8,7 @@ module Betfair.StreamingAPI.Types.RunnerChange
   ( RunnerChange(..)
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 
@@ -39,5 +39,4 @@ data RunnerChange = RunnerChange
   , bdatb :: Maybe [[Double]] -- Best Display Available To Back (includes virtual prices)- LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove)
   } deriving (Eq, Read, Show)
 
--- deriveDefault ''RunnerChange
 $(deriveJSON defaultOptions {omitNothingFields = True} ''RunnerChange)

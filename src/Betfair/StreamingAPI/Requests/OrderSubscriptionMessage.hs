@@ -7,16 +7,16 @@
 
 module Betfair.StreamingAPI.Requests.OrderSubscriptionMessage
   ( OrderSubscriptionMessage(..)
+  , defaultOrderSubscriptionMessage
   ) where
 
-import BasicPrelude  hiding (id)
+import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
-import Data.Default
 
 --
 import Betfair.StreamingAPI.API.AddId
-import Betfair.StreamingAPI.Types.OrderFilter (OrderFilter)
+import Betfair.StreamingAPI.Types.OrderFilter (OrderFilter(..))
 
 data OrderSubscriptionMessage = OrderSubscriptionMessage
   { op                  :: Text
@@ -33,14 +33,13 @@ $(deriveJSON
     defaultOptions {omitNothingFields = True}
     ''OrderSubscriptionMessage)
 
--- deriveDefault ''OrderSubscriptionMessage
-instance Default OrderSubscriptionMessage where
-  def =
+defaultOrderSubscriptionMessage :: OrderSubscriptionMessage
+defaultOrderSubscriptionMessage =
     OrderSubscriptionMessage
       "OrderSubscription"
       0
       True
-      def
+      (OrderFilter [])
       Nothing
       (30 * 1000)
       Nothing

@@ -31,7 +31,6 @@ library
                   Betfair.StreamingAPI.Requests.HeartbeatMessage
                   Betfair.StreamingAPI.API.AddId
                   Betfair.StreamingAPI.API.CommonTypes
-                  Betfair.StreamingAPI.API.Config
                   Betfair.StreamingAPI.API.Context
                   Betfair.StreamingAPI.API.Log
                   Betfair.StreamingAPI.API.Request
@@ -64,7 +63,6 @@ library
                   Betfair.StreamingAPI.Types.MarketDataFilter
                   Betfair.StreamingAPI.Types.RunnerStatus
                   TimeUnitsJSONInstance
-
   other-extensions:    DeriveDataTypeable
                      , FlexibleContexts
                      , TemplateHaskell
@@ -73,7 +71,6 @@ library
                      , NoImplicitPrelude
   build-depends:       base
                      , mtl
-                     , data-default
                      , time
                      , time-units
                      , iso8601-time
@@ -83,7 +80,6 @@ library
                      , case-insensitive
                      , http-types
                      , connection
-                     , template-default
                      , groom
                      , old-locale
                      , aeson
@@ -92,7 +88,7 @@ library
                      , safe-exceptions
                      , string-conversions
                      , text
-                     , basic-prelude
+                     , protolude
                      , network
                      , stm
                      , transformers
@@ -114,7 +110,6 @@ executable Sample
                      , OverloadedStrings
   build-depends:       base
                      , mtl
-                     , data-default
                      , time
                      , iso8601-time
                      , bytestring
@@ -123,7 +118,6 @@ executable Sample
                      , case-insensitive
                      , http-types
                      , connection
-                     , template-default
                      , groom
                      , old-locale
                      , aeson
@@ -132,7 +126,7 @@ executable Sample
                      , safe-exceptions
                      , string-conversions
                      , text
-                     , basic-prelude
+                     , protolude
                      , network
                      , stm
                      , transformers

@@ -14,15 +14,12 @@ module Betfair.StreamingAPI.API.RequestProcessing
   , addCRLF
   ) where
 
-import           BasicPrelude
+import           Protolude hiding (state)
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as L
-import           Data.Default
 import qualified Data.IntMap.Strict   as IntMap
 import           Network.Connection
-import           Safe
 
---
 import           Betfair.StreamingAPI.API.AddId
 import           Betfair.StreamingAPI.API.CommonTypes
 import           Betfair.StreamingAPI.API.Context
@@ -30,15 +27,15 @@ import           Betfair.StreamingAPI.API.Log
 import           Betfair.StreamingAPI.API.Request
 import           Betfair.StreamingAPI.API.StreamingState
 import           Betfair.StreamingAPI.API.ToRequest
-import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage     as A
-import qualified Betfair.StreamingAPI.Requests.HeartbeatMessage          as H
+import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage as A
+import qualified Betfair.StreamingAPI.Requests.HeartbeatMessage as H
 import qualified Betfair.StreamingAPI.Requests.MarketSubscriptionMessage as M
-import qualified Betfair.StreamingAPI.Requests.OrderSubscriptionMessage  as O
+import qualified Betfair.StreamingAPI.Requests.OrderSubscriptionMessage as O
 import qualified Betfair.StreamingAPI.Types.BettingType                  as BT
 import qualified Betfair.StreamingAPI.Types.MarketFilter                 as MF
 
 request
-  :: (ToJSON b, ToRequest b, AddId b)
+  :: (ToRequest b, AddId b)
   => Context -> b -> IO (Context)
 request c r = do
   let currentId = ssIdCounter (cState c)
@@ -67,13 +64,13 @@ resendOldRequest c readyToSendRequest = do
   return c
 
 heartbeat :: Context -> IO (Context)
-heartbeat c = request c (def :: H.HeartbeatMessage)
+heartbeat c = request c H.defaultHeartbeatMessage
 
 authentication :: Context -> IO (Context)
 authentication c =
   request
     c
-    (def {A.session = ssSessionToken state, A.appKey = ssAppKey state} :: A.AuthenticationMessage)
+    (A.defaultAuthenticationMessage {A.session = ssSessionToken state, A.appKey = ssAppKey state} )
   where
     state = cState c
 
@@ -129,9 +126,9 @@ marketIdsSubscription c [] = return c
 marketIdsSubscription c mids =
   marketSubscription
     c
-    ((def :: M.MarketSubscriptionMessage)
+    ((M.defaultMarketSubscriptionMessage)
      { M.marketFilter =
-         (def :: MF.MarketFilter)
+         MF.defaultMarketFilter
          {MF.bettingTypes = [BT.ODDS], MF.marketIds = Just mids}
      })
 
@@ -139,7 +136,7 @@ bulkMarketsSubscription :: MF.MarketFilter -> Context -> IO (Context)
 bulkMarketsSubscription mf c =
   marketSubscription
     c
-    ((def :: M.MarketSubscriptionMessage) {M.marketFilter = mf})
+    (M.defaultMarketSubscriptionMessage {M.marketFilter = mf})
 
 resubscribe :: M.MarketSubscriptionMessage -> Context -> IO (Context)
 resubscribe new c = marketSubscription c new

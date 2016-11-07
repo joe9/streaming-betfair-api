@@ -5,12 +5,12 @@
 
 module Betfair.StreamingAPI.Types.RunnerStatus
   ( RunnerStatus(..)
+  , defaultRunnerStatus
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
-import Data.Default.TH (deriveDefault)
 
 data RunnerStatus
   = ACTIVE
@@ -21,6 +21,7 @@ data RunnerStatus
   | HIDDEN
   deriving (Eq, Show, Read, Enum)
 
-deriveDefault ''RunnerStatus
+defaultRunnerStatus :: RunnerStatus
+defaultRunnerStatus = ACTIVE
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''RunnerStatus)

@@ -6,7 +6,7 @@ module Betfair.StreamingAPI.Types.OrderRunnerChange
   ( OrderRunnerChange(..)
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 
@@ -22,5 +22,4 @@ data OrderRunnerChange = OrderRunnerChange
   , ml        :: [[Double]] -- Matched Lays - matched amounts by distinct matched price on the Lay side for this runner (selection)
   } deriving (Eq, Read, Show)
 
--- deriveDefault ''OrderRunnerChange
 $(deriveJSON defaultOptions {omitNothingFields = True} ''OrderRunnerChange)

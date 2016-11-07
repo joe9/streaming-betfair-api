@@ -6,16 +6,14 @@ module Betfair.StreamingAPI.API.ResponseProcessing
   , Response(..)
   ) where
 
-import           BasicPrelude
+import           Protolude hiding (notImplemented)
 import           Control.Exception.Safe
 import           Data.Aeson
 import           Data.Aeson.Types
 import qualified Data.IntMap.Strict      as IntMap
-import           Data.String.Conversions
+import           Data.String.Conversions (cs)
 import           Network.Connection
 
--- import           Safe
---
 import           Betfair.StreamingAPI.API.Context
 import           Betfair.StreamingAPI.API.Log
 import           Betfair.StreamingAPI.API.Request
@@ -62,8 +60,8 @@ processResponse c r@(MarketChange m)
   | isJust (M.segmentType m) =
     notImplementedText
       r
-      ("segmentType processing not implemented" <> (cs . show) m)
-  | otherwise = notImplementedText r ("processResponse: " <> (cs . show) m)
+      (("segmentType processing not implemented" :: Text) <> show m)
+  | otherwise = notImplementedText r (("processResponse: " :: Text) <> show m)
 processResponse c (Status status _) =
   Right
     ( Status

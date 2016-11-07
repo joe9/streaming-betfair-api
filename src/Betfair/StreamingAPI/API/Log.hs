@@ -10,12 +10,11 @@ module Betfair.StreamingAPI.API.Log
   , stdOutAndLog
   ) where
 
-import BasicPrelude            hiding (show)
-import Data.String.Conversions
+import Protolude            hiding (show)
+import Data.String.Conversions (cs)
 import GHC.Show
 import Text.Groom              (groom)
 
---
 import Betfair.StreamingAPI.API.Context
 
 type Log = Text
@@ -37,7 +36,7 @@ groomedLog
 groomedLog c d s = (logD c d . cs . groom) s >> return s
 
 stdOutAndLog :: Context -> Direction -> Text -> IO ()
-stdOutAndLog c d s = logD c d s >> ((putStr . cs . show) d >> putStrLn s)
+stdOutAndLog c d s = logD c d s >> ((putText . cs . show) d >> putText (s <> "\n"))
 
 instance Show Direction where
   show From = "--->"

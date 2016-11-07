@@ -6,15 +6,13 @@
 
 module Betfair.StreamingAPI.Requests.AuthenticationMessage
   ( AuthenticationMessage(..)
+  , defaultAuthenticationMessage
   ) where
 
-import BasicPrelude  hiding (id)
+import Protolude  hiding (id)
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
-import Data.Default
 
--- import Data.Default.TH (deriveDefault)
---
 import Betfair.StreamingAPI.API.AddId
 
 data AuthenticationMessage = AuthenticationMessage
@@ -26,9 +24,8 @@ data AuthenticationMessage = AuthenticationMessage
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''AuthenticationMessage)
 
--- deriveDefault ''AuthenticationMessage
-instance Default AuthenticationMessage where
-  def = AuthenticationMessage "authentication" 0 undefined undefined
+defaultAuthenticationMessage :: AuthenticationMessage
+defaultAuthenticationMessage = AuthenticationMessage "authentication" 0 undefined undefined
 
 instance AddId AuthenticationMessage where
   addId o i = o {id = i}

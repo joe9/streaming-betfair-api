@@ -8,7 +8,7 @@ module Betfair.StreamingAPI.Types.MarketDefinition
   ( MarketDefinition(..)
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 
@@ -51,5 +51,4 @@ data MarketDefinition = MarketDefinition
   , status                :: MarketStatus
   } deriving (Eq, Read, Show)
 
--- deriveDefault ''MarketDefinition
 $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketDefinition)

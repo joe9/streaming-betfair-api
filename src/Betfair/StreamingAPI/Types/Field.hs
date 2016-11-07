@@ -8,10 +8,9 @@ module Betfair.StreamingAPI.Types.Field
   ( Field(..)
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
                         deriveJSON)
-import Data.Default.TH (deriveDefault)
 
 data Field
   = EX_BEST_OFFERS_DISP
@@ -25,6 +24,5 @@ data Field
   | SP_PROJECTED
   deriving (Eq, Show, Read)
 
-deriveDefault ''Field
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''Field)

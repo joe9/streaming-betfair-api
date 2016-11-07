@@ -7,12 +7,12 @@
 
 module Betfair.StreamingAPI.Types.MarketFilter
   ( MarketFilter(..)
+  , defaultMarketFilter
   ) where
 
-import BasicPrelude
+import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
-import Data.Default
 
 --
 import Betfair.StreamingAPI.Types.BettingType (BettingType (ODDS))
@@ -29,7 +29,6 @@ data MarketFilter = MarketFilter
   , bspMarket         :: Maybe Bool
   } deriving (Eq, Show, Read)
 
--- this is what deriveDefault does anyway
 -- instance Default MarketSort where def = FIRST_TO_START
 -- $(deriveJSON id ''Record)
 $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketFilter)
@@ -71,8 +70,8 @@ $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketFilter)
 --- 27589895 Olympics 2016 156
 -- defaulting to Cricket as it has less markets and will not exceed
 --- the subscription limit of 200
-instance Default MarketFilter where
-  def =
+defaultMarketFilter :: MarketFilter
+defaultMarketFilter =
     MarketFilter
       Nothing
       [ODDS]

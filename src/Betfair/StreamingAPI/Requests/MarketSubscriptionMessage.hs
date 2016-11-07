@@ -8,12 +8,12 @@
 module Betfair.StreamingAPI.Requests.MarketSubscriptionMessage
   ( MarketSubscriptionMessage(..)
   , addMarketIdsToMarketSubscriptionMessage
+  , defaultMarketSubscriptionMessage
   ) where
 
-import BasicPrelude  hiding (id)
+import Protolude  hiding (id)
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
-import Data.Default
 
 --
 import Betfair.StreamingAPI.API.AddId
@@ -36,9 +36,8 @@ $(deriveJSON
     defaultOptions {omitNothingFields = True}
     ''MarketSubscriptionMessage)
 
--- deriveDefault ''MarketSubscriptionMessage
-instance Default MarketSubscriptionMessage where
-  def =
+defaultMarketSubscriptionMessage :: MarketSubscriptionMessage
+defaultMarketSubscriptionMessage =
     MarketSubscriptionMessage
       "marketSubscription"
       0
@@ -46,9 +45,9 @@ instance Default MarketSubscriptionMessage where
       Nothing
       (30 * 1000)
       Nothing
-      def
+      defaultMarketFilter
       0
-      def
+      defaultMarketDataFilter
 
 instance AddId MarketSubscriptionMessage where
   addId o i = o {id = i}

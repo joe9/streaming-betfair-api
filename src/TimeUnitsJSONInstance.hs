@@ -6,7 +6,7 @@
 module TimeUnitsJSONInstance
   where
 
-import BasicPrelude hiding (FilePath)
+import Protolude hiding (FilePath)
 import Data.Time.Units
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)

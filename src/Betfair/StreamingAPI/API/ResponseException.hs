@@ -5,7 +5,7 @@ module Betfair.StreamingAPI.API.ResponseException
   ( ResponseException(..)
   ) where
 
-import BasicPrelude
+import Protolude
 
 --
 import Betfair.StreamingAPI.API.Response
