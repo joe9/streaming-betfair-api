@@ -6,9 +6,9 @@ module Betfair.StreamingAPI.Responses.ConnectionMessage
   ( ConnectionMessage(..)
   ) where
 
-import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
+import Protolude
 
 data ConnectionMessage = ConnectionMessage
   { op           :: Text

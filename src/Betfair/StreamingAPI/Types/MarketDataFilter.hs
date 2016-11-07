@@ -10,9 +10,9 @@ module Betfair.StreamingAPI.Types.MarketDataFilter
   , defaultMarketDataFilter
   ) where
 
-import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
+import Protolude
 
 import Betfair.StreamingAPI.Types.Field
 
@@ -27,6 +27,6 @@ $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketDataFilter)
 
 defaultMarketDataFilter :: MarketDataFilter
 defaultMarketDataFilter =
-    MarketDataFilter
-      (Just 3)
-      [EX_BEST_OFFERS_DISP, EX_TRADED, EX_TRADED_VOL, EX_MARKET_DEF]
+  MarketDataFilter
+    (Just 3)
+    [EX_BEST_OFFERS_DISP, EX_TRADED, EX_TRADED_VOL, EX_MARKET_DEF]

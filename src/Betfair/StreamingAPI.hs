@@ -4,7 +4,6 @@
 
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Betfair.StreamingAPI
--- from this file
   ( streamMarketIds
   , marketIdsContext
   , sampleStart
@@ -44,8 +43,9 @@ module Betfair.StreamingAPI
   , RunnerStatus
   ) where
 
-import Protolude               hiding (finally)
+-- from this file
 import Control.Monad.Trans.Except
+import Protolude                  hiding (finally)
 
 --
 import Betfair.StreamingAPI.API.AddId

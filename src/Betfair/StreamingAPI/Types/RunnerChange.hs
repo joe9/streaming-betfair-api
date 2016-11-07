@@ -8,9 +8,9 @@ module Betfair.StreamingAPI.Types.RunnerChange
   ( RunnerChange(..)
   ) where
 
-import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
+import Protolude
 
 data RunnerChange = RunnerChange
   { tv    :: Maybe Double -- The total amount matched. This value is truncated at 2dp.

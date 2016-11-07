@@ -7,9 +7,9 @@ module Betfair.StreamingAPI.Types.ErrorCode
   ( ErrorCode(..)
   ) where
 
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 import Protolude
-import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
-                        deriveJSON)
 
 -- The type of error in case of a failure
 data ErrorCode
@@ -27,6 +27,5 @@ data ErrorCode
   | CONNECTION_FAILED
   | MAX_CONNECTION_LIMIT_EXCEEDED
   deriving (Eq, Show, Read)
-
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''ErrorCode)

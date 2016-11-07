@@ -6,11 +6,11 @@ module Betfair.StreamingAPI.API.Context
   , initializeContext
   ) where
 
-import           Protolude            hiding (show)
-import qualified Protolude
 import           Data.String.Conversions (cs)
 import           GHC.Show
 import           Network.Connection
+import           Protolude               hiding (show)
+import qualified Protolude
 
 --
 import Betfair.StreamingAPI.API.CommonTypes

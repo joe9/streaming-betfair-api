@@ -10,9 +10,9 @@ module Betfair.StreamingAPI.Types.MarketFilter
   , defaultMarketFilter
   ) where
 
-import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
+import Protolude
 
 --
 import Betfair.StreamingAPI.Types.BettingType (BettingType (ODDS))
@@ -72,13 +72,13 @@ $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketFilter)
 --- the subscription limit of 200
 defaultMarketFilter :: MarketFilter
 defaultMarketFilter =
-    MarketFilter
-      Nothing
-      [ODDS]
-      (Just True)
-      (Just ["MATCH_ODDS"])
-      Nothing
-      Nothing
-      (Just ["4"])
-      Nothing
-      Nothing
+  MarketFilter
+    Nothing
+    [ODDS]
+    (Just True)
+    (Just ["MATCH_ODDS"])
+    Nothing
+    Nothing
+    (Just ["4"])
+    Nothing
+    Nothing

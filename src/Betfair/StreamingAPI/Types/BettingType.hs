@@ -9,9 +9,9 @@ module Betfair.StreamingAPI.Types.BettingType
   , defaultBettingType
   ) where
 
-import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
+import Protolude
 
 data BettingType
   = ODDS

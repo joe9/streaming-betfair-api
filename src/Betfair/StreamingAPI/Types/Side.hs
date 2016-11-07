@@ -8,9 +8,9 @@ module Betfair.StreamingAPI.Types.Side
   ( Side(..)
   ) where
 
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 import Protolude
-import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
-                        deriveJSON)
 
 -- Side - the side of the order B - Back, L - Lay
 data Side

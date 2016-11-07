@@ -9,9 +9,9 @@ module Betfair.StreamingAPI.Types.OrderFilter
   ( OrderFilter(..)
   ) where
 
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 import Protolude
-import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
-                        deriveJSON)
 
 data OrderFilter = OrderFilter
   { accountIds :: [Integer]
@@ -20,4 +20,3 @@ data OrderFilter = OrderFilter
 -- instance Default MarketSort where def = FIRST_TO_START
 -- $(deriveJSON id ''Record)
 $(deriveJSON defaultOptions {omitNothingFields = True} ''OrderFilter)
-

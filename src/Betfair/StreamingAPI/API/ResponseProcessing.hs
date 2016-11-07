@@ -6,13 +6,13 @@ module Betfair.StreamingAPI.API.ResponseProcessing
   , Response(..)
   ) where
 
-import           Protolude hiding (notImplemented)
 import           Control.Exception.Safe
 import           Data.Aeson
 import           Data.Aeson.Types
 import qualified Data.IntMap.Strict      as IntMap
 import           Data.String.Conversions (cs)
 import           Network.Connection
+import           Protolude               hiding (notImplemented)
 
 import           Betfair.StreamingAPI.API.Context
 import           Betfair.StreamingAPI.API.Log

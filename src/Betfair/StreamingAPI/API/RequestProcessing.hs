@@ -14,11 +14,11 @@ module Betfair.StreamingAPI.API.RequestProcessing
   , addCRLF
   ) where
 
-import           Protolude hiding (state)
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as L
 import qualified Data.IntMap.Strict   as IntMap
 import           Network.Connection
+import           Protolude            hiding (state)
 
 import           Betfair.StreamingAPI.API.AddId
 import           Betfair.StreamingAPI.API.CommonTypes
@@ -27,10 +27,10 @@ import           Betfair.StreamingAPI.API.Log
 import           Betfair.StreamingAPI.API.Request
 import           Betfair.StreamingAPI.API.StreamingState
 import           Betfair.StreamingAPI.API.ToRequest
-import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage as A
-import qualified Betfair.StreamingAPI.Requests.HeartbeatMessage as H
+import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage     as A
+import qualified Betfair.StreamingAPI.Requests.HeartbeatMessage          as H
 import qualified Betfair.StreamingAPI.Requests.MarketSubscriptionMessage as M
-import qualified Betfair.StreamingAPI.Requests.OrderSubscriptionMessage as O
+import qualified Betfair.StreamingAPI.Requests.OrderSubscriptionMessage  as O
 import qualified Betfair.StreamingAPI.Types.BettingType                  as BT
 import qualified Betfair.StreamingAPI.Types.MarketFilter                 as MF
 
@@ -70,7 +70,8 @@ authentication :: Context -> IO (Context)
 authentication c =
   request
     c
-    (A.defaultAuthenticationMessage {A.session = ssSessionToken state, A.appKey = ssAppKey state} )
+    (A.defaultAuthenticationMessage
+     {A.session = ssSessionToken state, A.appKey = ssAppKey state})
   where
     state = cState c
 

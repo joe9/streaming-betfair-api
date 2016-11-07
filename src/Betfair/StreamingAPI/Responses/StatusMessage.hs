@@ -6,9 +6,9 @@ module Betfair.StreamingAPI.Responses.StatusMessage
   ( StatusMessage(..)
   ) where
 
-import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
+import Protolude
 
 --
 import Betfair.StreamingAPI.Types.ErrorCode     (ErrorCode)

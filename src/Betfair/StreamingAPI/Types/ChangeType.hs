@@ -7,9 +7,9 @@ module Betfair.StreamingAPI.Types.ChangeType
   ( ChangeType(..)
   ) where
 
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 import Protolude
-import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
-                        deriveJSON)
 
 -- Change Type - set to indicate the type of change - if null this is a delta)
 data ChangeType
@@ -17,6 +17,5 @@ data ChangeType
   | RESUB_DELTA
   | HEARTBEAT
   deriving (Eq, Show, Read)
-
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''ChangeType)

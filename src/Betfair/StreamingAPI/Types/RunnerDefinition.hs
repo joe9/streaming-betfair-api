@@ -8,9 +8,9 @@ module Betfair.StreamingAPI.Types.RunnerDefinition
   ( RunnerDefinition(..)
   ) where
 
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 import Protolude
-import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
-                        deriveJSON)
 
 --
 import Betfair.StreamingAPI.Types.RunnerStatus (RunnerStatus)

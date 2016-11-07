@@ -10,9 +10,9 @@ module Betfair.StreamingAPI.Requests.HeartbeatMessage
   , defaultHeartbeatMessage
   ) where
 
-import Protolude  hiding (id)
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
+import Protolude     hiding (id)
 
 --
 import Betfair.StreamingAPI.API.AddId

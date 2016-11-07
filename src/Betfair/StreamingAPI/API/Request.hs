@@ -6,9 +6,9 @@ module Betfair.StreamingAPI.API.Request
   ( Request(..)
   ) where
 
-import Protolude
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
+import Protolude
 
 --
 import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage     as A

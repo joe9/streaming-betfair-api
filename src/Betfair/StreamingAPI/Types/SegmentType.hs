@@ -7,9 +7,9 @@ module Betfair.StreamingAPI.Types.SegmentType
   ( SegmentType(..)
   ) where
 
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 import Protolude
-import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
-                        deriveJSON)
 
 data SegmentType
   = SEG_START

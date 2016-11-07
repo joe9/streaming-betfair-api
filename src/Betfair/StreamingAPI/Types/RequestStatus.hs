@@ -7,9 +7,9 @@ module Betfair.StreamingAPI.Types.RequestStatus
   ( RequestStatus(..)
   ) where
 
+import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
+                      deriveJSON)
 import Protolude
-import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
-                        deriveJSON)
 
 data RequestStatus
   = SUCCESS

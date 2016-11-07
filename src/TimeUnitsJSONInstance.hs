@@ -1,15 +1,14 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE FlexibleContexts  #-}
-{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE TemplateHaskell   #-}
 
-module TimeUnitsJSONInstance
-  where
+module TimeUnitsJSONInstance where
 
-import Protolude hiding (FilePath)
+import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
+                        deriveJSON)
 import Data.Time.Units
-import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
-                      deriveJSON)
+import Protolude       hiding (FilePath)
+
 --
-$(deriveJSON defaultOptions {omitNothingFields = True}
-             ''Microsecond)
+$(deriveJSON defaultOptions {omitNothingFields = True} ''Microsecond)

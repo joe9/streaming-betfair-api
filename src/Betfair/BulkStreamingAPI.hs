@@ -4,7 +4,6 @@
 
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Betfair.BulkStreamingAPI
--- from this file
   ( sampleStart
   , startStreaming
   , initializeContext
@@ -43,11 +42,12 @@ module Betfair.BulkStreamingAPI
   , RunnerStatus
   ) where
 
-import Protolude            hiding (bracket, finally)
+-- from this file
 import Control.Exception.Safe
 import Data.String.Conversions
 import Network.Connection
 import Network.Socket
+import Protolude               hiding (bracket, finally)
 
 import           Betfair.StreamingAPI.API.AddId
 import           Betfair.StreamingAPI.API.CommonTypes
@@ -124,7 +124,13 @@ readDataLoop c = response c >>= reSubscribeIfNeeded >>= readDataLoop
 connectToBetfair :: IO Connection
 connectToBetfair =
   initConnectionContext >>=
-  flip connectTo (ConnectionParams (cs host) port (Just (TLSSettingsSimple False False False)) Nothing)
+  flip
+    connectTo
+    (ConnectionParams
+       (cs host)
+       port
+       (Just (TLSSettingsSimple False False False))
+       Nothing)
 
 host :: Text
 -- for pre-production
