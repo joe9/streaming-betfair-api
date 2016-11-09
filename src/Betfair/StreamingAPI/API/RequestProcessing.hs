@@ -17,6 +17,7 @@ module Betfair.StreamingAPI.API.RequestProcessing
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as L
 import qualified Data.IntMap.Strict   as IntMap
+import           Data.Time
 import           Network.Connection
 import           Protolude            hiding (state)
 
@@ -77,11 +78,11 @@ authentication c =
 
 marketSubscription :: Context -> M.MarketSubscriptionMessage -> IO (Context)
 marketSubscription c new = do
-  timeInMicros <- timeInMicroseconds
+  now <- getCurrentTime
   let cn =
         c
         { cState =
-            (cState c) {ssLastMarketSubscriptionMessageSentAt = timeInMicros}
+            (cState c) {ssLastMarketSubscriptionMessageSentAt = now}
         }
   case (lastMay .
         IntMap.elems .

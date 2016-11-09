@@ -35,7 +35,7 @@ response c = do
   let eitherResponse = parseResponse raw >>= processResponse c
   case eitherResponse of
     Left e -> throwM e
-    Right (r, cu) -> (groomedLog cu From) r >> (cOnResponse cu) r cu
+    Right (r, cu) -> (groomedLog cu From) r >> (cOnResponse cu) raw r cu
 
 --      (return . Right) (c,undefined)
 processResponse :: Context

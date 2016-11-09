@@ -7,12 +7,12 @@ module Betfair.StreamingAPI.API.Context
   ) where
 
 import           Data.String.Conversions (cs)
+import           Data.Time
 import           GHC.Show
 import           Network.Connection
 import           Protolude               hiding (show)
 import qualified Protolude
 
---
 import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Response
 import Betfair.StreamingAPI.Requests.MarketSubscriptionMessage
@@ -23,20 +23,20 @@ import Betfair.StreamingAPI.API.StreamingState
 data Context = Context
   { cConnection :: Connection
   , cLogger :: Text -> IO ()
-  , cOnResponse :: Response -> Context -> IO (Maybe MarketSubscriptionMessage, Context)
+  , cOnResponse :: ByteString -> Response -> Context -> IO (Maybe MarketSubscriptionMessage, Context)
   , cOnConnection :: Context -> IO (Context)
   , cState :: StreamingState
   }
 
 -- Should I pass through the ResponsException to the cOnResponse?
-initializeContext :: AppKey -> SessionToken -> Context
-initializeContext a s =
+initializeContext :: AppKey -> SessionToken -> UTCTime -> Context
+initializeContext a s t =
   Context
   { cConnection = undefined
   , cLogger = putStrLn
-  , cOnResponse = \r c -> print r >> return (Nothing, c)
+  , cOnResponse = \_ r c -> print r >> return (Nothing, c)
   , cOnConnection = return
-  , cState = defaultStreamingState {ssAppKey = a, ssSessionToken = s}
+  , cState = (defaultStreamingState t) {ssAppKey = a, ssSessionToken = s}
   }
 
 instance Show (Context) where

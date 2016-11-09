@@ -45,6 +45,7 @@ module Betfair.BulkStreamingAPI
 -- from this file
 import Control.Exception.Safe
 import Data.String.Conversions
+import Data.Time
 import Network.Connection
 import Network.Socket
 import Protolude               hiding (bracket, finally)
@@ -91,14 +92,14 @@ import           Betfair.StreamingAPI.Types.RunnerStatus
 import           Betfair.StreamingAPI.Types.SegmentType
 import           Betfair.StreamingAPI.Types.Side
 
---
 -- app key from betfair subscription
 -- session token from the api
 sampleStart :: AppKey -> SessionToken -> IO ()
 sampleStart a stoken = void (stream a stoken)
 
 stream :: AppKey -> SessionToken -> IO StreamingState
-stream a = fmap cState . startStreaming . initializeContext a
+stream a t =
+  getCurrentTime >>= fmap cState . startStreaming . initializeContext a t
 
 startStreaming :: Context -> IO (Context)
 startStreaming context =

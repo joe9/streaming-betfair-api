@@ -14,6 +14,7 @@ import           Data.Aeson.TH         (Options (omitNothingFields),
 import qualified Data.IntMap.Strict    as IntMap
 import           Data.Time.Clock.POSIX
 import           Data.Time.Units
+import           Data.Time
 import           Protolude
 
 --
@@ -27,12 +28,12 @@ data StreamingState = StreamingState
   , ssSessionToken                        :: SessionToken
   , ssAppKey                              :: AppKey
   , ssNeedHumanHelp                       :: Bool
-  , ssLastMarketSubscriptionMessageSentAt :: Microsecond
+  , ssLastMarketSubscriptionMessageSentAt :: UTCTime
   } deriving (Eq, Read, Show)
 
-defaultStreamingState :: StreamingState
-defaultStreamingState =
-  StreamingState IntMap.empty 1 "" "" False (fromMicroseconds 0)
+defaultStreamingState :: UTCTime -> StreamingState
+defaultStreamingState time =
+  StreamingState IntMap.empty 1 "" "" False time
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''StreamingState)
 

@@ -4,16 +4,19 @@
 
 module Betfair.StreamingAPI.Responses.MarketChangeMessage
   ( MarketChangeMessage(..)
+  , marketIds
   ) where
 
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
+import Data.Maybe
 
---
 import Betfair.StreamingAPI.Types.ChangeType
 import Betfair.StreamingAPI.Types.MarketChange
 import Betfair.StreamingAPI.Types.SegmentType
+import qualified Betfair.StreamingAPI.Types.MarketChange as MC
+import Betfair.StreamingAPI.API.CommonTypes
 
 data MarketChangeMessage = MarketChangeMessage
   { op          :: Text
@@ -29,3 +32,6 @@ data MarketChangeMessage = MarketChangeMessage
   } deriving (Eq, Read, Show)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketChangeMessage)
+
+marketIds :: MarketChangeMessage -> [MarketId]
+marketIds = maybe [] (fmap MC.id) . mc

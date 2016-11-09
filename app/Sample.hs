@@ -5,6 +5,7 @@
 module Main where
 
 import Protolude
+import Data.Time
 
 import Betfair.BulkStreamingAPI
 
@@ -15,4 +16,5 @@ main = void (stream (undefined :: AppKey) (undefined :: SessionToken))
 
 stream
   :: AppKey -> SessionToken -> IO StreamingState
-stream a = fmap cState . startStreaming . initializeContext a
+stream a t =
+  getCurrentTime >>= fmap cState . startStreaming . initializeContext a t
