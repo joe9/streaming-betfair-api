@@ -41,7 +41,7 @@ request
 request c r = do
   let currentId = ssIdCounter (cState c)
       readyToSendRequest = addId r currentId
-  b <- (groomedLog c To . L.toStrict . addCRLF . encode) readyToSendRequest
+  b <- (traceLog c To . L.toStrict . addCRLF . encode) readyToSendRequest
   connectionPut (cConnection c) b
   return
     (c
@@ -60,7 +60,7 @@ resendOldRequest
   :: (ToJSON b)
   => Context -> b -> IO (Context)
 resendOldRequest c readyToSendRequest = do
-  b <- (groomedLog c To . L.toStrict . addCRLF . encode) readyToSendRequest
+  b <- (traceLog c To . L.toStrict . addCRLF . encode) readyToSendRequest
   connectionPut (cConnection c) b
   return c
 

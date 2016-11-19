@@ -31,11 +31,11 @@ import           Betfair.StreamingAPI.Types.ChangeType
 response :: Context -> IO (Maybe MS.MarketSubscriptionMessage, Context)
 response c = do
   raw <- connectionGetLine 268435456 (cConnection c)
-  _ <- groomedLog c From raw
+  _ <- traceLog c From raw
   let eitherResponse = parseResponse raw >>= processResponse c
   case eitherResponse of
     Left e -> throwM e
-    Right (r, cu) -> (groomedLog cu From) r >> (cOnResponse cu) raw r cu
+    Right (r, cu) -> (tracePPLog cu From) r >> (cOnResponse cu) raw r cu
 
 --      (return . Right) (c,undefined)
 processResponse :: Context

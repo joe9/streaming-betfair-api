@@ -1,13 +1,15 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
 
 module Betfair.StreamingAPI.API.Response
   ( Response(..)
   ) where
 
 import Protolude
+import Data.Aeson
 
---
 import           Betfair.StreamingAPI.API.Request
 import qualified Betfair.StreamingAPI.Responses.ConnectionMessage   as C
 import qualified Betfair.StreamingAPI.Responses.MarketChangeMessage as M
@@ -20,4 +22,4 @@ data Response
   | OrderChange O.OrderChangeMessage
   | Status S.StatusMessage
            (Maybe Request)
-  deriving (Eq, Read, Show)
+  deriving (Eq, Read, Show, Generic, ToJSON)
