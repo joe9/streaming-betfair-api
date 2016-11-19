@@ -14,6 +14,7 @@ import GHC.Show
 import Protolude               hiding (show,log)
 import qualified Protolude
 import Data.Text.Lazy.Builder
+import qualified Data.Text as T
 import Data.Aeson.Encode.Pretty
 import Data.Aeson
 
@@ -38,10 +39,10 @@ dirPrefix :: Direction -> Builder
 dirPrefix = fromText . Protolude.show
 
 ppText :: ToJSON a => Direction -> a -> Text
-ppText d = toStrict . toLazyText . mappend (dirPrefix d) . encodePrettyToTextBuilder
+ppText d = toStrict . toLazyText . mappend (dirPrefix d <> singleton ' ') . encodePrettyToTextBuilder
 
 toText :: Show a => Direction -> a -> Text
-toText d t = Protolude.show d <> Protolude.show (' ' :: Char) <> Protolude.show t
+toText d t = Protolude.show d <> T.singleton (' ' :: Char) <> Protolude.show t
 
 stdOutAndLog :: Context -> Direction -> Text -> IO ()
 stdOutAndLog c d s = let output = ppText d s
