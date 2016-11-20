@@ -1,16 +1,14 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DeriveAnyClass #-}
 
 module Betfair.StreamingAPI.API.Response
   ( Response(..)
   ) where
 
-import Text.PrettyPrint.GenericPretty
 import Protolude
+import Text.PrettyPrint.GenericPretty
 
 import           Betfair.StreamingAPI.API.Request
 import qualified Betfair.StreamingAPI.Responses.ConnectionMessage   as C

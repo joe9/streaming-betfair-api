@@ -1,6 +1,5 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DeriveAnyClass #-}
-
+{-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -8,8 +7,8 @@ module Betfair.StreamingAPI.API.ResponseException
   ( ResponseException(..)
   ) where
 
-import Text.PrettyPrint.GenericPretty
 import Protolude
+import Text.PrettyPrint.GenericPretty
 
 --
 import Betfair.StreamingAPI.API.Response

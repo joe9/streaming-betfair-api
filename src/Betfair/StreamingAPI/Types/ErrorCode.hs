@@ -1,7 +1,6 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DeriveAnyClass #-}
-
+{-# LANGUAGE DeriveAnyClass     #-}
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveGeneric      #-}
 {-# LANGUAGE NoImplicitPrelude  #-}
 {-# LANGUAGE OverloadedStrings  #-}
 {-# LANGUAGE TemplateHaskell    #-}
@@ -10,10 +9,10 @@ module Betfair.StreamingAPI.Types.ErrorCode
   ( ErrorCode(..)
   ) where
 
-import Text.PrettyPrint.GenericPretty
-import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
-                      deriveJSON)
+import Data.Aeson.TH                  (Options (omitNothingFields),
+                                       defaultOptions, deriveJSON)
 import Protolude
+import Text.PrettyPrint.GenericPretty
 
 -- The type of error in case of a failure
 data ErrorCode
@@ -33,7 +32,6 @@ data ErrorCode
   deriving (Eq, Show, Generic, Pretty, Read)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''ErrorCode)
-
 -- instance Pretty ErrorCode where
 --   pretty NO_APP_KEY                             = No_App_Key
 --   pretty INVALID_APP_KEY                        = Invalid_App_Key

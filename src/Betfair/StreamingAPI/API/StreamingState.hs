@@ -1,6 +1,5 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DeriveAnyClass #-}
-
+{-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
@@ -12,14 +11,15 @@ module Betfair.StreamingAPI.API.StreamingState
   , defaultStreamingState
   ) where
 
-import Text.PrettyPrint.GenericPretty
-import           Data.Aeson.TH         (Options (omitNothingFields),
-                                        defaultOptions, deriveJSON)
-import qualified Data.IntMap.Strict    as IntMap
+import           Data.Aeson.TH                  (Options (omitNothingFields),
+                                                 defaultOptions,
+                                                 deriveJSON)
+import qualified Data.IntMap.Strict             as IntMap
+import           Data.Time
 import           Data.Time.Clock.POSIX
 import           Data.Time.Units
-import           Data.Time
 import           Protolude
+import           Text.PrettyPrint.GenericPretty
 
 import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Request
@@ -35,8 +35,7 @@ data StreamingState = StreamingState
   } deriving (Eq, Read, Show, Generic, Pretty)
 
 defaultStreamingState :: UTCTime -> StreamingState
-defaultStreamingState time =
-  StreamingState IntMap.empty 1 "" "" False time
+defaultStreamingState time = StreamingState IntMap.empty 1 "" "" False time
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''StreamingState)
 

@@ -10,13 +10,12 @@ module Betfair.StreamingAPI.Types.MarketStatus
   ( MarketStatus(..)
   ) where
 
-import           Data.Aeson.TH                  (Options (omitNothingFields),
-                                                 defaultOptions,
-                                                 deriveJSON)
-import           Protolude
-import           Text.PrettyPrint.GenericPretty
--- import qualified Text.PrettyPrint.Leijen.Text   as PP
+import Data.Aeson.TH                  (Options (omitNothingFields),
+                                       defaultOptions, deriveJSON)
+import Protolude
+import Text.PrettyPrint.GenericPretty
 
+-- import qualified Text.PrettyPrint.Leijen.Text   as PP
 data MarketStatus
   = INACTIVE
   | OPEN
@@ -25,7 +24,6 @@ data MarketStatus
   deriving (Eq, Show, Generic, Pretty, Read, Enum)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketStatus)
-
 -- instance Pretty MarketStatus where
 --   pretty INACTIVE  = PP.text "Inactive"
 --   pretty OPEN      = PP.text "Open"

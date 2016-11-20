@@ -79,11 +79,7 @@ authentication c =
 marketSubscription :: Context -> M.MarketSubscriptionMessage -> IO (Context)
 marketSubscription c new = do
   now <- getCurrentTime
-  let cn =
-        c
-        { cState =
-            (cState c) {ssLastMarketSubscriptionMessageSentAt = now}
-        }
+  let cn = c {cState = (cState c) {ssLastMarketSubscriptionMessageSentAt = now}}
   case (lastMay .
         IntMap.elems .
         IntMap.filter isJust .

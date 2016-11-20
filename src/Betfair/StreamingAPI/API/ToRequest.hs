@@ -7,7 +7,6 @@ module Betfair.StreamingAPI.API.ToRequest
   ) where
 
 -- import Protolude
-
 import           Betfair.StreamingAPI.API.Request
 import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage     as A
 import qualified Betfair.StreamingAPI.Requests.HeartbeatMessage          as H

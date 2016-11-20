@@ -1,5 +1,5 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
@@ -9,16 +9,16 @@ module Betfair.StreamingAPI.Responses.MarketChangeMessage
   , marketIds
   ) where
 
-import Text.PrettyPrint.GenericPretty
-import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
-                      deriveJSON)
+import Data.Aeson.TH                  (Options (omitNothingFields),
+                                       defaultOptions, deriveJSON)
 import Protolude
+import Text.PrettyPrint.GenericPretty
 
-import Betfair.StreamingAPI.Types.ChangeType
-import Betfair.StreamingAPI.Types.MarketChange
-import Betfair.StreamingAPI.Types.SegmentType
+import           Betfair.StreamingAPI.API.CommonTypes
+import           Betfair.StreamingAPI.Types.ChangeType
+import           Betfair.StreamingAPI.Types.MarketChange
 import qualified Betfair.StreamingAPI.Types.MarketChange as MC
-import Betfair.StreamingAPI.API.CommonTypes
+import           Betfair.StreamingAPI.Types.SegmentType
 
 data MarketChangeMessage = MarketChangeMessage
   { op          :: Text
