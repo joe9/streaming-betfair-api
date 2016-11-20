@@ -1,6 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveAnyClass #-}
-
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
@@ -14,7 +13,6 @@ import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
-import Data.Maybe
 
 import Betfair.StreamingAPI.Types.ChangeType
 import Betfair.StreamingAPI.Types.MarketChange

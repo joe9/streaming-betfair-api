@@ -1,6 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DeriveAnyClass #-}
-
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -10,8 +7,7 @@ module Betfair.StreamingAPI.API.ToRequest
   ) where
 
 -- import Protolude
---
-import Text.PrettyPrint.GenericPretty
+
 import           Betfair.StreamingAPI.API.Request
 import qualified Betfair.StreamingAPI.Requests.AuthenticationMessage     as A
 import qualified Betfair.StreamingAPI.Requests.HeartbeatMessage          as H

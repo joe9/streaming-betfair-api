@@ -11,7 +11,6 @@ module Betfair.StreamingAPI.API.Response
 
 import Text.PrettyPrint.GenericPretty
 import Protolude
-import Data.Aeson
 
 import           Betfair.StreamingAPI.API.Request
 import qualified Betfair.StreamingAPI.Responses.ConnectionMessage   as C

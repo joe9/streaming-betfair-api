@@ -1,6 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DeriveAnyClass #-}
-
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -17,7 +14,6 @@ module Betfair.StreamingAPI.API.RequestProcessing
   , addCRLF
   ) where
 
-import Text.PrettyPrint.GenericPretty
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as L
 import qualified Data.IntMap.Strict   as IntMap

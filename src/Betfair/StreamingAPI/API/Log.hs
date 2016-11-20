@@ -1,6 +1,5 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DeriveAnyClass #-}
-
+{-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -13,12 +12,11 @@ module Betfair.StreamingAPI.API.Log
   , stdOutAndLog
   ) where
 
-import Text.PrettyPrint.GenericPretty
-import qualified Data.Text                as T
-import           Data.Text.Lazy (toStrict)
+import qualified Data.Text                      as T
 import           GHC.Show
-import           Protolude                hiding (show)
+import           Protolude                      hiding (show)
 import qualified Protolude
+import           Text.PrettyPrint.GenericPretty
 
 import Betfair.StreamingAPI.API.Context
 
@@ -40,8 +38,7 @@ toLog = cLogger
 ppText
   :: Pretty a
   => Direction -> a -> Text
-ppText d =
-  mappend (Protolude.show d <> T.singleton ' ') . toStrict . displayPretty
+ppText d = mappend (Protolude.show d <> T.singleton ' ') . displayPretty
 
 toText
   :: Show a
