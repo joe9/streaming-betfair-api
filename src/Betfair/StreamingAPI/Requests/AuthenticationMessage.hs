@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE NoImplicitPrelude    #-}
 {-# LANGUAGE OverloadedStrings    #-}
@@ -9,6 +12,7 @@ module Betfair.StreamingAPI.Requests.AuthenticationMessage
   , defaultAuthenticationMessage
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude     hiding (id)
@@ -20,7 +24,7 @@ data AuthenticationMessage = AuthenticationMessage
   , id      :: Int -- Client generated unique id to link request with response (like json rpc)
   , appKey  :: Text
   , session :: Text
-  } deriving (Eq, Read, Show)
+  } deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''AuthenticationMessage)
 

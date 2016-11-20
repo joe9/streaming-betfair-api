@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE NoImplicitPrelude  #-}
 {-# LANGUAGE OverloadedStrings  #-}
@@ -7,6 +10,7 @@ module Betfair.StreamingAPI.Types.ChangeType
   ( ChangeType(..)
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -16,6 +20,6 @@ data ChangeType
   = SUB_IMAGE
   | RESUB_DELTA
   | HEARTBEAT
-  deriving (Eq, Show, Read)
+  deriving (Eq, Show, Generic, Pretty, Read)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''ChangeType)

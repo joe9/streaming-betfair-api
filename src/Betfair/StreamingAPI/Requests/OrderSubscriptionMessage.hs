@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE DeriveDataTypeable   #-}
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE NoImplicitPrelude    #-}
@@ -10,6 +13,7 @@ module Betfair.StreamingAPI.Requests.OrderSubscriptionMessage
   , defaultOrderSubscriptionMessage
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -27,7 +31,7 @@ data OrderSubscriptionMessage = OrderSubscriptionMessage
   , heartbeatMs         :: Integer -- Heartbeat Milliseconds - the heartbeat rate (looped back on initial image after validation: bounds are 500 to 30000)
   , initialClk          :: Maybe Text -- Token value (received in initial MarketChangeMessage) that should be passed to resume a subscription
   , conflateMs          :: Integer -- Conflate Milliseconds - the conflation rate (looped back on initial image after validation: bounds are 0 to 120000)
-  } deriving (Eq, Read, Show)
+  } deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON
     defaultOptions {omitNothingFields = True}

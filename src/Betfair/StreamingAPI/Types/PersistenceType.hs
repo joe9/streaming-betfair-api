@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE NoImplicitPrelude  #-}
 {-# LANGUAGE OverloadedStrings  #-}
@@ -7,6 +10,7 @@ module Betfair.StreamingAPI.Types.PersistenceType
   ( PersistenceType(..)
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -16,6 +20,6 @@ data PersistenceType
   = L
   | P
   | MOC
-  deriving (Eq, Read, Show)
+  deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''PersistenceType)

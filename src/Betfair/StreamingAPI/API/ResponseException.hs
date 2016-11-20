@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -5,6 +8,7 @@ module Betfair.StreamingAPI.API.ResponseException
   ( ResponseException(..)
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Protolude
 
 --
@@ -15,6 +19,6 @@ data ResponseException
   | EmptyLine Text
   | NotImplemented Response
                    (Maybe Text)
-  deriving (Eq, Show, Typeable)
+  deriving (Eq, Show, Generic, Pretty, Typeable)
 
 instance Exception ResponseException

@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE NoImplicitPrelude    #-}
 {-# LANGUAGE OverloadedStrings    #-}
@@ -8,6 +11,7 @@ module Betfair.StreamingAPI.Types.RunnerChange
   ( RunnerChange(..)
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -37,6 +41,6 @@ data RunnerChange = RunnerChange
   , hc    :: Maybe Double -- Handicap - the handicap of the runner (selection) (null if not applicable)
     -- (Level,Price,Volume)
   , bdatb :: Maybe [[Double]] -- Best Display Available To Back (includes virtual prices)- LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove)
-  } deriving (Eq, Read, Show)
+  } deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''RunnerChange)

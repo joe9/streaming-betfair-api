@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
@@ -6,6 +9,7 @@ module Betfair.StreamingAPI.Types.OrderRunnerChange
   ( OrderRunnerChange(..)
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -20,6 +24,6 @@ data OrderRunnerChange = OrderRunnerChange
   , hc        :: Maybe Double -- Handicap - the handicap of the runner (selection) (null if not applicable)
   , fullImage :: Maybe Bool
   , ml        :: [[Double]] -- Matched Lays - matched amounts by distinct matched price on the Lay side for this runner (selection)
-  } deriving (Eq, Read, Show)
+  } deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''OrderRunnerChange)

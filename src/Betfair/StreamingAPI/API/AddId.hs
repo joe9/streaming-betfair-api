@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -6,6 +9,7 @@ module Betfair.StreamingAPI.API.AddId
   , addId
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson
 import Protolude
 

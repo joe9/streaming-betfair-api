@@ -10,5 +10,4 @@ import Data.Aeson.TH   (Options (omitNothingFields), defaultOptions,
 import Data.Time.Units
 import Protolude       hiding (FilePath)
 
---
 $(deriveJSON defaultOptions {omitNothingFields = True} ''Microsecond)

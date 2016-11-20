@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE DeriveDataTypeable   #-}
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE NoImplicitPrelude    #-}
@@ -10,6 +13,7 @@ module Betfair.StreamingAPI.Types.MarketDataFilter
   , defaultMarketDataFilter
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -19,7 +23,7 @@ import Betfair.StreamingAPI.Types.Field
 data MarketDataFilter = MarketDataFilter
   { ladderLevels :: Maybe Integer
   , fields       :: [Field]
-  } deriving (Eq, Show, Read)
+  } deriving (Eq, Show, Generic, Pretty, Read)
 
 -- instance Default MarketSort where def = FIRST_TO_START
 -- $(deriveJSON id ''Record)

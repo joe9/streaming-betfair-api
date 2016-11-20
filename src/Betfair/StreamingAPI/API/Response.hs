@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
@@ -7,6 +9,7 @@ module Betfair.StreamingAPI.API.Response
   ( Response(..)
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Protolude
 import Data.Aeson
 
@@ -22,4 +25,4 @@ data Response
   | OrderChange O.OrderChangeMessage
   | Status S.StatusMessage
            (Maybe Request)
-  deriving (Eq, Read, Show, Generic, ToJSON)
+  deriving (Eq, Read, Show, Generic, Pretty)

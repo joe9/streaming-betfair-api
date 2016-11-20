@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -44,6 +47,7 @@ module Betfair.StreamingAPI
   ) where
 
 -- from this file
+import Text.PrettyPrint.GenericPretty
 import Control.Monad.Trans.Except
 import Protolude                  hiding (finally)
 

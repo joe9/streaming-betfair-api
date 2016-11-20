@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE NoImplicitPrelude    #-}
 {-# LANGUAGE OverloadedStrings    #-}
@@ -9,6 +12,7 @@ module Betfair.StreamingAPI.Types.BettingType
   , defaultBettingType
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -20,7 +24,7 @@ data BettingType
   | ASIAN_HANDICAP_DOUBLE_LINE
   | ASIAN_HANDICAP_SINGLE_LINE
   | FIXED_ODDS
-  deriving (Eq, Read, Show)
+  deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''BettingType)
 

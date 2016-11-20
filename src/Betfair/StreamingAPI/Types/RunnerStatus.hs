@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE NoImplicitPrelude  #-}
 {-# LANGUAGE OverloadedStrings  #-}
@@ -8,6 +11,7 @@ module Betfair.StreamingAPI.Types.RunnerStatus
   , defaultRunnerStatus
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -19,7 +23,7 @@ data RunnerStatus
   | REMOVED_VACANT
   | REMOVED
   | HIDDEN
-  deriving (Eq, Show, Read, Enum)
+  deriving (Eq, Show, Generic, Pretty, Read, Enum)
 
 defaultRunnerStatus :: RunnerStatus
 defaultRunnerStatus = ACTIVE

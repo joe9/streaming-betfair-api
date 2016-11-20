@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE NoImplicitPrelude    #-}
 {-# LANGUAGE OverloadedStrings    #-}
@@ -8,6 +11,7 @@ module Betfair.StreamingAPI.Types.MarketChange
   ( MarketChange(..)
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -23,6 +27,6 @@ data MarketChange = MarketChange
   , con              :: Maybe Bool -- Conflated - have more than a single change been combined (or null if not conflated)
   , marketDefinition :: Maybe MarketDefinition -- Market Definition - the definition of the market (or null if un-changed)
   , id               :: Text -- Market Id - the id of the market
-  } deriving (Eq, Read, Show)
+  } deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketChange)

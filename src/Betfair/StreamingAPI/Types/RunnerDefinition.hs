@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE NoImplicitPrelude    #-}
 {-# LANGUAGE OverloadedStrings    #-}
@@ -8,6 +11,7 @@ module Betfair.StreamingAPI.Types.RunnerDefinition
   ( RunnerDefinition(..)
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -25,6 +29,6 @@ data RunnerDefinition = RunnerDefinition
   , adjustmentFactor :: Maybe Double
   , bsp              :: Maybe Double
   , status           :: RunnerStatus
-  } deriving (Eq, Read, Show)
+  } deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''RunnerDefinition)

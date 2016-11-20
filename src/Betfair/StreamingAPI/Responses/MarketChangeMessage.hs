@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
@@ -7,6 +10,7 @@ module Betfair.StreamingAPI.Responses.MarketChangeMessage
   , marketIds
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -29,7 +33,7 @@ data MarketChangeMessage = MarketChangeMessage
   , mc          :: Maybe [MarketChange] -- MarketChanges - the modifications to markets (will be null on a heartbeat,
   , conflateMs  :: Maybe Integer -- Conflate Milliseconds - the conflation rate (may differ from that requested if subscription is delayed),
   , segmentType :: Maybe SegmentType -- Segment Type - if the change is split into multiple segments, this denotes the beginning and end of a change, and segments in between. Will be null if data is not segmented,
-  } deriving (Eq, Read, Show)
+  } deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketChangeMessage)
 

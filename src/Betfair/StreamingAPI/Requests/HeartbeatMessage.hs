@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE DeriveDataTypeable   #-}
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE NoImplicitPrelude    #-}
@@ -10,6 +13,7 @@ module Betfair.StreamingAPI.Requests.HeartbeatMessage
   , defaultHeartbeatMessage
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude     hiding (id)
@@ -20,7 +24,7 @@ import Betfair.StreamingAPI.API.AddId
 data HeartbeatMessage = HeartbeatMessage
   { op :: Text
   , id :: Int
-  } deriving (Eq, Read, Show)
+  } deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''HeartbeatMessage)
 

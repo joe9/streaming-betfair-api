@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE NoImplicitPrelude    #-}
 {-# LANGUAGE OverloadedStrings    #-}
@@ -8,6 +11,7 @@ module Betfair.StreamingAPI.Types.Field
   ( Field(..)
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -22,6 +26,6 @@ data Field
   | EX_MARKET_DEF
   | SP_TRADED
   | SP_PROJECTED
-  deriving (Eq, Show, Read)
+  deriving (Eq, Show, Generic, Pretty, Read)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''Field)

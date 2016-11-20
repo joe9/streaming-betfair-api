@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
@@ -6,6 +9,7 @@ module Betfair.StreamingAPI.Types.Order
   ( Order(..)
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -37,6 +41,6 @@ data Order = Order
   , bsp    :: Maybe Double -- BSP Liability - the BSP liability of the order (null if the order is not a BSP order)
   , status :: OrderStatus -- Status - the status of the order (E = EXECUTABLE, EC = EXECUTION_COMPLETE)
   , sr     :: Maybe Double -- Size Remaining - the amount of the order that is remaining unmatched
-  } deriving (Eq, Read, Show)
+  } deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''Order)

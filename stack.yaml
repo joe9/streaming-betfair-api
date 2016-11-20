@@ -2,6 +2,9 @@ flags: {}
 extra-package-dbs: []
 packages:
 - '.'
+- location: /home/j/dev/apps/haskell/libraries/12-GenericPretty
+  extra-dep: true
 extra-deps:
+- GenericPretty-1.2.0
 - time-units-1.0.0
 resolver: nightly-2016-11-04

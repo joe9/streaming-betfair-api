@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
@@ -9,6 +12,7 @@ module Betfair.StreamingAPI.API.StreamingState
   , defaultStreamingState
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import           Data.Aeson.TH         (Options (omitNothingFields),
                                         defaultOptions, deriveJSON)
 import qualified Data.IntMap.Strict    as IntMap
@@ -17,7 +21,6 @@ import           Data.Time.Units
 import           Data.Time
 import           Protolude
 
---
 import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Request
 import TimeUnitsJSONInstance                ()
@@ -29,7 +32,7 @@ data StreamingState = StreamingState
   , ssAppKey                              :: AppKey
   , ssNeedHumanHelp                       :: Bool
   , ssLastMarketSubscriptionMessageSentAt :: UTCTime
-  } deriving (Eq, Read, Show)
+  } deriving (Eq, Read, Show, Generic, Pretty)
 
 defaultStreamingState :: UTCTime -> StreamingState
 defaultStreamingState time =

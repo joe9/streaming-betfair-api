@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
@@ -6,6 +9,7 @@ module Betfair.StreamingAPI.Responses.StatusMessage
   ( StatusMessage(..)
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -22,6 +26,6 @@ data StatusMessage = StatusMessage
   , connectionId     :: Maybe Text -- The connection id
   , connectionClosed :: Maybe Bool -- Is the connection now closed
   , statusCode       :: RequestStatus -- The status of the last request
-  } deriving (Eq, Read, Show)
+  } deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''StatusMessage)

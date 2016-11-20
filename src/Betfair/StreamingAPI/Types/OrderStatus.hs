@@ -1,3 +1,6 @@
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
+
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE NoImplicitPrelude  #-}
 {-# LANGUAGE OverloadedStrings  #-}
@@ -7,6 +10,7 @@ module Betfair.StreamingAPI.Types.OrderStatus
   ( OrderStatus(..)
   ) where
 
+import Text.PrettyPrint.GenericPretty
 import Data.Aeson.TH (Options (omitNothingFields), defaultOptions,
                       deriveJSON)
 import Protolude
@@ -15,6 +19,6 @@ import Protolude
 data OrderStatus
   = E
   | EC
-  deriving (Eq, Show, Read)
+  deriving (Eq, Show, Generic, Pretty, Read)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''OrderStatus)
