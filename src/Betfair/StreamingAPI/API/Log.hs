@@ -12,12 +12,15 @@ module Betfair.StreamingAPI.API.Log
   , stdOutAndLog
   ) where
 
-import qualified Data.Text                      as T
+import qualified Data.Text                    as T
 import           GHC.Show
-import           Protolude                      hiding (show)
+import           Protolude                    hiding (empty, show)
 import qualified Protolude
 import           Text.PrettyPrint.GenericPretty (empty, space, string)
 import qualified Text.PrettyPrint.GenericPretty as PP
+
+import Text.PrettyPrint.GenericPretty (Pretty (..),
+                                       displayPrettyPrefix, pretty)
 
 import Betfair.StreamingAPI.API.Context
 
@@ -48,13 +51,13 @@ toText d t = Protolude.show d <> T.singleton (' ' :: Char) <> Protolude.show t
 
 stdOutAndLog :: Context -> Direction -> Text -> IO ()
 stdOutAndLog c d s =
-  let output = ppText d s
+  let output = displayPrettyPrefix d s
   in toLog c output >> putText s
 
 tracePPLog
   :: Pretty a
   => Context -> Direction -> a -> IO a
-tracePPLog c d s = (toLog c . displayPrettyText d) s >> return s
+tracePPLog c d s = (toLog c . displayPrettyPrefix d) s >> return s
 
 traceLog
   :: Show a

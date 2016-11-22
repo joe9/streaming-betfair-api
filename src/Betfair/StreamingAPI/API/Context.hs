@@ -14,7 +14,6 @@ import           GHC.Show
 import           Network.Connection
 import           Protolude                      hiding (show)
 import qualified Protolude
-import           Text.PrettyPrint.GenericPretty
 
 import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Response
