@@ -12,12 +12,12 @@ module Betfair.StreamingAPI.API.Log
   , stdOutAndLog
   ) where
 
-import qualified Data.Text                      as T
+import qualified Data.Text                    as T
 import           GHC.Show
-import           Protolude                      hiding (empty, show)
+import           Protolude                    hiding (empty, show)
 import qualified Protolude
-import           Text.PrettyPrint.GenericPretty (empty, space, string)
-import qualified Text.PrettyPrint.GenericPretty as PP
+import           Text.PrettyPrint.Leijen.Text (empty, space, string)
+import qualified Text.PrettyPrint.Leijen.Text as PP
 
 import Text.PrettyPrint.GenericPretty (Pretty (..),
                                        displayPrettyPrefix, pretty)
