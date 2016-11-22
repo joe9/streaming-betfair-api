@@ -16,7 +16,8 @@ import qualified Data.Text                      as T
 import           GHC.Show
 import           Protolude                      hiding (show)
 import qualified Protolude
-import           Text.PrettyPrint.GenericPretty
+import           Text.PrettyPrint.GenericPretty (empty, space, string)
+import qualified Text.PrettyPrint.GenericPretty as PP
 
 import Betfair.StreamingAPI.API.Context
 
@@ -32,13 +33,13 @@ instance Show Direction where
   show To   = "<---"
   show None = ""
 
+instance Pretty Direction where
+  pretty From = string "--->" PP.<> space
+  pretty To   = string "<---" PP.<> space
+  pretty None = empty
+
 toLog :: Context -> Text -> IO ()
 toLog = cLogger
-
-ppText
-  :: Pretty a
-  => Direction -> a -> Text
-ppText d = mappend (Protolude.show d <> T.singleton ' ') . displayPretty
 
 toText
   :: Show a
@@ -53,7 +54,7 @@ stdOutAndLog c d s =
 tracePPLog
   :: Pretty a
   => Context -> Direction -> a -> IO a
-tracePPLog c d s = (toLog c . ppText d) s >> return s
+tracePPLog c d s = (toLog c . displayPrettyText d) s >> return s
 
 traceLog
   :: Show a
