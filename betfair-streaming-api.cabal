@@ -80,7 +80,6 @@ library
                      , case-insensitive
                      , http-types
                      , connection
-                     , groom
                      , old-locale
                      , aeson
                      , containers
