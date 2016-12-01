@@ -48,16 +48,15 @@ module Betfair.StreamingAPI
 -- from this file
 import Control.Monad.Trans.Except
 import Protolude                      hiding (finally)
-import Text.PrettyPrint.GenericPretty
 
---
+import Text.PrettyPrint.GenericPretty
+import Betfair.APING
+
 import Betfair.StreamingAPI.API.AddId
-import Betfair.StreamingAPI.API.CommonTypes
 import Betfair.StreamingAPI.API.Config
 import Betfair.StreamingAPI.API.Context
 import Betfair.StreamingAPI.API.Log
 
--- import Betfair.StreamingAPI.API.ReadFromTChan
 import Betfair.StreamingAPI.API.Request
 import Betfair.StreamingAPI.API.RequestProcessing
 import Betfair.StreamingAPI.API.Response

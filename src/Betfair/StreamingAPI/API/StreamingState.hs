@@ -7,8 +7,8 @@
 -- http://stackoverflow.com/questions/27591266/telling-cabal-where-the-main-module-is
 module Betfair.StreamingAPI.API.StreamingState
   ( StreamingState(..)
-  , timeInMicroseconds
   , defaultStreamingState
+  , SessionToken
   ) where
 
 import           Data.Aeson.TH                  (Options (omitNothingFields),
@@ -16,14 +16,15 @@ import           Data.Aeson.TH                  (Options (omitNothingFields),
                                                  deriveJSON)
 import qualified Data.IntMap.Strict             as IntMap
 import           Data.Time
-import           Data.Time.Clock.POSIX
-import           Data.Time.Units
 import           Protolude
+
 import           Text.PrettyPrint.GenericPretty
 
-import Betfair.StreamingAPI.API.CommonTypes
+import Betfair.APING
+
 import Betfair.StreamingAPI.API.Request
-import TimeUnitsJSONInstance                ()
+
+type SessionToken = Token
 
 data StreamingState = StreamingState
   { ssRequests                            :: IntMap.IntMap Request
@@ -38,9 +39,3 @@ defaultStreamingState :: UTCTime -> StreamingState
 defaultStreamingState time = StreamingState IntMap.empty 1 "" "" False time
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''StreamingState)
-
--- to use for the ssLastMarketSubscriptionMessageSentAt
-timeInMicroseconds :: IO Microsecond
-timeInMicroseconds =
-  fromMicroseconds . fromIntegral . numerator . toRational . (* 1000000) <$>
-  getPOSIXTime

@@ -50,8 +50,9 @@ import Network.Connection
 import Network.Socket
 import Protolude               hiding (bracket, finally)
 
+import Betfair.APING (AppKey, EventName, MarketId, MarketName)
+
 import           Betfair.StreamingAPI.API.AddId
-import           Betfair.StreamingAPI.API.CommonTypes
 import           Betfair.StreamingAPI.API.Context
 import           Betfair.StreamingAPI.API.Log
 import           Betfair.StreamingAPI.API.Request

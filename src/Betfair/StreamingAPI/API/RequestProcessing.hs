@@ -21,8 +21,9 @@ import           Data.Time
 import           Network.Connection
 import           Protolude            hiding (state)
 
+import Betfair.APING (MarketId)
+
 import           Betfair.StreamingAPI.API.AddId
-import           Betfair.StreamingAPI.API.CommonTypes
 import           Betfair.StreamingAPI.API.Context
 import           Betfair.StreamingAPI.API.Log
 import           Betfair.StreamingAPI.API.Request

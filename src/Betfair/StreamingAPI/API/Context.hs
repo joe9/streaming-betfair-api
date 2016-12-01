@@ -15,11 +15,11 @@ import           Network.Connection
 import           Protolude               hiding (show)
 import qualified Protolude
 
-import Betfair.StreamingAPI.API.CommonTypes
+import Betfair.APING (AppKey)
+
 import Betfair.StreamingAPI.API.Response
 import Betfair.StreamingAPI.Requests.MarketSubscriptionMessage
 
--- import Betfair.StreamingAPI.API.ResponseException
 import Betfair.StreamingAPI.API.StreamingState
 
 data Context = Context

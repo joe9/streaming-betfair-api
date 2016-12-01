@@ -12,9 +12,10 @@ module Betfair.StreamingAPI.Responses.MarketChangeMessage
 import Data.Aeson.TH                  (Options (omitNothingFields),
                                        defaultOptions, deriveJSON)
 import Protolude
-import Text.PrettyPrint.GenericPretty
 
-import           Betfair.StreamingAPI.API.CommonTypes
+import Text.PrettyPrint.GenericPretty
+import Betfair.APING
+
 import           Betfair.StreamingAPI.Types.ChangeType
 import           Betfair.StreamingAPI.Types.MarketChange
 import qualified Betfair.StreamingAPI.Types.MarketChange as MC
