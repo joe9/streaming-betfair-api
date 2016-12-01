@@ -9,4 +9,3 @@ packages:
 extra-deps:
 - time-units-1.0.0
 resolver: nightly-2016-11-04
-r: nightly-2016-11-04
