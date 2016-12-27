@@ -89,7 +89,7 @@ library
                      , network
                      , stm
                      , transformers
-                     , GenericPretty
+                     , text-generic-pretty
                      , wl-pprint-text
                      , betfair-api
   ghc-options:         -Wall
