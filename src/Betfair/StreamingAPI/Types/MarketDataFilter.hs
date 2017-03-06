@@ -32,4 +32,4 @@ defaultMarketDataFilter :: MarketDataFilter
 defaultMarketDataFilter =
   MarketDataFilter
     (Just 3)
-    [EX_BEST_OFFERS_DISP, EX_TRADED, EX_TRADED_VOL, EX_MARKET_DEF]
+    [EX_BEST_OFFERS_DISP, EX_TRADED, EX_TRADED_VOL, EX_LTP, EX_MARKET_DEF]
