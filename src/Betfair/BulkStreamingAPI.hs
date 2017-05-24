@@ -115,10 +115,9 @@ startStreaming context =
 
 authenticateAndReadDataLoop :: Context -> IO (Context)
 authenticateAndReadDataLoop c =
-  sresponse c >>= authentication >>= sresponse >>= resendLastSubscription >>=
+  fmap snd (sresponse c) >>= authentication >>= response >>=
+  resendLastSubscription >>=
   readDataLoop
-  where
-    sresponse = fmap snd . response
 
 readDataLoop :: Context -> IO (Context)
 readDataLoop c = response c >>= reSubscribeIfNeeded >>= readDataLoop
@@ -148,8 +147,10 @@ reSubscribeIfNeeded :: (Maybe MarketSubscriptionMessage, Context)
 reSubscribeIfNeeded (Just m, c) = resubscribe m c
 reSubscribeIfNeeded (_, c)      = return c
 
-resendLastSubscription :: Context -> IO (Context)
-resendLastSubscription c =
+resendLastSubscription :: (Maybe MarketSubscriptionMessage, Context)
+                       -> IO (Context)
+resendLastSubscription (Nothing, c) =
   (flip resubscribe c .
    fromMaybe (defaultMarketSubscriptionMessage) . lastMarketSubscriptionMessage)
     c
+resendLastSubscription (Just m, c) = resubscribe m c
