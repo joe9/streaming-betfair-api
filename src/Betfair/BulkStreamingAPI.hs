@@ -115,7 +115,7 @@ startStreaming context =
 
 authenticateAndReadDataLoop :: Context -> IO (Context)
 authenticateAndReadDataLoop c =
-  fmap snd (sresponse c) >>= authentication >>= response >>=
+  fmap snd (response c) >>= authentication >>= response >>=
   resendLastSubscription >>=
   readDataLoop
 

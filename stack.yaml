@@ -7,5 +7,6 @@ packages:
 - location: /home/j/dev/apps/haskell/libraries/50-betfair-api
   extra-dep: true
 extra-deps:
+- text-generic-pretty-1.2.7
 - time-units-1.0.0
-resolver: nightly-2016-11-04
+resolver: lts-8.15
