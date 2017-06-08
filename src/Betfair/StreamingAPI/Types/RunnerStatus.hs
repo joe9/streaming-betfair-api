@@ -19,9 +19,10 @@ data RunnerStatus
   = ACTIVE
   | WINNER
   | LOSER
-  | REMOVED_VACANT
   | REMOVED
+  | REMOVED_VACANT
   | HIDDEN
+  | PLACED
   deriving (Eq, Show, Generic, Pretty, Read, Enum)
 
 defaultRunnerStatus :: RunnerStatus
