@@ -15,7 +15,6 @@ import Data.Aeson.TH                  (Options (omitNothingFields),
 import Protolude
 import Text.PrettyPrint.GenericPretty
 
---
 import Betfair.StreamingAPI.Types.BettingType      (BettingType)
 import Betfair.StreamingAPI.Types.MarketStatus     (MarketStatus)
 import Betfair.StreamingAPI.Types.RunnerDefinition (RunnerDefinition)
@@ -32,11 +31,13 @@ data MarketDefinition = MarketDefinition
   , marketBaseRate        :: Maybe Double
   , numberOfWinners       :: Integer
   , countryCode           :: Maybe Text
+  , lineMaxUnit           :: Maybe Integer
   , inPlay                :: Maybe Bool
   , betDelay              :: Integer
   , bspMarket             :: Bool
   , bettingTypes          :: Maybe [BettingType]
   , numberOfActiveRunners :: Integer
+  , lineMinUnit           :: Maybe Integer
   , eventId               :: Text
   , crossMatching         :: Bool
   , runnersVoidable       :: Bool
@@ -51,6 +52,7 @@ data MarketDefinition = MarketDefinition
   , openDate              :: DateString
   , marketTime            :: DateString
   , bspReconciled         :: Bool
+  , lineInterval          :: Maybe Integer
   , status                :: MarketStatus
   } deriving (Eq, Read, Show, Generic, Pretty)
 
