@@ -33,6 +33,7 @@ data Order = Order
   , pd     :: Maybe DateString -- Placed Date - the date the order was placed
   , rac    :: Maybe Text -- Regulator Auth Code - the auth code returned by the regulator
   , md     :: Maybe Integer -- Matched Date - the date the order was matched (null if the order is not matched)
+  , ld     :: Maybe Integer -- Lapsed Date - the date the order was lapsed (null if the order is not lapsed)
   , sl     :: Maybe Double -- Size Lapsed - the amount of the order that has been lapsed
   , avp    :: Maybe Double -- Average Price Matched - the average price the order was matched at (null if the order is not matched
   , sm     :: Maybe Double -- Size Matched - the amount of the order that has been matched
