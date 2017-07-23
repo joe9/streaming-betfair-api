@@ -15,9 +15,11 @@ import Data.Aeson.TH                  (Options (omitNothingFields),
 import Protolude
 import Text.PrettyPrint.GenericPretty
 
-import Betfair.StreamingAPI.Types.BettingType      (BettingType)
-import Betfair.StreamingAPI.Types.MarketStatus     (MarketStatus)
-import Betfair.StreamingAPI.Types.RunnerDefinition (RunnerDefinition)
+import Betfair.StreamingAPI.Types.BettingType           (BettingType)
+import Betfair.StreamingAPI.Types.KeyLineDefinition     (KeyLineDefinition)
+import Betfair.StreamingAPI.Types.MarketStatus          (MarketStatus)
+import Betfair.StreamingAPI.Types.PriceLadderDefinition (PriceLadderDefinition)
+import Betfair.StreamingAPI.Types.RunnerDefinition      (RunnerDefinition)
 
 type DateString = Text
 
@@ -54,6 +56,8 @@ data MarketDefinition = MarketDefinition
   , bspReconciled         :: Bool
   , lineInterval          :: Maybe Integer
   , status                :: MarketStatus
+  , priceLadderDefinition :: PriceLadderDefinition
+  , keyLineDefinition     :: KeyLineDefinition
   } deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketDefinition)

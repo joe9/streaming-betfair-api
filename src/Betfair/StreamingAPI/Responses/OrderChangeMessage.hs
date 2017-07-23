@@ -13,7 +13,6 @@ import Data.Aeson.TH                  (Options (omitNothingFields),
 import Protolude
 import Text.PrettyPrint.GenericPretty
 
---
 import Betfair.StreamingAPI.Types.ChangeType
 import Betfair.StreamingAPI.Types.OrderMarketChange
 import Betfair.StreamingAPI.Types.SegmentType
@@ -23,6 +22,7 @@ data OrderChangeMessage = OrderChangeMessage
   , id          :: Integer -- Client generated unique id to link request with response (like json rpc)
   , ct          :: ChangeType -- Change Type - set to indicate the type of change - if null this is a delta),
   , clk         :: Text -- Token value (non-null) should be stored and passed in a MarketSubscriptionMessage to resume subscription (in case of disconnect)
+  , status      :: Maybe Int --  By default, when the stream data is up to date the value is set to null and will be set to 503 when the stream data is unreliable (i.e. not all bets and markets changes will be reflected on the stream) due to an increase in push latency.  Clients shouldn't disconnect if status 503 is returned; when the stream recovers updates will be sent containing the latest data.  The status is sent per each subscription on heartbeats and change messages.
   , heartbeatMs :: Integer -- Heartbeat Milliseconds - the heartbeat rate (may differ from requested: bounds are 500 to 30000),
   , pt          :: Integer -- Publish Time (in millis since epoch) that the changes were generated,
   , oc          :: [OrderMarketChange] -- OrderMarketChanges - the modifications to account's orders (will be null on a heartbeat
