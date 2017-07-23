@@ -13,6 +13,7 @@ module Betfair.StreamingAPI.Types.MarketDefinition
 import Data.Aeson.TH                  (Options (omitNothingFields),
                                        defaultOptions, deriveJSON)
 import Protolude
+
 import Text.PrettyPrint.GenericPretty
 
 import Betfair.StreamingAPI.Types.BettingType           (BettingType)
