@@ -56,8 +56,8 @@ data MarketDefinition = MarketDefinition
   , bspReconciled         :: Bool
   , lineInterval          :: Maybe Integer
   , status                :: MarketStatus
-  , priceLadderDefinition :: PriceLadderDefinition
-  , keyLineDefinition     :: KeyLineDefinition
+  , priceLadderDefinition :: Maybe PriceLadderDefinition
+  , keyLineDefinition     :: Maybe KeyLineDefinition
   } deriving (Eq, Read, Show, Generic, Pretty)
 
 $(deriveJSON defaultOptions {omitNothingFields = True} ''MarketDefinition)
