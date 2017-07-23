@@ -61,6 +61,9 @@ library
                   Betfair.StreamingAPI.Types.MarketStatus
                   Betfair.StreamingAPI.Types.MarketDataFilter
                   Betfair.StreamingAPI.Types.RunnerStatus
+                  Betfair.StreamingAPI.Types.KeyLineDefinition
+                  Betfair.StreamingAPI.Types.KeyLineSelection
+                  Betfair.StreamingAPI.Types.PriceLadderDefinition
   other-extensions:    DeriveDataTypeable
                      , FlexibleContexts
                      , TemplateHaskell
