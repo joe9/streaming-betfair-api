@@ -10,12 +10,17 @@ module Betfair.StreamingAPI.Types.PriceLadderDefinition
   ( PriceLadderDefinition(..)
   ) where
 
-import Data.Aeson.TH                  (Options (omitNothingFields),
+import Data.Aeson.TH                  (Options (fieldLabelModifier, omitNothingFields),
                                        defaultOptions, deriveJSON)
 import Protolude
 import Text.PrettyPrint.GenericPretty
 
-data PriceLadderDefinition = CLASSIC | FINEST | LINE_RANGE
-   deriving (Eq, Read, Show, Generic, Pretty)
+import Betfair.APING.Types.PriceLadderType (PriceLadderType)
 
-$(deriveJSON defaultOptions {omitNothingFields = True} ''PriceLadderDefinition)
+data PriceLadderDefinition = PriceLadderDefinition
+  { pltype :: PriceLadderType
+  } deriving (Eq, Read, Show, Generic, Pretty)
+
+$(deriveJSON
+    defaultOptions {omitNothingFields = True, fieldLabelModifier = drop 2}
+    ''PriceLadderDefinition)
